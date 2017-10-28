@@ -8,12 +8,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class StreamEdge implements Serializable, Comparable<StreamEdge>{
 	private static final long serialVersionUID = -3733214465018614013L;
 	private String src;
-	private Integer srcLabel;
+	private int srcLabel;
 	private String dest;
-	private Integer dstLabel;
+	private int dstLabel;
 	private String edgeLabel;
 
-	public StreamEdge(String src, Integer srcLabel, String dest, Integer dstLabel, String label) {
+	public StreamEdge(String src, int srcLabel, String dest, int dstLabel, String label) {
 		if(src.compareTo(dest) < 0) {
 			this.src = src;
 			this.srcLabel= srcLabel;
@@ -29,19 +29,19 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge>{
 		}
 	}
 
-	public Integer getSrcLabel() {
+	public int getSrcLabel() {
 		return srcLabel;
 	}
 
-	public void setSrcLabel(Integer srcLabel) {
+	public void setSrcLabel(int srcLabel) {
 		this.srcLabel = srcLabel;
 	}
 
-	public Integer getDstLabel() {
+	public int getDstLabel() {
 		return dstLabel;
 	}
 
-	public void setDstLabel(Integer dstLabel) {
+	public void setDstLabel(int dstLabel) {
 		this.dstLabel = dstLabel;
 	}
 
@@ -72,6 +72,7 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge>{
 		if(src.compareTo(o.src) < 0) {
 			return -1;
 		}else if(src.compareTo(o.src) == 0) {
+
 			if(dest.compareTo(o.dest) < 0) {
 				return -1;
 			}else if(dest.compareTo(o.dest) == 0) {

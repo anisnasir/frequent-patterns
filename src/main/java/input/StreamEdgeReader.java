@@ -35,9 +35,9 @@ public class StreamEdgeReader {
 				return null;
 
 			String src = tokens[0];
-			Integer srcLabel = Integer.parseInt(tokens[1]);
+			int srcLabel = Integer.parseInt(tokens[1]);
 			String dest = tokens[2];
-			Integer dstLabel = Integer.parseInt(tokens[3]);
+			int dstLabel = Integer.parseInt(tokens[3]);
 			String label = tokens[4];
 			
 			return new StreamEdge(src,srcLabel, dest,dstLabel, label);

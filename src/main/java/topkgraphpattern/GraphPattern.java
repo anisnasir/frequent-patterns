@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import gnu.trove.map.hash.THashMap;
 import input.StreamEdge;
 
 public class GraphPattern implements Comparable<GraphPattern> {
@@ -15,7 +14,6 @@ public class GraphPattern implements Comparable<GraphPattern> {
 	public GraphPattern(Triplet t) { 
 		if(t.numEdges == 2) {
 			isWedge = true;
-			THashMap<Integer, Integer> map = new THashMap<Integer, Integer>();
 			StreamEdge edgeA = t.edgeA;
 			int sLabel = edgeA.getSrcLabel();
 			int tLabel = edgeA.getDstLabel();
@@ -103,6 +101,11 @@ public class GraphPattern implements Comparable<GraphPattern> {
 	}
 
 	public int compareTo(GraphPattern o) {
+		if(this.isWedge!= o.isWedge) {
+			if(this.isWedge)
+				return -1;
+			else return 1;
+		}
 		if(this.label1 < o.label1)  {
 			return -1;
 		}else if (this.label1 == o.label1) {

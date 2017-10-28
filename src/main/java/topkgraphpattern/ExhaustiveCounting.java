@@ -26,19 +26,22 @@ public class ExhaustiveCounting implements TopkGraphPatterns{
 	}
 	public boolean addEdge(StreamEdge edge) {
 		//System.out.println("+" + edge);
+		if(nodeMap.contains(edge))
+			return false;
+		
+		//System.out.println(nodeMap.map);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
-
-		//System.out.println(src.getVertexId() + " " + dst.getVertexId());
 
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
 		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
-
+		
 		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
 
+		//iterate through source neighbors;
 		for(LabeledNeighbor t: srcNeighbor) {
 			if(!common.contains(t)) {
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
@@ -48,6 +51,7 @@ public class ExhaustiveCounting implements TopkGraphPatterns{
 			}
 		}
 
+		//iteration through destination neighbors
 		for(LabeledNeighbor t: dstNeighbor) {
 			if(!common.contains(t)) {
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId(),t.getDst().getVertexLabel(), t.getEdgeLabel()));
@@ -71,81 +75,91 @@ public class ExhaustiveCounting implements TopkGraphPatterns{
 		}
 
 		utility.handleEdgeAddition(edge, nodeMap);
-		//System.out.println(counter.size() + " " + numSubgraph);
-		//System.out.println(this.frequentPatterns);
-		//System.out.println(this.counter);
+		//System.out.println(counter);
 		return false;
 	}
 
 	public boolean removeEdge(StreamEdge edge) {
+		if(!nodeMap.contains(edge))
+			return false;
 		//System.out.println("-" + edge);
 		utility.handleEdgeDeletion(edge, nodeMap);
-
+		
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
-
-		//System.out.println(src.getVertexId() + " " + dst.getVertexId());
 
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
 		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
-
-		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
 		
+		THashMap<LabeledNeighbor, LabeledNeighbor> commonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
+		
+		//iterate through source neighbors
 		for(LabeledNeighbor t: srcNeighbor) {
 			if(!common.contains(t)) {
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(),src.getVertexLabel(), t.getDst().getVertexId(),t.getDst().getVertexLabel(), t.getEdgeLabel()));
 				removeSubgraph(triplet);
 			} else {
-				srcCommonNeighbor.put(t, t);
+				commonNeighbor.put(t, t);
 			}
 		}
 
+		//iterate through destination neighbors
 		for(LabeledNeighbor t: dstNeighbor) {
 			if(!common.contains(t)) {
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
 				removeSubgraph(triplet);
 			}else {
-				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
+				LabeledNeighbor comNeighbor = commonNeighbor.get(t);
 				LabeledNode a = src;
 				LabeledNode b = dst;
 				LabeledNode c = t.getDst();
+				
 				StreamEdge edgeA = edge;
-				StreamEdge edgeB = new StreamEdge(c.getVertexId() , c.getVertexLabel(), src.getVertexId(), src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
+				StreamEdge edgeB = new StreamEdge(c.getVertexId() , c.getVertexLabel(), src.getVertexId(), src.getVertexLabel(), comNeighbor.getEdgeLabel());
 				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(),dst.getVertexLabel(), t.getEdgeLabel());
-
-				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
-				addSubgraph(tripletWedge);
-
+				
 				Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
 				removeSubgraph(tripletTriangle);
+				
+				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
+				addSubgraph(tripletWedge);
 			}
 		}
-		//System.out.println(counter.size()+ " " + numSubgraph);
-		return false;
+		//System.out.println(counter);
+		return true;
 	}
 	void removeSubgraph(Triplet t) {
-		if(counter.containsKey(t)) {
+		/*if(counter.containsKey(t)) {
 			int count = counter.get(t);
-			if(count != 1)
+			if(count > 1)
 				counter.put(t, count-1);
 			else 
 				counter.remove(t);
 			numSubgraph--;
+			removeFrequentPattern(t);
 		}
+		else {
+			System.out.println("remove error " + t);
+			System.out.println(counter);
+			System.exit(1);
+		}*/
+		//removeFrequentPattern(t);
+		numSubgraph--;
 		removeFrequentPattern(t);
 		
 	}
 	
 	void addSubgraph(Triplet t) {
-		if(counter.containsKey(t)) {
+	/*	if(counter.containsKey(t)) {
 			int count = counter.get(t);
 			counter.put(t, count+1);
 		}else {
 			counter.put(t, 1);
 		}
+		*/
 		addFrequentPattern(t);
 		numSubgraph++;
 	}
@@ -173,6 +187,9 @@ public class ExhaustiveCounting implements TopkGraphPatterns{
 	
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
 		return this.frequentPatterns;
+	}
+	public int getNumberofSubgraphs() {
+		return this.numSubgraph;
 	}
 	
 	

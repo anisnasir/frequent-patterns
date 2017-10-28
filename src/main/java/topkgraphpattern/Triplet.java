@@ -62,9 +62,6 @@ public class Triplet implements Comparable<Triplet>{
 		this.edgeA = edgeArray[0];
 		this.edgeB = edgeArray[1];
 		this.edgeC = edgeArray[2];
-	
-		
-		
 
 	}
 
@@ -126,9 +123,9 @@ public class Triplet implements Comparable<Triplet>{
 					append(this.a).
 					append(this.b).
 					append(this.c).
-					append(this.edgeA).
-					append(this.edgeB).
-					append(this.edgeC).
+					//append(this.edgeA).
+					//append(this.edgeB).
+					//append(this.edgeC).
 					append(this.numEdges).
 					toHashCode();
 			return hashCode;
@@ -143,7 +140,9 @@ public class Triplet implements Comparable<Triplet>{
 		
 		//System.out.println("equal method ");
 		Triplet t = (Triplet)o;
+		
 		return (this.compareTo(t) == 0);
+
 	}
 
 	public String toString() {

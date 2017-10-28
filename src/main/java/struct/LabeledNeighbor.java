@@ -61,7 +61,7 @@ public class LabeledNeighbor implements Comparable<LabeledNeighbor> {
 		if(neighborNode.compareTo(oNeighborNode) < 0)
 			return -1;
 		else if (neighborNode.compareTo(oNeighborNode) == 0) {
-			return neighborLabel.compareTo(oNeighborLabel);
+			return (neighborLabel-oNeighborLabel);
 		}else 
 			return 1;
 	}

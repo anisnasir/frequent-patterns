@@ -1,9 +1,5 @@
 package topkgraphpattern;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
@@ -36,6 +32,9 @@ public class SubgraphReservoirAlgorithm implements TopkGraphPatterns {
 	}
 
 	public boolean addEdge(StreamEdge edge) {
+		if(nodeMap.contains(edge)) {
+			return false;
+		}
 		//System.out.println("+" + edge);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
@@ -85,6 +84,9 @@ public class SubgraphReservoirAlgorithm implements TopkGraphPatterns {
 	}
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);
+		if(!nodeMap.contains(edge)) {
+			return false;
+		}
 		utility.handleEdgeDeletion(edge, nodeMap);
 
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
@@ -134,6 +136,7 @@ public class SubgraphReservoirAlgorithm implements TopkGraphPatterns {
 	}
 	void removeSubgraph(Triplet t) {
 		if(reservoir.contains(t)) {
+			//System.out.println("remove called from remove subgraph");
 			reservoir.remove(t);
 			removeFrequentPattern(t);
 			c1++;
@@ -149,6 +152,7 @@ public class SubgraphReservoirAlgorithm implements TopkGraphPatterns {
 				flag = true;
 			}else if (Math.random() < (M/(double)N)) {
 				flag = true;
+				//System.out.println("remove called from add subgraph");
 				reservoir.remove(reservoir.getRandom());
 			}
 		}else {
@@ -198,5 +202,8 @@ public class SubgraphReservoirAlgorithm implements TopkGraphPatterns {
 	
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
 		return this.frequentPatterns;
+	}
+	public int getNumberofSubgraphs() {
+		return N;
 	}
 }

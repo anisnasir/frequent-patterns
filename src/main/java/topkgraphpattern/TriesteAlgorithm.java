@@ -26,5 +26,9 @@ public class TriesteAlgorithm implements TopkGraphPatterns{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public int getNumberofSubgraphs() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }

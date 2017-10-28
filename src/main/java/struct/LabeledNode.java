@@ -4,8 +4,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class LabeledNode implements Comparable<LabeledNode>{
 	String vertexId;
-	Integer vertexLabel;
-	public LabeledNode(String id, Integer label) {
+	int vertexLabel;
+	public LabeledNode(String id, int label) {
 		this.vertexId = id;
 		this.vertexLabel = label;
 	}
@@ -13,7 +13,7 @@ public class LabeledNode implements Comparable<LabeledNode>{
 		if(this.vertexId.compareTo(o.vertexId) < 0)
 			return -1;
 		else if(this.vertexId.compareTo(o.vertexId) == 0) {
-			return this.vertexLabel.compareTo(o.vertexLabel);
+			return (this.vertexLabel-o.vertexLabel);
 		}else {
 			return 1;
 		}
@@ -25,10 +25,10 @@ public class LabeledNode implements Comparable<LabeledNode>{
 	public void setVertexId(String vertexId) {
 		this.vertexId = vertexId;
 	}
-	public Integer getVertexLabel() {
+	public int getVertexLabel() {
 		return vertexLabel;
 	}
-	public void setVertexLabel(Integer vertexLabel) {
+	public void setVertexLabel(int vertexLabel) {
 		this.vertexLabel = vertexLabel;
 	}
 	@Override
