@@ -1,7 +1,8 @@
-R="target/TopkGraphPatterns-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+#!/bin/bash
+JAR="target/TopkGraphPatterns-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 input_dir="/home/anis/Datasets/"
 input="patent-graph-stream.txt"
-windowSize=1000000
+windowSize=10000
 simulatorType=2
 epsilon=0.01
 delta=0.2
