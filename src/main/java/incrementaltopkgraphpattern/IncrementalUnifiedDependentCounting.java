@@ -44,6 +44,7 @@ public class IncrementalUnifiedDependentCounting implements TopkGraphPatterns{
 
 			// update sample
 			utility.handleEdgeAddition(edge, nodeMap);
+			return true;
 			
 		//determine sample second case
 		}else if ( Math.random() < (reservoirMaxSize/(double)edgeCount)) {
@@ -58,7 +59,8 @@ public class IncrementalUnifiedDependentCounting implements TopkGraphPatterns{
 			addTriplets(edge);
 			
 			//update sample
-			utility.handleEdgeAddition(edge, nodeMap);	
+			utility.handleEdgeAddition(edge, nodeMap);
+			return true;
 		}
 
 		return false;

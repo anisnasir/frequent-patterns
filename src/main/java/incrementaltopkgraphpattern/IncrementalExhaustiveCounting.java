@@ -144,7 +144,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 	}
 	@Override
 	public boolean removeEdge(StreamEdge edge) {
-		// TODO Auto-generated method stub
+		// This method is not implemented for incremental algorithms
 		return false;
 	}
 	

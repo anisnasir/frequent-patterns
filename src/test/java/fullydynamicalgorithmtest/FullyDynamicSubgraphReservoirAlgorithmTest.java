@@ -1,4 +1,4 @@
-package algorithmTest;
+package fullydynamicalgorithmtest;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,7 @@ import fullydynamictopkgraphpattern.FullyDynamicExhaustiveCounting;
 import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirAlgorithm;
 import input.StreamEdge;
 
-public class SubgraphReservoirAlgorithmTest {
+public class FullyDynamicSubgraphReservoirAlgorithmTest {
 
 	@Test
 	public void singleWedgeAddition() {

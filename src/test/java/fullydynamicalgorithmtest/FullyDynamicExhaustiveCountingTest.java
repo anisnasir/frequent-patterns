@@ -1,32 +1,31 @@
-package algorithmTest;
+package fullydynamicalgorithmtest;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import incrementaltopkgraphpattern.IncrementalTriesteAlgorithm;
+import fullydynamictopkgraphpattern.FullyDynamicExhaustiveCounting;
 import input.StreamEdge;
 
-public class TriesteAlgorithmTest {
+public class FullyDynamicExhaustiveCountingTest {
 
 	@Test
 	public void singleWedgeAddition() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
-		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
-		int size = 10;
-		IncrementalTriesteAlgorithm topk = new IncrementalTriesteAlgorithm(size, size);
+		StreamEdge b = new StreamEdge("b", 2, "c", 3, "u");
+		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
+
 	}
-/*	@Test
+	@Test
 	public void triangleAddition() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
 		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
 		StreamEdge c = new StreamEdge("b", 2, "c", 3, "u");
 
-		int size = 10;
-		TriesteAlgorithm topk = new TriesteAlgorithm(size, size);
+		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -40,8 +39,7 @@ public class TriesteAlgorithmTest {
 		StreamEdge c = new StreamEdge("b", 2, "c", 3, "u");
 		StreamEdge d = new StreamEdge("b", 2, "d", 4, "u");
 		StreamEdge e = new StreamEdge("c", 3, "d", 4, "u");
-		int size = 10;
-		TriesteAlgorithm topk = new TriesteAlgorithm(size, size);
+		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -56,14 +54,13 @@ public class TriesteAlgorithmTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
 		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
 		StreamEdge c = new StreamEdge("b", 2, "c", 3, "u");
-		int size = 10;
-		TriesteAlgorithm topk = new TriesteAlgorithm(size, size);
+		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
 		topk.removeEdge(c);
 		//topk.removeEdge(a);
-		System.out.println(topk.getFrequentPatterns());
+		//System.out.println(topk.getFrequentPatterns());
 	}
 	
 	@Test
@@ -71,14 +68,15 @@ public class TriesteAlgorithmTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
 		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
 		StreamEdge c = new StreamEdge("b", 2, "c", 3, "u");
-		int size = 10;
-		TriesteAlgorithm topk = new TriesteAlgorithm(size, size);
+		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
 		topk.removeEdge(c);
 		//topk.removeEdge(a);
-		System.out.println(topk.getFrequentPatterns());
+		//System.out.println(topk.getFrequentPatterns());
 	}
-*/
+	
+	
+
 }
