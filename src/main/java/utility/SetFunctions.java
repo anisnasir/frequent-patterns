@@ -29,6 +29,18 @@ public class SetFunctions<T> {
 		return returnSet;
 	}
 	
+	public THashSet<T> unionSet (THashSet<T> set1, THashSet<T> set2) {
+		THashSet<T> results = new THashSet<T>(); 
+		if(set1!= null) {
+			results.addAll(set1);
+		}
+		if(set2!=null) {
+			results.addAll(set2);
+		}
+		return results;
+	}
+	
+	
 	public int intersection (HashSet<T> set1, HashSet<T> set2) {
 		Set<T> a;
 		Set<T> b;

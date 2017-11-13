@@ -1,23 +1,26 @@
-package topkgraphpattern;
+package incrementaltopkgraphpattern;
 
 import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
 import input.StreamEdge;
+import struct.GraphPattern;
 import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeMap;
+import struct.Triplet;
+import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
 
-public class ExhaustiveCounting implements TopkGraphPatterns{
+public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	THashMap<Triplet, Integer> counter;
 	THashMap<GraphPattern, Integer> frequentPatterns;
 	int numSubgraph;
-	public ExhaustiveCounting() {
+	public IncrementalExhaustiveCounting() {
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		counter = new THashMap<Triplet, Integer>();
@@ -79,58 +82,6 @@ public class ExhaustiveCounting implements TopkGraphPatterns{
 		return false;
 	}
 
-	public boolean removeEdge(StreamEdge edge) {
-		if(!nodeMap.contains(edge))
-			return false;
-		//System.out.println("-" + edge);
-		utility.handleEdgeDeletion(edge, nodeMap);
-		
-		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
-		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
-
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
-
-		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
-		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
-		
-		THashMap<LabeledNeighbor, LabeledNeighbor> commonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
-		
-		//iterate through source neighbors
-		for(LabeledNeighbor t: srcNeighbor) {
-			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(),src.getVertexLabel(), t.getDst().getVertexId(),t.getDst().getVertexLabel(), t.getEdgeLabel()));
-				removeSubgraph(triplet);
-			} else {
-				commonNeighbor.put(t, t);
-			}
-		}
-
-		//iterate through destination neighbors
-		for(LabeledNeighbor t: dstNeighbor) {
-			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
-				removeSubgraph(triplet);
-			}else {
-				LabeledNeighbor comNeighbor = commonNeighbor.get(t);
-				LabeledNode a = src;
-				LabeledNode b = dst;
-				LabeledNode c = t.getDst();
-				
-				StreamEdge edgeA = edge;
-				StreamEdge edgeB = new StreamEdge(c.getVertexId() , c.getVertexLabel(), src.getVertexId(), src.getVertexLabel(), comNeighbor.getEdgeLabel());
-				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(),dst.getVertexLabel(), t.getEdgeLabel());
-				
-				Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
-				removeSubgraph(tripletTriangle);
-				
-				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
-				addSubgraph(tripletWedge);
-			}
-		}
-		//System.out.println(counter);
-		return true;
-	}
 	void removeSubgraph(Triplet t) {
 		/*if(counter.containsKey(t)) {
 			int count = counter.get(t);
@@ -190,6 +141,11 @@ public class ExhaustiveCounting implements TopkGraphPatterns{
 	}
 	public int getNumberofSubgraphs() {
 		return this.numSubgraph;
+	}
+	@Override
+	public boolean removeEdge(StreamEdge edge) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

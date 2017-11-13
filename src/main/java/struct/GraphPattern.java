@@ -1,4 +1,4 @@
-package topkgraphpattern;
+package struct;
 
 import java.util.Arrays;
 

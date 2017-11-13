@@ -1,4 +1,4 @@
-package topkgraphpattern;
+package reservoir;
 
 public interface Reservoir<T> {
 	public boolean add(T a);

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import input.StreamEdge;
 import struct.LabeledNode;
-import topkgraphpattern.Triplet;
+import struct.Triplet;
 
 public class TripletTest {
 

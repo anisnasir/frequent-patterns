@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import input.StreamEdge;
+import struct.GraphPattern;
 import struct.LabeledNode;
-import topkgraphpattern.GraphPattern;
-import topkgraphpattern.Triplet;
+import struct.Triplet;
 
 public class GraphPatternTest {
 

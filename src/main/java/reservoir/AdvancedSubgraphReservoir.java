@@ -1,4 +1,4 @@
-package topkgraphpattern;
+package reservoir;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +8,8 @@ import java.util.Random;
 
 import gnu.trove.map.hash.THashMap;
 import struct.LabeledNode;
+import struct.MapArray;
+import struct.Triplet;
 
 /**
  * SubgraphReservoir class that implements the interfact Reservoir

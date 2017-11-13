@@ -1,4 +1,4 @@
-package topkgraphpattern;
+package struct;
 
 
 import java.util.Arrays;
@@ -6,12 +6,13 @@ import java.util.Arrays;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import input.StreamEdge;
-import struct.LabeledNode;
 
 public class Triplet implements Comparable<Triplet>{
 	int numEdges;
-	LabeledNode a, b, c;
-	StreamEdge edgeA, edgeB, edgeC;
+	public LabeledNode a;
+	public LabeledNode b;
+	public LabeledNode c;
+	public StreamEdge edgeA, edgeB, edgeC;
 
 	public Triplet() {
 		numEdges = 0;
