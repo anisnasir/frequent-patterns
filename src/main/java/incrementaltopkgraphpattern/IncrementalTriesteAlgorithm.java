@@ -144,7 +144,7 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns{
 
 	public int getNumberofSubgraphs() {
 		// TODO Auto-generated method stub
-		return 0;
+		return N;
 	}
 
 	void addSubgraph(Triplet t) {
@@ -204,25 +204,13 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns{
 	}
 	
 	private double correctFactorWedge() { 
-		double result = 1;
-		if(N<M)
-			return result;
-		else {
-			result = (N*(N-1))/((double)M*(M-1));
-			return result;
-		}
-			
+		double result = (N*(N-1))/((double)M*(M-1));
+		return Math.max(1,result);
 	}
 	
 	private double correctFactorTriangle() { 
-		double result = 1;
-		if(N<M)
-			return result;
-		else {
-			result = (N*(N-1)*(N-2))/((double)M*(M-1)*(M-2));
-			return result;
-		}
-			
+		double result = (N*(N-1)*(N-2))/((double)M*(M-1)*(M-2));
+		return Math.max(result, 1);
 	}
 		
 		
