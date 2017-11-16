@@ -204,12 +204,12 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns{
 	}
 	
 	private double correctFactorWedge() { 
-		double result = (N*(N-1))/((double)M*(M-1));
+		double result = (N/(double)M)*((N-1)/(double)(M-1));
 		return Math.max(1,result);
 	}
 	
 	private double correctFactorTriangle() { 
-		double result = (N*(N-1)*(N-2))/((double)M*(M-1)*(M-2));
+		double result = (N/(double)M)*((N-1)/(double)(M-1))*((N-2)/(double)(M-2));
 		return Math.max(result, 1);
 	}
 		
