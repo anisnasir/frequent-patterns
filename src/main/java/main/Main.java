@@ -21,8 +21,6 @@ import gnu.trove.map.hash.THashMap;
 import incrementaltopkgraphpattern.IncrementalExhaustiveCounting;
 import incrementaltopkgraphpattern.IncrementalSubgraphReservoirAlgorithm;
 import incrementaltopkgraphpattern.IncrementalTriesteAlgorithm;
-import incrementaltopkgraphpattern.IncrementalUnifiedDependentCounting;
-import incrementaltopkgraphpattern.IncrementalUnifiedIndependentCounting;
 import input.StreamEdge;
 import input.StreamEdgeReader;
 import slidingwindow.FixedSizeSlidingWindow;
@@ -111,14 +109,6 @@ public class Main {
 			topkGraphPattern = new IncrementalTriesteAlgorithm(size, k );
 		}else if (simulatorType == 5) {
 			topkGraphPattern = new IncrementalExhaustiveCounting();
-		}else if(simulatorType == 6) {
-			int size = 1;
-			topkGraphPattern = new IncrementalUnifiedDependentCounting(size, k );
-		}else if(simulatorType == 7) {
-			int size = 1;
-			//counting probability
-			double q = 0.1;
-			topkGraphPattern = new IncrementalUnifiedIndependentCounting(size, k, q );
 		}
 
 
@@ -156,11 +146,7 @@ public class Main {
 			outFileName = outFileName+"_incremental-trieste-reservoir.log";
 		else if(simulatorType == 5)
 			outFileName = outFileName+"_incremental-exhaustive-counting.log";
-		else if(simulatorType == 6) 
-			outFileName = outFileName+"_incremental-unified-dependent-counting.log";
-		else if (simulatorType == 7) 
-			outFileName = outFileName+"_incremental-unified-independent-counting.log";
-
+		
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 

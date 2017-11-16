@@ -1,31 +1,33 @@
 package incrementalalgorithmtest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import incrementaltopkgraphpattern.IncrementalUnifiedIndependentCounting;
+import incrementaltopkgraphpattern.IncrementalRandomSamplingAlgorithm;
 import input.StreamEdge;
 
-public class IncrementalUnifiedIndependentCountingAlgorithmTest {
-	int size;
-	double q;
+public class IncrementalRandomSamplingAlgorithmTest {
+
+	int k;
+	double p;
 	
 	@Before
-	public void initialize() {
-		size = 10;
-		q= 1.0;
+	public void initialize() { 
+		k = 10;
+		p = 1.0;
 	}
 	@Test
 	public void singleWedgeAddition() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
 		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
-
-		IncrementalUnifiedIndependentCounting topk = new IncrementalUnifiedIndependentCounting(size, size, q);
+		
+		IncrementalRandomSamplingAlgorithm topk = new IncrementalRandomSamplingAlgorithm(p, k);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
+		System.out.println(topk.getFrequentPatterns());
 	}
 	@Test
 	public void triangleAddition() {
@@ -33,7 +35,8 @@ public class IncrementalUnifiedIndependentCountingAlgorithmTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
 		StreamEdge c = new StreamEdge("b", 2, "c", 3, "u");
 
-		IncrementalUnifiedIndependentCounting topk = new IncrementalUnifiedIndependentCounting(size, size,q);
+		int size = 10;
+		IncrementalRandomSamplingAlgorithm topk = new IncrementalRandomSamplingAlgorithm(p, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -47,8 +50,8 @@ public class IncrementalUnifiedIndependentCountingAlgorithmTest {
 		StreamEdge c = new StreamEdge("b", 2, "c", 3, "u");
 		StreamEdge d = new StreamEdge("b", 2, "d", 4, "u");
 		StreamEdge e = new StreamEdge("c", 3, "d", 4, "u");
-
-		IncrementalUnifiedIndependentCounting topk = new IncrementalUnifiedIndependentCounting(size, size,q);
+		int size = 10;
+		IncrementalRandomSamplingAlgorithm topk = new IncrementalRandomSamplingAlgorithm(p, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);

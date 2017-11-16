@@ -89,6 +89,9 @@ public class GraphPattern implements Comparable<GraphPattern> {
 		return hashCode;
 	}
 
+	public boolean isWedge() {
+		return this.isWedge;
+	}
 	@Override
 	public boolean equals(Object o) {
 		GraphPattern b = (GraphPattern)o;

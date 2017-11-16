@@ -1,5 +1,7 @@
 package incrementaltopkgraphpattern;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
@@ -138,10 +140,30 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	}
 
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+		correctEstimates();
 		return this.frequentPatterns;
 	}
 	public int getNumberofSubgraphs() {
 		return N;
+	}
+	private void correctEstimates() {
+		double correctFactor = correctFactor();
+		List<GraphPattern> patterns = new ArrayList<GraphPattern>(frequentPatterns.keySet());
+		for(GraphPattern p: patterns) {
+			int count = frequentPatterns.get(p);
+			double value = count*correctFactor;
+			frequentPatterns.put(p, (int)value);
+		}
+	}
+	private double correctFactor() { 
+		double result = 1;
+		if(N<M)
+			return result;
+		else {
+			result = N/(double)M;
+			return result;
+		}
+			
 	}
 
 	@Override

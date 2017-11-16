@@ -1,5 +1,7 @@
 package incrementaltopkgraphpattern;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
@@ -21,26 +23,26 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns{
 	EdgeReservoir<StreamEdge> reservoir;
 	THashMap<GraphPattern, Integer> frequentPatterns;
 	int k ;
-	int reservoirMaxSize;
-	int edgeCount;
+	int M;
+	int N;
 	public IncrementalTriesteAlgorithm(int size, int k) {
 		nodeMap = new NodeMap();
 		reservoir = new EdgeReservoir<StreamEdge>();
 		utility = new EdgeHandler();
 		this.k = k;
-		this.reservoirMaxSize = size;
-		this.edgeCount = 0 ;
+		this.M = size;
+		this.N = 0 ;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 	}
 	public boolean addEdge(StreamEdge edge) {
-		edgeCount++;
+		N++;
 		//System.out.println("+" + edge);
 
-		if(reservoir.getSize() < reservoirMaxSize) {
+		if(reservoir.getSize() < M) {
 			reservoir.add(edge);
 			addTriplets(edge);
 			utility.handleEdgeAddition(edge, nodeMap);
-		}else if ( Math.random() < (reservoirMaxSize/(double)edgeCount)) {
+		}else if ( Math.random() < (M/(double)N)) {
 			//remove a random edge from reservoir
 			StreamEdge oldEdge = reservoir.getRandom();
 			reservoir.remove(oldEdge);
@@ -181,8 +183,49 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns{
 	}
 
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+		correctEstimates();
 		return this.frequentPatterns;
 	}
+	
+	private void correctEstimates() {
+		double wedgeCorrectFactor = correctFactorWedge();
+		double triangleCorrectFactor = correctFactorTriangle();
+		List<GraphPattern> patterns = new ArrayList<GraphPattern>(frequentPatterns.keySet());
+		for(GraphPattern p: patterns) {
+			int count = frequentPatterns.get(p);
+			double value;
+			if(p.isWedge())
+				value = count*wedgeCorrectFactor;
+			else 
+				value = count*triangleCorrectFactor;
+			
+			frequentPatterns.put(p, (int)value);
+		}
+	}
+	
+	private double correctFactorWedge() { 
+		double result = 1;
+		if(N<M)
+			return result;
+		else {
+			result = (N*(N-1))/((double)M*(M-1));
+			return result;
+		}
+			
+	}
+	
+	private double correctFactorTriangle() { 
+		double result = 1;
+		if(N<M)
+			return result;
+		else {
+			result = (N*(N-1)*(N-2))/((double)M*(M-1)*(M-2));
+			return result;
+		}
+			
+	}
+		
+		
 	@Override
 	public boolean removeEdge(StreamEdge edge) {
 		// TODO Auto-generated method stub
