@@ -61,7 +61,7 @@ public class Main {
 		double delta = Double.parseDouble(args[5]);
 		int Tk = Integer.parseInt(args[6]);
 		int k = Integer.parseInt(args[7]);
-		System.out.println("window size: "+ windowSize + " epsilon: "+ epsilon + " delta: " + delta + " Tk: "+ Tk);
+		System.out.println("simulator type: " + simulatorType + "window size: "+ windowSize + " epsilon: "+ epsilon + " delta: " + delta + " Tk: "+ Tk);
 
 		String sep = ",";
 		String inFileName = directory + fileName;
@@ -105,7 +105,9 @@ public class Main {
 			System.out.println(size);
 			topkGraphPattern = new IncrementalSubgraphReservoirAlgorithm(size, k);
 		}else if(simulatorType == 4) {
-			int size = 1;
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
 			topkGraphPattern = new IncrementalTriesteAlgorithm(size, k );
 		}else if (simulatorType == 5) {
 			topkGraphPattern = new IncrementalExhaustiveCounting();
