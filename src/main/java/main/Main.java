@@ -83,7 +83,7 @@ public class Main {
 		StreamEdgeReader reader = new StreamEdgeReader(in, sep);
 		StreamEdge edge = reader.nextItem();
 		FixedSizeSlidingWindow sw = new FixedSizeSlidingWindow(windowSize);
-		
+
 		//declare object of the algorithm interface
 		TopkGraphPatterns topkGraphPattern = null;
 
@@ -120,12 +120,14 @@ public class Main {
 		while(edge!=null) {
 			topkGraphPattern.addEdge(edge);
 			//System.out.println("+ " + edge);
-			
+
 			//slide the window and get the last item if the window is full
-			StreamEdge oldestEdge = sw.add(edge);
-			if(oldestEdge != null) {
-				//System.out.println("- " + oldestEdge);
-				topkGraphPattern.removeEdge(oldestEdge);
+			if(simulatorType >=0 && simulatorType <=2) {
+				StreamEdge oldestEdge = sw.add(edge);
+				if(oldestEdge != null) {
+					//System.out.println("- " + oldestEdge);
+					topkGraphPattern.removeEdge(oldestEdge);
+				}
 			}
 
 			edge = reader.nextItem();
@@ -146,7 +148,7 @@ public class Main {
 			outFileName = outFileName+"_incremental-trieste-reservoir.log";
 		else if(simulatorType == 5)
 			outFileName = outFileName+"_incremental-exhaustive-counting.log";
-		
+
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 
