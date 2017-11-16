@@ -157,8 +157,6 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	}
 	private double correctFactor() { 
 		return Math.max(1, ((double)N/M));
-		}
-			
 	}
 
 	@Override
