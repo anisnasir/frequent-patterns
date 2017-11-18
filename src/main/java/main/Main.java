@@ -94,7 +94,10 @@ public class Main {
 			System.out.println(size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirAlgorithm(size,k);
 		}else if(simulatorType == 1) {
-			int size = 1;
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
+			System.out.println(size);
 			topkGraphPattern = new FullyDynamicTriesteAlgorithm(size, k );
 		}else if(simulatorType == 2) {
 			topkGraphPattern = new FullyDynamicExhaustiveCounting();

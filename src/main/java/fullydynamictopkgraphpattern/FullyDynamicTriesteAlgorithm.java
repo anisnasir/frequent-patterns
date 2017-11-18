@@ -246,12 +246,59 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	public boolean removeEdge(StreamEdge edge) {
 		if(reservoir.contains(edge)) {
 			utility.handleEdgeDeletion(edge, nodeMap);
+			removeEdgeHelper(edge);
 			c1++;
 		}else {
 			c2++;
 		}
 		Ncurrent--;
 		return true;
+	}
+	public boolean removeEdgeHelper(StreamEdge edge) {
+		//System.out.println("-" + edge);
+
+		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
+		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
+
+		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+
+		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
+		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
+
+		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
+
+		for(LabeledNeighbor t: srcNeighbor) {
+			if(!common.contains(t)) {
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				removeSubgraph(triplet);
+			} else {
+				srcCommonNeighbor.put(t, t);
+			}
+		}
+
+		for(LabeledNeighbor t: dstNeighbor) {
+			if(!common.contains(t)) {
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(),dst.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				removeSubgraph(triplet);
+			}else {
+				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
+				LabeledNode a = src;
+				LabeledNode b = dst;
+				LabeledNode c = t.getDst();
+				StreamEdge edgeA = edge;
+				StreamEdge edgeB = new StreamEdge(c.getVertexId(), c.getVertexLabel(), src.getVertexId(), src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
+				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(), dst.getVertexLabel(), t.getEdgeLabel());
+
+				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
+				Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
+				replaceSubgraphs(tripletTriangle, tripletWedge);
+
+			}
+		}
+
+		//System.out.println(reservoir.size());
+		return false;
 	}
 
 }
