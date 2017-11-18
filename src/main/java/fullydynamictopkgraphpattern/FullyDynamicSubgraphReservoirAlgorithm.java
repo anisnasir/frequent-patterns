@@ -1,5 +1,7 @@
 package fullydynamictopkgraphpattern;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
@@ -22,6 +24,7 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 	THashMap<GraphPattern, Integer> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
+	int Ncurrent;
 	int c1;
 	int c2;
 	public FullyDynamicSubgraphReservoirAlgorithm(int size, int k ) { 
@@ -31,6 +34,7 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 		N = 0;
 		M = size;
 		c1=0;
+		Ncurrent = 0 ;
 		c2=0;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 	}
@@ -146,10 +150,14 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 			c1++;
 		}else 
 			c2++;
+		
+		Ncurrent--;
 	}
 
 	void addSubgraph(Triplet t) {
 		N++;
+		Ncurrent++;
+		
 		boolean flag = false;
 		if (c1+c2 ==0) {
 			if(reservoir.size() < M ) {
@@ -205,9 +213,23 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 	}
 	
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+		correctEstimates();
 		return this.frequentPatterns;
 	}
+	private void correctEstimates() {
+		double correctFactor = correctFactor();
+		List<GraphPattern> patterns = new ArrayList<GraphPattern>(frequentPatterns.keySet());
+		for(GraphPattern p: patterns) {
+			int count = frequentPatterns.get(p);
+			double value = count*correctFactor;
+			frequentPatterns.put(p, (int)value);
+		}
+	}
+	private double correctFactor() { 
+		return Math.max(1, ((double)Ncurrent/M));
+	}
+	
 	public int getNumberofSubgraphs() {
-		return N;
+		return Ncurrent;
 	}
 }

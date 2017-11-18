@@ -1,6 +1,10 @@
 package fullydynamictopkgraphpattern;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.math3.distribution.HypergeometricDistribution;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
@@ -21,31 +25,35 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	EdgeReservoir<StreamEdge> reservoir;
 	THashMap<GraphPattern, Integer> frequentPatterns;
 	int k ;
-	int reservoirMaxSize;
-	int edgeCount;
+	int M;
+	int N;
+	int Ncurrent;
 	int c1;
 	int c2;
+	HypergeometricDistribution hyper;
 	public FullyDynamicTriesteAlgorithm(int size, int k) {
 		nodeMap = new NodeMap();
 		reservoir = new EdgeReservoir<StreamEdge>();
 		utility = new EdgeHandler();
 		this.k = k;
-		this.reservoirMaxSize = size;
-		this.edgeCount = 0 ;
+		this.M = size;
+		this.N = 0 ;
+		this.Ncurrent = 0 ;
 		this.c1 = 0;
 		this.c2 = 0;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 	}
 	public boolean addEdge(StreamEdge edge) {
-		edgeCount++;
+		N++;
+		Ncurrent++;
 		//System.out.println("+" + edge);
 
 		if(c1 + c2 == 0) {
-			if(reservoir.getSize() < reservoirMaxSize) {
+			if(reservoir.getSize() < M) {
 				reservoir.add(edge);
 				addTriplets(edge);
 				utility.handleEdgeAddition(edge, nodeMap);
-			}else if ( Math.random() < (reservoirMaxSize/(double)edgeCount)) {
+			}else if ( Math.random() < (M/(double)N)) {
 				//remove a random edge from reservoir
 				StreamEdge oldEdge = reservoir.getRandom();
 				reservoir.remove(oldEdge);
@@ -195,8 +203,42 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	}
 
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+		correctEstimates();
 		return this.frequentPatterns;
 	}
+	void initializeHypergeometricDistribution() {
+		int n =Math.min(this.M, Ncurrent+c1+ c2);
+		hyper = new HypergeometricDistribution(Ncurrent, n, c1+c2+Ncurrent);
+	}
+	private void correctEstimates() {
+		initializeHypergeometricDistribution();
+		double wedgeCorrectFactor = correctFactorWedge();
+		double triangleCorrectFactor = correctFactorTriangle();
+		List<GraphPattern> patterns = new ArrayList<GraphPattern>(frequentPatterns.keySet());
+		for(GraphPattern p: patterns) {
+			int count = frequentPatterns.get(p);
+			double value;
+			if(p.isWedge())
+				value = count*wedgeCorrectFactor;
+			else 
+				value = count*triangleCorrectFactor;
+			
+			frequentPatterns.put(p, (int)value);
+		}
+	}
+	
+	private double correctFactorWedge() { 
+		double result = (N/(double)M)*((N-1)/(double)(M-1));
+		result = result/hyper.cumulativeProbability(0, 1);
+		return Math.max(1,result);
+	}
+	
+	private double correctFactorTriangle() { 
+		double result = (N/(double)M)*((N-1)/(double)(M-1))*((N-2)/(double)(M-2));
+		result = result/hyper.cumulativeProbability(0, 2);
+		return Math.max(result, 1);
+	}
+	
 	@Override
 	public boolean removeEdge(StreamEdge edge) {
 		if(reservoir.contains(edge)) {
@@ -205,6 +247,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 		}else {
 			c2++;
 		}
+		Ncurrent--;
 		return true;
 	}
 
