@@ -28,7 +28,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	int M;
 	int N;
 	int Ncurrent;
-	int numSubgraphs
+	int numSubgraphs;
 	int c1;
 	int c2;
 	HypergeometricDistribution hyper;
