@@ -163,8 +163,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	}
 
 	public int getNumberofSubgraphs() {
-		// TODO Auto-generated method stub
-		return 0;
+		return Ncurrent;
 	}
 
 	void addSubgraph(Triplet t) {
