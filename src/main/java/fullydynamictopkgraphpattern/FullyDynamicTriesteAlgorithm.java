@@ -28,6 +28,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	int M;
 	int N;
 	int Ncurrent;
+	int numSubgraphs
 	int c1;
 	int c2;
 	HypergeometricDistribution hyper;
@@ -41,6 +42,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 		this.Ncurrent = 0 ;
 		this.c1 = 0;
 		this.c2 = 0;
+		this.numSubgraphs  = 0 ;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 	}
 	public boolean addEdge(StreamEdge edge) {
@@ -163,15 +165,17 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	}
 
 	public int getNumberofSubgraphs() {
-		return Ncurrent;
+		return this.numSubgraphs;
 	}
 
 	void addSubgraph(Triplet t) {
 		addFrequentPattern(t);
+		numSubgraphs++;
 	}
 
 	void removeSubgraph(Triplet t) {
 		removeFrequentPattern(t);
+		numSubgraphs--;
 	}
 
 	//remove a and add b
