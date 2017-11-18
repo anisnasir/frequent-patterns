@@ -231,14 +231,14 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	}
 	
 	private double correctFactorWedge() { 
-		double result = (N/(double)M)*((N-1)/(double)(M-1));
-		result = result/hyper.cumulativeProbability(0, 1);
+		double result = (Ncurrent/(double)M)*((Ncurrent-1)/(double)(M-1));
+		result = result/(1-hyper.cumulativeProbability(0, 1));
 		return Math.max(1,result);
 	}
 	
 	private double correctFactorTriangle() { 
-		double result = (N/(double)M)*((N-1)/(double)(M-1))*((N-2)/(double)(M-2));
-		result = result/hyper.cumulativeProbability(0, 2);
+		double result = (Ncurrent/(double)M)*((Ncurrent-1)/(double)(M-1))*((Ncurrent-2)/(double)(M-2));
+		result = result/(1-hyper.cumulativeProbability(0, 2));
 		return Math.max(result, 1);
 	}
 	
