@@ -208,7 +208,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	}
 	void initializeHypergeometricDistribution() {
 		int n =Math.min(this.M, Ncurrent+c1+ c2);
-		hyper = new HypergeometricDistribution(Ncurrent, n, c1+c2+Ncurrent);
+		hyper = new HypergeometricDistribution(Ncurrent+c1+c2, Ncurrent,n);
 	}
 	private void correctEstimates() {
 		initializeHypergeometricDistribution();
