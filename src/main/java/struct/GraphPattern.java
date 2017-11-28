@@ -100,7 +100,10 @@ public class GraphPattern implements Comparable<GraphPattern> {
 	}
 
 	public String toString() {
-		return this.label1 + " "  +  this.label2 + " " + this.label3;
+		if(this.isWedge)
+			return this.label1 + " "  +  this.label2 + " " + this.label3 + " " +"wedge";
+		else 
+			return this.label1 + " "  +  this.label2 + " " + this.label3 + " " +"triangle";
 	}
 
 	public int compareTo(GraphPattern o) {

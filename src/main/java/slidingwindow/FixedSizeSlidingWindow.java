@@ -6,7 +6,7 @@ import input.StreamEdge;
 
 public class FixedSizeSlidingWindow {
 	
-	public int windowSize;
+	public long windowSize;
 	LinkedList<StreamEdge> fifo;
 	FixedSizeSlidingWindow() {
 		windowSize = 0;
