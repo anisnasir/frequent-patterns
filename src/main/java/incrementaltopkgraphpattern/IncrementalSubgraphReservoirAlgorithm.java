@@ -101,6 +101,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 		}else if (Math.random() < (M/(double)N)) {
 			flag = true;
 			//System.out.println("remove called from add subgraph");
+			N--;
 			reservoir.remove(reservoir.getRandom());
 		}
 
