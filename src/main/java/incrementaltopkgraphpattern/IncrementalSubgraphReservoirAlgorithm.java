@@ -87,6 +87,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	void removeSubgraph(Triplet t) {
 		if(reservoir.contains(t)) {
 			//System.out.println("remove called from remove subgraph");
+			N--;
 			reservoir.remove(t);
 			removeFrequentPattern(t);
 
@@ -94,7 +95,6 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	}
 
 	void addSubgraph(Triplet t) {
-		N++;
 		boolean flag = false;
 		if(reservoir.size() < M ) {
 			flag = true;
@@ -105,6 +105,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 		}
 
 		if(flag) {
+			N++;
 			reservoir.add(t); 
 			addFrequentPattern(t);
 			//System.out.println("reservoir size after add method " + reservoir.size());
