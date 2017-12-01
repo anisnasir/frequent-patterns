@@ -172,7 +172,9 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 			}else if (Math.random() < (M/(double)N)) {
 				flag = true;
 				//System.out.println("remove called from add subgraph");
-				reservoir.remove(reservoir.getRandom());
+				Triplet temp = reservoir.getRandom();
+				reservoir.remove(temp);
+				removeFrequentPattern(temp);
 			}
 		}else {
 			int d = c1+c2;
