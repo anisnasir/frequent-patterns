@@ -97,6 +97,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	void addSubgraph(Triplet t) {
 		boolean flag = false;
 		if(reservoir.size() < M ) {
+			
 			flag = true;
 		}else if (Math.random() < (M/(double)N)) {
 			flag = true;

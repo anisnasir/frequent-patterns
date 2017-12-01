@@ -33,6 +33,8 @@ public class FullyDynamicSubgraphReservoirAlgorithmTest {
 		topk.addEdge(c);
 		
 		assertEquals(1, topk.getFrequentPatterns().size());
+		
+		System.out.println(topk.getFrequentPatterns());
 	}
 	@Test
 	public void multipleTripletAddition() {
@@ -64,7 +66,7 @@ public class FullyDynamicSubgraphReservoirAlgorithmTest {
 		topk.addEdge(c);
 		topk.removeEdge(c);
 		//topk.removeEdge(a);
-		System.out.println(topk.getFrequentPatterns());
+		//System.out.println(topk.getFrequentPatterns());
 	}
 	
 	@Test
@@ -79,7 +81,7 @@ public class FullyDynamicSubgraphReservoirAlgorithmTest {
 		topk.addEdge(c);
 		topk.removeEdge(c);
 		//topk.removeEdge(a);
-		System.out.println(topk.getFrequentPatterns());
+		//System.out.println(topk.getFrequentPatterns());
 	}
 
 }

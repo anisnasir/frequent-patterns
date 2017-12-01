@@ -50,17 +50,23 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		
+		//System.out.println("src neighbor" + srcNeighbor);
+		//System.out.println("dst neighbor " + dstNeighbor);
 
 		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
 		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 
 		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
+		
+		//System.out.println("common " +  common);
 
 		for(LabeledNeighbor t: srcNeighbor) {
 			if(!common.contains(t)) {
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
 				addSubgraph(triplet);
 			} else {
+				//System.out.println( " neighbor put "  + t );
 				srcCommonNeighbor.put(t, t);
 			}
 		}
@@ -82,6 +88,7 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 				if(reservoir.contains(tripletWedge)) {
 					Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
 					replaceSubgraphs(tripletWedge, tripletTriangle);
+					//System.out.println("triangle added" + tripletTriangle);
 				}
 
 			}
@@ -187,7 +194,9 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 	//remove a and add b
 	void replaceSubgraphs(Triplet a, Triplet b) {
 		reservoir.remove(a);
+		removeFrequentPattern(a);
 		reservoir.add(b);
+		addFrequentPattern(b);
 		
 	}
 	
