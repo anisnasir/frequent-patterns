@@ -158,7 +158,9 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns{
 	//remove a and add b
 	void replaceSubgraphs(Triplet a, Triplet b) {
 		removeSubgraph(a);
+		removeFrequentPattern(a);
 		addSubgraph(b);
+		addFrequentPattern(b);
 
 	}
 	void addFrequentPattern(Triplet t) {
