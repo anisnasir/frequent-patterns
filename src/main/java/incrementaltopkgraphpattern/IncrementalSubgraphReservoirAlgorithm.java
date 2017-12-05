@@ -24,12 +24,14 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	THashMap<GraphPattern, Integer> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
+	int Ncurrent;
 	public IncrementalSubgraphReservoirAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		reservoir = new SubgraphReservoir<Triplet>();
 		N = 0;
 		M = size;
+		Ncurrent = 0 ;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 	}
 
@@ -44,17 +46,23 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		
+		//System.out.println("src neighbor" + srcNeighbor);
+		//System.out.println("dst neighbor " + dstNeighbor);
 
 		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
 		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 
 		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
+		
+		//System.out.println("common " +  common);
 
 		for(LabeledNeighbor t: srcNeighbor) {
 			if(!common.contains(t)) {
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
 				addSubgraph(triplet);
 			} else {
+				//System.out.println( " neighbor put "  + t );
 				srcCommonNeighbor.put(t, t);
 			}
 		}
@@ -76,6 +84,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 				if(reservoir.contains(tripletWedge)) {
 					Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
 					replaceSubgraphs(tripletWedge, tripletTriangle);
+					//System.out.println("triangle added" + tripletTriangle);
 				}
 
 			}
@@ -84,31 +93,35 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 		//System.out.println(reservoir.size() + "  N " + N);
 		return false;
 	}
+	public boolean removeEdge(StreamEdge edge) {
+				return false;
+	}
 	void removeSubgraph(Triplet t) {
 		if(reservoir.contains(t)) {
 			//System.out.println("remove called from remove subgraph");
-			//N--;
 			reservoir.remove(t);
 			removeFrequentPattern(t);
-
 		}
+		Ncurrent--;
 	}
 
 	void addSubgraph(Triplet t) {
 		N++;
+		Ncurrent++;
+		
 		boolean flag = false;
-		if(reservoir.size() < M ) {
-			
-			flag = true;
-		}else if (Math.random() < (M/(double)N)) {
-			flag = true;
-			//System.out.println("remove called from add subgraph");
-			//N--;
-			reservoir.remove(reservoir.getRandom());
-		}
+			if(reservoir.size() < M ) {
+				flag = true;
+			}else if (Math.random() < (M/(double)N)) {
+				flag = true;
+				//System.out.println("remove called from add subgraph");
+				Triplet temp = reservoir.getRandom();
+				reservoir.remove(temp);
+				removeFrequentPattern(temp);
+			}
+		
 
 		if(flag) {
-			//N++;
 			reservoir.add(t); 
 			addFrequentPattern(t);
 			//System.out.println("reservoir size after add method " + reservoir.size());
@@ -121,9 +134,9 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 		removeFrequentPattern(a);
 		reservoir.add(b);
 		addFrequentPattern(b);
-
+		
 	}
-
+	
 	void addFrequentPattern(Triplet t) {
 		GraphPattern p = new GraphPattern(t);
 		if(frequentPatterns.contains(p)) {
@@ -133,7 +146,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 			frequentPatterns.put(p, 1);
 		}
 	}
-
+	
 	void removeFrequentPattern(Triplet t) {
 		GraphPattern p = new GraphPattern(t);
 		if(frequentPatterns.contains(p)) {
@@ -144,13 +157,10 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 				frequentPatterns.remove(p);
 		}
 	}
-
+	
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
-	}
-	public int getNumberofSubgraphs() {
-		return N;
 	}
 	private void correctEstimates() {
 		double correctFactor = correctFactor();
@@ -162,12 +172,10 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 		}
 	}
 	private double correctFactor() { 
-		return Math.max(1, ((double)N/M));
+		return Math.max(1, ((double)Ncurrent/M));
 	}
-
-	@Override
-	public boolean removeEdge(StreamEdge edge) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public int getNumberofSubgraphs() {
+		return Ncurrent;
 	}
 }
