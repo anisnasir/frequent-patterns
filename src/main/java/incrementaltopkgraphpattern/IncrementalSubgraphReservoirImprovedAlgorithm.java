@@ -2,6 +2,7 @@ package incrementaltopkgraphpattern;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
@@ -16,21 +17,29 @@ import struct.Triplet;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
+import utility.Z;
 
-public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns {
+public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
 	THashMap<GraphPattern, Integer> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
-	public IncrementalSubgraphReservoirAlgorithm(int size, int k ) { 
+	int Ncurrent;
+	long sum ;
+	Z skipFunction;
+	Random rand;
+	public IncrementalSubgraphReservoirImprovedAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		reservoir = new SubgraphReservoir<Triplet>();
 		N = 0;
 		M = size;
+		sum = 0;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
+		skipFunction = new Z(this.M);
+		rand = new Random();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -53,12 +62,12 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 
 		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
 		
+		List<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>();
 		//System.out.println("common " +  common);
 
 		for(LabeledNeighbor t: srcNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
-				addSubgraph(triplet);
+				list.add(t);
 			} else {
 				//System.out.println( " neighbor put "  + t );
 				srcCommonNeighbor.put(t, t);
@@ -67,8 +76,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 
 		for(LabeledNeighbor t: dstNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
-				addSubgraph(triplet);
+				list.add(t);
 			}else {
 				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
 				LabeledNode a = src;
@@ -87,6 +95,32 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 
 			}
 		}
+		
+		int W = list.size();
+		int i = 0;
+		while(sum <= W) {
+			i++;
+			int zrs = skipFunction.apply(N);
+			N = N + zrs + 1;
+			sum = sum + zrs +1;
+		}
+		
+		int count = 0 ;
+		while(count < i) {
+			LabeledNeighbor t = list.get(rand.nextInt(list.size()));
+			Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+
+			Triplet temp = reservoir.getRandom();
+			reservoir.remove(temp);
+			removeFrequentPattern(temp);
+			
+			reservoir.add(triplet); 
+			addFrequentPattern(triplet);
+			
+			count++;
+		}
+		
+		
 		utility.handleEdgeAddition(edge, nodeMap);
 		//System.out.println(reservoir.size() + "  N " + N);
 		return false;

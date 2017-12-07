@@ -20,6 +20,7 @@ import gnu.trove.map.TMap;
 import gnu.trove.map.hash.THashMap;
 import incrementaltopkgraphpattern.IncrementalExhaustiveCounting;
 import incrementaltopkgraphpattern.IncrementalSubgraphReservoirAlgorithm;
+import incrementaltopkgraphpattern.IncrementalSubgraphReservoirImprovedAlgorithm;
 import incrementaltopkgraphpattern.IncrementalTriesteAlgorithm;
 import input.StreamEdge;
 import input.StreamEdgeReader;
@@ -114,6 +115,12 @@ public class Main {
 			topkGraphPattern = new IncrementalTriesteAlgorithm(size, k );
 		}else if (simulatorType == 5) {
 			topkGraphPattern = new IncrementalExhaustiveCounting();
+		}else if (simulatorType == 6) {
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
+			System.out.println(size);
+			topkGraphPattern = new IncrementalSubgraphReservoirImprovedAlgorithm(size, k);
 		}
 
 
@@ -153,6 +160,8 @@ public class Main {
 			outFileName = outFileName+"_incremental-trieste-reservoir.log";
 		else if(simulatorType == 5)
 			outFileName = outFileName+"_incremental-exhaustive-counting.log";
+		else if(simulatorType == 6)
+			outFileName = outFileName+"_incremental-subgraph-improved-reservoir.log";
 
 		BufferedWriter bw = null;
 		FileWriter fw = null;
