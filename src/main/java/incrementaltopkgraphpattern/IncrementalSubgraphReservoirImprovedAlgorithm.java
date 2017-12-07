@@ -112,9 +112,11 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 				LabeledNeighbor t = list.get(index);
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
 
-				Triplet temp = reservoir.getRandom();
-				reservoir.remove(temp);
-				removeFrequentPattern(temp);
+				if(reservoir.size() >= M) {
+					Triplet temp = reservoir.getRandom();
+					reservoir.remove(temp);
+					removeFrequentPattern(temp);
+				}
 
 				reservoir.add(triplet); 
 				addFrequentPattern(triplet);
