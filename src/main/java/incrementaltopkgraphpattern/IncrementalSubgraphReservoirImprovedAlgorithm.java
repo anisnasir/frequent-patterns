@@ -107,30 +107,21 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 				sum = sum + zrs +1;
 			}
 
-			int count = 0 ;
-			HashSet<Integer> set = new HashSet<Integer>();
-			while(count < i) {
-				int index = rand.nextInt(list.size());
-				while(set.contains(index)) {
-					index = rand.nextInt(list.size());
+			for( LabeledNeighbor t: list) {
+				if(Math.random() < (i/(double)list.size())) {
+					Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+
+					if(reservoir.size() >= M) {
+						Triplet temp = reservoir.getRandom();
+						reservoir.remove(temp);
+						removeFrequentPattern(temp);
+					}
+
+					reservoir.add(triplet); 
+					addFrequentPattern(triplet);
 				}
-				set.add(index);
-				LabeledNeighbor t = list.get(index);
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
-
-				if(reservoir.size() >= M) {
-					Triplet temp = reservoir.getRandom();
-					reservoir.remove(temp);
-					removeFrequentPattern(temp);
-				}
-
-				reservoir.add(triplet); 
-				addFrequentPattern(triplet);
-
-				count++;
 			}
 			sum = sum-W;
-
 		}
 		utility.handleEdgeAddition(edge, nodeMap);
 		//System.out.println(reservoir.size() + "  N " + N);
