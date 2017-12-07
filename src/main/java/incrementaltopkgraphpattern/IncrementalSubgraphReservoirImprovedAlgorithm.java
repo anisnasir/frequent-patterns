@@ -119,6 +119,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 			
 			count++;
 		}
+		sum = sum-W;
 		
 		
 		utility.handleEdgeAddition(edge, nodeMap);
