@@ -14,6 +14,7 @@ final public class Z  {
 	public int apply(int t) {
 		if(t<n)
 			return 0;
+		
 		double term = t - this.n + 1;
 		double u;
 		double x;

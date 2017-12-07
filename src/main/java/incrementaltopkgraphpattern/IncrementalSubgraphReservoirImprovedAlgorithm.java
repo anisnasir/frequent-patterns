@@ -1,6 +1,7 @@
 package incrementaltopkgraphpattern;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -107,8 +108,13 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 			}
 
 			int count = 0 ;
+			HashSet<Integer> set = new HashSet<Integer>();
 			while(count < i) {
 				int index = rand.nextInt(list.size());
+				while(set.contains(index)) {
+					index = rand.nextInt(list.size());
+				}
+				set.add(index);
 				LabeledNeighbor t = list.get(index);
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
 
@@ -132,36 +138,6 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 	}
 	public boolean removeEdge(StreamEdge edge) {
 		return false;
-	}
-	void removeSubgraph(Triplet t) {
-		if(reservoir.contains(t)) {
-			//System.out.println("remove called from remove subgraph");
-			reservoir.remove(t);
-			removeFrequentPattern(t);
-		}
-		N--;
-	}
-
-	void addSubgraph(Triplet t) {
-		N++;
-
-		boolean flag = false;
-		if(reservoir.size() < M ) {
-			flag = true;
-		}else if (Math.random() < (M/(double)N)) {
-			flag = true;
-			//System.out.println("remove called from add subgraph");
-			Triplet temp = reservoir.getRandom();
-			reservoir.remove(temp);
-			removeFrequentPattern(temp);
-		}
-
-
-		if(flag) {
-			reservoir.add(t); 
-			addFrequentPattern(t);
-			//System.out.println("reservoir size after add method " + reservoir.size());
-		}
 	}
 
 	//remove a and add b
