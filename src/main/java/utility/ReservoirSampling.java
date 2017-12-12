@@ -15,6 +15,9 @@ public class ReservoirSampling<T>
 		int i;   // index for elements in stream[]
 		int n = stream.size();
 		
+		if(k>n)
+			return stream;
+		
 		// reservoir[] is the output array. Initialize it with
 		// first k elements from stream[]
 		for (i = 0; i < k; i++)
