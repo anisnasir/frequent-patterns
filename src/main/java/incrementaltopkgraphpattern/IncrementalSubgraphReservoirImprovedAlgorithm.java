@@ -17,6 +17,7 @@ import struct.NodeMap;
 import struct.Triplet;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
+import utility.ReservoirSampling;
 import utility.SetFunctions;
 import utility.Z;
 
@@ -31,6 +32,8 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 	long sum ;
 	Z skipFunction;
 	Random rand;
+	ReservoirSampling<LabeledNeighbor> reservoirSampler;
+	
 	public IncrementalSubgraphReservoirImprovedAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
@@ -41,6 +44,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		skipFunction = new Z(this.M);
 		rand = new Random();
+		reservoirSampler = new ReservoirSampling<LabeledNeighbor>(); 
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -107,19 +111,16 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 				sum = sum + zrs +1;
 			}
 
-			for( LabeledNeighbor t: list) {
-				if(Math.random() < (i/(double)list.size())) {
-					Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
-
-					if(reservoir.size() >= M) {
-						Triplet temp = reservoir.getRandom();
-						reservoir.remove(temp);
-						removeFrequentPattern(temp);
-					}
-
-					reservoir.add(triplet); 
-					addFrequentPattern(triplet);
+			List<LabeledNeighbor> sample = reservoirSampler.selectKItems(list, i);
+			for( LabeledNeighbor t: sample) {
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				if(reservoir.size() >= M) {
+					Triplet temp = reservoir.getRandom();
+					reservoir.remove(temp);
+					removeFrequentPattern(temp);
 				}
+				reservoir.add(triplet); 
+				addFrequentPattern(triplet);
 			}
 			sum = sum-W;
 		}
