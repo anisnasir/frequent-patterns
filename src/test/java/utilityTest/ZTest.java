@@ -11,8 +11,11 @@ public class ZTest {
 	@Test
 	public void test() {
 		Z temp = new Z(20);
-		for(int i = 1;i< 100; i++) {
-			System.out.println(temp.apply(i));
+		int i = 0;
+		while(i<100) {
+			int skip = temp.apply(i);
+			i+=skip+1;
+			System.out.println(skip);
 		}
 	}
 
