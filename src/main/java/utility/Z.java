@@ -11,10 +11,7 @@ final public class Z  {
 		this.w = Math.exp(-Math.log(generator.nextDouble()) / n);
 	}
 
-	public int apply(int t) {
-		if(t<n)
-			return 0;
-		
+	public int apply(int t) {		
 		double term = t - this.n + 1;
 		double u;
 		double x;

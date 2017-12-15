@@ -41,4 +41,3 @@ public class ReservoirSampling<T>
 		return reservoir;
 	}
 }
-//This code is contributed by Sumit Ghosh
