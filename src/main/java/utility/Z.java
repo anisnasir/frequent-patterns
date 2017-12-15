@@ -12,7 +12,7 @@ final public class Z  {
 	}
 
 	public int apply(int t) {
-		int S;
+		int S = 0;
 		if (t <= (22.0 * n))
 		{
 			/* Process records using Algorithm X until t is large enough */
@@ -31,50 +31,62 @@ final public class Z  {
 				t += 1;
 				quot *= (t - (double) n) / t;
 			}
-			return S;
 		}
 		else
 		{
-			double term = t - this.n + 1;
-			double u;
-			double x;
-			int gamma;
-			while (true) {
-				//generate u and x
-				u = generator.nextDouble();
-				x = t * (this.w - 1.0);
-				gamma = (int) x;
-				//test if u <= h(gamma)/cg(x)
-				double lhs = Math.exp(Math.log(((u * Math.pow(((t + 1) / term), 2)) * (term + gamma)) / (t + x)) / this.n);
-				double rhs = (((t + x) / (term + gamma)) * term) / t;
-				if (lhs < rhs) {
+			/* Now apply Algorithm Z */
+			double		term = t - (double) n + 1;
+
+			for (;;)
+			{
+				double		numer,
+				numer_lim,
+				denom;
+				double		U,
+				X,
+				lhs,
+				rhs,
+				y,
+				tmp;
+
+				/* Generate U and X */
+				U = generator.nextDouble();
+				X = t * (this.w - 1.0);
+				S = (int) X;		/* S is tentatively set to floor(X) */
+				/* Test if U <= h(S)/cg(X) in the manner of (6.3) */
+				tmp = (t + 1) / term;
+				lhs = Math.exp(Math.log(((U * tmp * tmp) * (term + S)) / (t + X)) / n);
+				rhs = (((t + X) / (term + S)) * term) / t;
+				if (lhs <= rhs)
+				{
 					this.w = rhs / lhs;
 					break;
 				}
-				//test if u <= f(gamma)/cg(x)
-				double y = (((u * (t + 1)) / term) * (t + gamma + 1)) / (t + x);
-				double denom;
-				double number_lim;
-				if (this.n < gamma) {
+				/* Test if U <= f(S)/cg(X) */
+				y = (((U * (t + 1)) / term) * (t + S + 1)) / (t + X);
+				if ((double) n < S)
+				{
 					denom = t;
-					number_lim = term + gamma;
-				} else {
-					denom = t - this.n + gamma;
-					number_lim = t + 1;
+					numer_lim = term + S;
 				}
-
-				for (long number = t + gamma; number >= number_lim; number--) {
-					y = (y * number) / denom;
-					denom = denom - 1;
+				else
+				{
+					denom = t - (double) n + S;
+					numer_lim = t + 1;
 				}
-				this.w = Math.exp(-Math.log(generator.nextDouble()) / this.n);
-				if (Math.exp(Math.log(y) / this.n) <= (t + x) / t) {
+				for (numer = t + S; numer >= numer_lim; numer -= 1)
+				{
+					y *= numer / denom;
+					denom -= 1;
+				}
+				this.w = Math.exp(-Math.log(generator.nextDouble()) / n); /* Generate W in advance */
+				if (Math.exp(Math.log(y) / n) <= (t + X) / t)
 					break;
-				}
 			}
-			return gamma;
+			this.w = Math.exp(-Math.log(generator.nextDouble()) / n);;
 		}
-		
+		return S;
+
 
 	}
 }
