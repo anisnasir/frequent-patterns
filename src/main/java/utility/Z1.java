@@ -35,6 +35,7 @@ final public class Z1  {
 		else
 		{
 			/* Now apply Algorithm Z */
+			double W = this.w;
 			double		term = t - (double) n + 1;
 
 			for (;;)
@@ -51,7 +52,7 @@ final public class Z1  {
 
 				/* Generate U and X */
 				U = generator.nextDouble();
-				X = t * (this.w - 1.0);
+				X = t * (W - 1.0);
 				S = (int) X;		/* S is tentatively set to floor(X) */
 				/* Test if U <= h(S)/cg(X) in the manner of (6.3) */
 				tmp = (t + 1) / term;
@@ -59,7 +60,7 @@ final public class Z1  {
 				rhs = (((t + X) / (term + S)) * term) / t;
 				if (lhs <= rhs)
 				{
-					this.w = rhs / lhs;
+					W = rhs / lhs;
 					break;
 				}
 				/* Test if U <= f(S)/cg(X) */
@@ -79,10 +80,11 @@ final public class Z1  {
 					y *= numer / denom;
 					denom -= 1;
 				}
-				this.w = Math.exp(-Math.log(generator.nextDouble()) / n); /* Generate W in advance */
+				W = Math.exp(-Math.log(generator.nextDouble()) / n); /* Generate W in advance */
 				if (Math.exp(Math.log(y) / n) <= (t + X) / t)
 					break;
 			}
+			this.w = W;
 			//this.w = Math.exp(-Math.log(generator.nextDouble()) / n);;
 		}
 		return S;
