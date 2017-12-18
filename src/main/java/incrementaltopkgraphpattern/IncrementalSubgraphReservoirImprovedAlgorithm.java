@@ -1,9 +1,7 @@
 package incrementaltopkgraphpattern;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
@@ -17,9 +15,7 @@ import struct.NodeMap;
 import struct.Triplet;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
-import utility.ReservoirSampling;
 import utility.SetFunctions;
-import utility.Z1;
 
 public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphPatterns {
 	NodeMap nodeMap;
@@ -28,23 +24,13 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 	THashMap<GraphPattern, Integer> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
-	int Ncurrent;
-	long sum ;
-	Z1 skipFunction;
-	Random rand;
-	ReservoirSampling<LabeledNeighbor> reservoirSampler;
-	
 	public IncrementalSubgraphReservoirImprovedAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		reservoir = new SubgraphReservoir<Triplet>();
 		N = 0;
 		M = size;
-		sum = 0;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
-		skipFunction = new Z1(this.M);
-		rand = new Random();
-		reservoirSampler = new ReservoirSampling<LabeledNeighbor>(); 
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -58,7 +44,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
-
+		
 		//System.out.println("src neighbor" + srcNeighbor);
 		//System.out.println("dst neighbor " + dstNeighbor);
 
@@ -66,13 +52,13 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 
 		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
-
-		List<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>();
+		
 		//System.out.println("common " +  common);
 
 		for(LabeledNeighbor t: srcNeighbor) {
 			if(!common.contains(t)) {
-				list.add(t);
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				addSubgraph(triplet);
 			} else {
 				//System.out.println( " neighbor put "  + t );
 				srcCommonNeighbor.put(t, t);
@@ -81,7 +67,8 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 
 		for(LabeledNeighbor t: dstNeighbor) {
 			if(!common.contains(t)) {
-				list.add(t);
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				addSubgraph(triplet);
 			}else {
 				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
 				LabeledNode a = src;
@@ -100,36 +87,42 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 
 			}
 		}
-
-		int W = list.size();
-		if(W>0) {
-			int i = 0;
-			while(sum <= W) {
-				i++;
-				int zrs = skipFunction.apply(N);
-				N = N + zrs + 1;
-				sum = sum + zrs +1;
-			}
-
-			List<LabeledNeighbor> sample = reservoirSampler.selectKItems(list, i);
-			for( LabeledNeighbor t: sample) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
-				if(reservoir.size() >= M) {
-					Triplet temp = reservoir.getRandom();
-					reservoir.remove(temp);
-					removeFrequentPattern(temp);
-				}
-				reservoir.add(triplet); 
-				addFrequentPattern(triplet);
-			}
-			sum = sum-W;
-		}
 		utility.handleEdgeAddition(edge, nodeMap);
 		//System.out.println(reservoir.size() + "  N " + N);
 		return false;
 	}
 	public boolean removeEdge(StreamEdge edge) {
-		return false;
+				return false;
+	}
+	void removeSubgraph(Triplet t) {
+		if(reservoir.contains(t)) {
+			//System.out.println("remove called from remove subgraph");
+			reservoir.remove(t);
+			removeFrequentPattern(t);
+		}
+		N--;
+	}
+
+	void addSubgraph(Triplet t) {
+		N++;
+		
+		boolean flag = false;
+			if(reservoir.size() < M ) {
+				flag = true;
+			}else if (Math.random() < (M/(double)N)) {
+				flag = true;
+				//System.out.println("remove called from add subgraph");
+				Triplet temp = reservoir.getRandom();
+				reservoir.remove(temp);
+				removeFrequentPattern(temp);
+			}
+		
+
+		if(flag) {
+			reservoir.add(t); 
+			addFrequentPattern(t);
+			//System.out.println("reservoir size after add method " + reservoir.size());
+		}
 	}
 
 	//remove a and add b
@@ -138,9 +131,9 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 		removeFrequentPattern(a);
 		reservoir.add(b);
 		addFrequentPattern(b);
-
+		
 	}
-
+	
 	void addFrequentPattern(Triplet t) {
 		GraphPattern p = new GraphPattern(t);
 		if(frequentPatterns.contains(p)) {
@@ -150,7 +143,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 			frequentPatterns.put(p, 1);
 		}
 	}
-
+	
 	void removeFrequentPattern(Triplet t) {
 		GraphPattern p = new GraphPattern(t);
 		if(frequentPatterns.contains(p)) {
@@ -161,7 +154,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 				frequentPatterns.remove(p);
 		}
 	}
-
+	
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
@@ -178,7 +171,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 	private double correctFactor() { 
 		return Math.max(1, ((double)N/M));
 	}
-
+	
 	public int getNumberofSubgraphs() {
 		return N;
 	}
