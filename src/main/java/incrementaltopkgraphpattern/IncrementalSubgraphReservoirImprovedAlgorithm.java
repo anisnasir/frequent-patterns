@@ -19,7 +19,7 @@ import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.ReservoirSampling;
 import utility.SetFunctions;
-import utility.Z;
+import utility.Z1;
 
 public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphPatterns {
 	NodeMap nodeMap;
@@ -30,7 +30,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 	int M; // maximum reservoir size
 	int Ncurrent;
 	long sum ;
-	Z skipFunction;
+	Z1 skipFunction;
 	Random rand;
 	ReservoirSampling<LabeledNeighbor> reservoirSampler;
 	
@@ -42,7 +42,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 		M = size;
 		sum = 0;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
-		skipFunction = new Z(this.M);
+		skipFunction = new Z1(this.M);
 		rand = new Random();
 		reservoirSampler = new ReservoirSampling<LabeledNeighbor>(); 
 	}

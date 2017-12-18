@@ -2,11 +2,11 @@ package utility;
 
 import java.util.Random;
 
-final public class Z  {
+final public class Z1  {
 	private static Random generator = new Random();
 	private final int n;
 	private double w;
-	public Z(int n) {
+	public Z1(int n) {
 		this.n = n;
 		this.w = Math.exp(-Math.log(generator.nextDouble()) / n);
 	}
@@ -83,7 +83,7 @@ final public class Z  {
 				if (Math.exp(Math.log(y) / n) <= (t + X) / t)
 					break;
 			}
-			this.w = Math.exp(-Math.log(generator.nextDouble()) / n);;
+			//this.w = Math.exp(-Math.log(generator.nextDouble()) / n);;
 		}
 		return S;
 

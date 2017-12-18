@@ -4,13 +4,13 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import utility.Z;
+import utility.Z1;
 
 public class ZTest {
 
 	@Test
 	public void test() {
-		Z temp = new Z(20);
+		Z1 temp = new Z1(20);
 		int i = 0;
 		while(i<100) {
 			int skip = temp.apply(i);
