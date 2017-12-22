@@ -28,7 +28,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 	int M; // maximum reservoir size
 	int sum;
 	Z1 skipFunction;
-	ReservoirSampling<LabeledNeighbor> sampler; // = new ReservoirSampling<LabeledNeighbor>();
+	ReservoirSampling<Triplet> sampler; // = new ReservoirSampling<LabeledNeighbor>();
 	public IncrementalSubgraphReservoirImprovedAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
@@ -38,7 +38,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		sum = 0;
 		skipFunction = new Z1(M);
-		sampler = new ReservoirSampling<LabeledNeighbor>();
+		sampler = new ReservoirSampling<Triplet>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -63,11 +63,13 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 
 		//System.out.println("common " +  common);
 
-		List<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>();
+		List<Triplet> list = new ArrayList<Triplet>();
 
 		for(LabeledNeighbor t: srcNeighbor) {
 			if(!common.contains(t)) {
-				list.add(t);
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+
+				list.add(triplet);
 			} else {
 				//System.out.println( " neighbor put "  + t );
 				srcCommonNeighbor.put(t, t);
@@ -76,7 +78,8 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 
 		for(LabeledNeighbor t: dstNeighbor) {
 			if(!common.contains(t)) {
-				list.add(t);
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				list.add(triplet);
 			}else {
 				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
 				LabeledNode a = src;
@@ -90,7 +93,6 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 				if(reservoir.contains(tripletWedge)) {
 					Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
 					replaceSubgraphs(tripletWedge, tripletTriangle);
-					//System.out.println("triangle added" + tripletTriangle);
 				}
 
 			}
@@ -98,6 +100,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 
 		int i = 0 ;
 		int W = list.size();
+		//System.out.println("list " + list);
 		if(W> 0) {
 			while(sum <= W) {
 				i++;
@@ -105,19 +108,18 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 				N = N+zrs+1;
 				sum = sum+zrs+1;
 			}
+			//System.out.println("i equals "+ i);
+			List<Triplet> sample = sampler.selectKItems(list, i);
 
-			List<LabeledNeighbor> sample = sampler.selectKItems(list, i);
-
-			for(LabeledNeighbor t: sample) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+			for(Triplet t: sample) {
 
 				if(reservoir.size() >= M) {
 					Triplet temp = reservoir.getRandom();
 					reservoir.remove(temp);
 					removeFrequentPattern(temp);
 				}
-				reservoir.add(triplet); 
-				addFrequentPattern(triplet);
+				reservoir.add(t); 
+				addFrequentPattern(t);
 
 			}
 			sum = sum-W;

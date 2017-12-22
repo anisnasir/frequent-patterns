@@ -18,6 +18,8 @@ public class IncrementalSubgraphReservoirAlgorithmTest {
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
+
+		System.out.println(topk.getFrequentPatterns());
 	}
 	@Test
 	public void triangleAddition() {
@@ -32,6 +34,8 @@ public class IncrementalSubgraphReservoirAlgorithmTest {
 		topk.addEdge(c);
 		
 		assertEquals(1, topk.getFrequentPatterns().size());
+
+		System.out.println(topk.getFrequentPatterns());
 	}
 	@Test
 	public void multipleTripletAddition() {
@@ -48,7 +52,7 @@ public class IncrementalSubgraphReservoirAlgorithmTest {
 		topk.addEdge(d);
 		topk.addEdge(e);
 		assertEquals(4, topk.getFrequentPatterns().size());
-		//System.out.println(topk.getFrequentPatterns());
+		System.out.println(topk.getFrequentPatterns());
 	
 	}
 }
