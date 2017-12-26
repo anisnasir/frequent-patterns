@@ -4,15 +4,15 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import utility.Z1;
+import utility.AlgorithmZ;
 
-public class ZTest {
+public class AlgorithmZTest {
 
 	@Test
 	public void test() {
 		int NUM_ITEMS = 10000;
 		int M = 100;
-		Z1 temp = new Z1(M);
+		AlgorithmZ temp = new AlgorithmZ(M);
 		int i = 0;
 		int count = 1;
 		while(i<NUM_ITEMS) {

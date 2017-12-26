@@ -2,11 +2,11 @@ package utility;
 
 import java.util.Random;
 
-final public class Z1  {
+final public class AlgorithmZ  {
 	private static Random generator = new Random();
 	private final int n;
 	private double w;
-	public Z1(int n) {
+	public AlgorithmZ(int n) {
 		this.n = n;
 		this.w = Math.exp(-Math.log(generator.nextDouble()) / n);
 	}
