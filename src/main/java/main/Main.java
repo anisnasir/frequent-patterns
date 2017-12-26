@@ -11,6 +11,7 @@ import java.util.zip.GZIPInputStream;
 
 import fullydynamictopkgraphpattern.FullyDynamicExhaustiveCounting;
 import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirAlgorithm;
+import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirImprovedAlgorithm;
 import fullydynamictopkgraphpattern.FullyDynamicTriesteAlgorithm;
 
 import java.io.BufferedWriter;
