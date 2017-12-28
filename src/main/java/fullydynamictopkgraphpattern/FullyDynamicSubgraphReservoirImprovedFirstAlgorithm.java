@@ -174,6 +174,41 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 			addFrequentPattern(t);
 			//System.out.println("reservoir size after add method " + reservoir.size());
 		}
+		
+		/*
+		 * else {
+			int i = 0 ;
+			int W = list.size();
+			//System.out.println("list " + list);
+			if(W> 0) {
+				while(sum2 <= W) {
+					i++;
+					c1--;
+					int zrs = skipRP.vitter_d_skip(c1,c1+c2);
+					N = N+zrs+1;
+					Ncurrent= Ncurrent+zrs+1;
+					sum2 = sum2+zrs+1;
+				}
+				//System.out.println("i equals "+ i);
+				List<Triplet> sample = sampler.selectKItems(list, i);
+
+				for(Triplet t: sample) {
+
+					if(reservoir.size() >= M) {
+						Triplet temp = reservoir.getRandom();
+						reservoir.remove(temp);
+						removeFrequentPattern(temp);
+					}
+					reservoir.add(t); 
+					addFrequentPattern(t);
+
+				}
+				
+				c2 = c2-W+i;
+				sum2 = sum2-W;
+			}
+		}
+		 */
 	}
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);

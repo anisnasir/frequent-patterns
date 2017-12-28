@@ -33,7 +33,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 	int sum;
 	AlgorithmZ skipRS;
 	AlgorithmD skipRP;
-	int sum2;
+	int Zprime;
 	ReservoirSampling<Triplet> sampler; // = new ReservoirSampling<LabeledNeighbor>();
 	public FullyDynamicSubgraphReservoirImprovedSecondAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
@@ -45,7 +45,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 		Ncurrent = 0 ;
 		c2=0;
 		sum = 0;
-		sum2=0;
+		Zprime=-1;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		skipRS = new AlgorithmZ(M);
 		skipRP = new AlgorithmD();
@@ -136,40 +136,37 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 				sum = sum-W;
 			}
 		}else {
-			int i = 0 ;
-			int W = list.size();
-			//System.out.println("list " + list);
-			if(W> 0) {
-				while(sum2 <= W) {
-					i++;
-					c1--;
-					int zrs = skipRP.vitter_d_skip(c1,c1+c2);
-					N = N+zrs+1;
-					Ncurrent= Ncurrent+zrs+1;
-					sum2 = sum2+zrs+1;
-				}
-				//System.out.println("i equals "+ i);
-				List<Triplet> sample = sampler.selectKItems(list, i);
-
-				for(Triplet t: sample) {
-
-					if(reservoir.size() >= M) {
-						Triplet temp = reservoir.getRandom();
-						reservoir.remove(temp);
-						removeFrequentPattern(temp);
-					}
-					reservoir.add(t); 
-					addFrequentPattern(t);
-
-				}
-				
-				c2 = c2-W+i;
-				sum2 = sum2-W;
+			for(Triplet t: list) {
+				addSubgraph(t);
 			}
 		}
 		utility.handleEdgeAddition(edge, nodeMap);
 		//System.out.println(reservoir.size() + "  N " + N);
 		return false;
+	}
+	void addSubgraph(Triplet t) {
+		N++;
+		Ncurrent++;
+
+		boolean flag = false;
+
+		if(Zprime < 0) {
+			Zprime = skipRP.vitter_d_skip(c1,c1+c2);
+		}
+
+		if(Zprime == 0) {
+			flag = true;
+			c1--;
+		}else {
+			c2--;
+		}
+
+		if(flag) {
+			reservoir.add(t); 
+			addFrequentPattern(t);
+			//System.out.println("reservoir size after add method " + reservoir.size());
+		}
+		Zprime--;
 	}
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);
@@ -191,7 +188,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
 
 		List<Triplet> list = new ArrayList<Triplet>();
-		
+
 		for(LabeledNeighbor t: srcNeighbor) {
 			if(!common.contains(t)) {
 				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
@@ -221,7 +218,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 
 			}
 		}
-		
+
 		for(Triplet wedge: list) {
 			if(reservoir.contains(wedge)) {
 				reservoir.remove(wedge);
@@ -231,6 +228,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 				c2++;
 			}
 			Ncurrent--;
+			Zprime = -1;
 		}
 
 		//System.out.println(reservoir.size());

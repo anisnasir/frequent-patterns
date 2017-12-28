@@ -129,6 +129,12 @@ public class Main {
 			int size = (int) (Tkk*epsilonk);
 			System.out.println(size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedFirstAlgorithm(size, k);
+		}else if (simulatorType == 8) {
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
+			System.out.println(size);
+			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedSecondAlgorithm(size, k);
 		}
 
 
@@ -142,7 +148,7 @@ public class Main {
 			//System.out.println("+ " + edge);
 
 			//slide the window and get the last item if the window is full
-			if(simulatorType == 0 || simulatorType == 1 || simulatorType == 2 || simulatorType == 7) {
+			if(simulatorType == 0 || simulatorType == 1 || simulatorType == 2 || simulatorType == 7 || simulatorType == 8) {
 				StreamEdge oldestEdge = sw.add(edge);
 				if(oldestEdge != null) {
 					//System.out.println("- " + oldestEdge);
@@ -171,7 +177,9 @@ public class Main {
 		else if(simulatorType == 6)
 			outFileName = outFileName+"_incremental-subgraph-improved-reservoir.log";
 		else if(simulatorType == 7)
-			outFileName = outFileName+"_fully-dynamic-subgraph-improved-reservoir.log";
+			outFileName = outFileName+"_fully-dynamic-subgraph-improved-first-reservoir.log";
+		else if(simulatorType == 8)
+			outFileName = outFileName+"_fully-dynamic-subgraph-improved-second-reservoir.log";
 
 		BufferedWriter bw = null;
 		FileWriter fw = null;
