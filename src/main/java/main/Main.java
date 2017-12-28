@@ -11,7 +11,8 @@ import java.util.zip.GZIPInputStream;
 
 import fullydynamictopkgraphpattern.FullyDynamicExhaustiveCounting;
 import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirAlgorithm;
-import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirImprovedAlgorithm;
+import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirImprovedFirstAlgorithm;
+import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirImprovedSecondAlgorithm;
 import fullydynamictopkgraphpattern.FullyDynamicTriesteAlgorithm;
 
 import java.io.BufferedWriter;
@@ -127,7 +128,7 @@ public class Main {
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
 			System.out.println(size);
-			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedAlgorithm(size, k);
+			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedFirstAlgorithm(size, k);
 		}
 
 

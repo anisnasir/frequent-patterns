@@ -20,7 +20,7 @@ import utility.SetFunctions;
 import utility.AlgorithmD;
 import utility.AlgorithmZ;
 
-public class FullyDynamicSubgraphReservoirImprovedAlgorithm implements TopkGraphPatterns {
+public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
@@ -35,7 +35,7 @@ public class FullyDynamicSubgraphReservoirImprovedAlgorithm implements TopkGraph
 	AlgorithmD skipRP;
 	int sum2;
 	ReservoirSampling<Triplet> sampler; // = new ReservoirSampling<LabeledNeighbor>();
-	public FullyDynamicSubgraphReservoirImprovedAlgorithm(int size, int k ) { 
+	public FullyDynamicSubgraphReservoirImprovedFirstAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		reservoir = new SubgraphReservoir<Triplet>();
@@ -136,40 +136,44 @@ public class FullyDynamicSubgraphReservoirImprovedAlgorithm implements TopkGraph
 				sum = sum-W;
 			}
 		}else {
-			int i = 0 ;
-			int W = list.size();
-			//System.out.println("list " + list);
-			if(W> 0) {
-				while(sum2 <= W) {
-					i++;
-					c1--;
-					int zrs = skipRP.vitter_d_skip(c1,c1+c2);
-					N = N+zrs+1;
-					Ncurrent= Ncurrent+zrs+1;
-					sum2 = sum2+zrs+1;
-				}
-				//System.out.println("i equals "+ i);
-				List<Triplet> sample = sampler.selectKItems(list, i);
-
-				for(Triplet t: sample) {
-
-					if(reservoir.size() >= M) {
-						Triplet temp = reservoir.getRandom();
-						reservoir.remove(temp);
-						removeFrequentPattern(temp);
-					}
-					reservoir.add(t); 
-					addFrequentPattern(t);
-
-				}
-				
-				c2 = c2-W+i;
-				sum2 = sum2-W;
+			for(Triplet t: list) {
+				addSubgraph(t);
 			}
 		}
 		utility.handleEdgeAddition(edge, nodeMap);
 		//System.out.println(reservoir.size() + "  N " + N);
 		return false;
+	}
+	void addSubgraph(Triplet t) {
+		N++;
+		Ncurrent++;
+		
+		boolean flag = false;
+		if (c1+c2 ==0) {
+			if(reservoir.size() < M ) {
+				flag = true;
+			}else if (Math.random() < (M/(double)N)) {
+				flag = true;
+				//System.out.println("remove called from add subgraph");
+				Triplet temp = reservoir.getRandom();
+				reservoir.remove(temp);
+				removeFrequentPattern(temp);
+			}
+		}else {
+			int d = c1+c2;
+			if (Math.random() < (c1/(double)(d))) {
+				flag = true;
+				c1--;
+			}else {
+				c2--;
+			}
+		}
+
+		if(flag) {
+			reservoir.add(t); 
+			addFrequentPattern(t);
+			//System.out.println("reservoir size after add method " + reservoir.size());
+		}
 	}
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);
