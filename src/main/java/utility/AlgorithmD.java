@@ -12,8 +12,10 @@ public class AlgorithmD {
 
 	public int vitter_a_skip(int n, int N)
 	{
-		if(n==1) {
-			return rand.nextInt(N); 
+		if(n<1) {
+			return N;
+		}else if(n==1) {
+			return rand.nextInt(N ); 
 		}else {
 			int S;
 			double top, Nreal, V,quot;
@@ -26,7 +28,7 @@ public class AlgorithmD {
 			while (quot > V)
 			{
 				++S;
-				quot *= (top - S) / (Nreal - S);
+				quot *= (top) / (Nreal);
 			}
 			return S;
 		}
@@ -45,8 +47,9 @@ public class AlgorithmD {
 		double qu1real = 1-nreal+Nreal;
 		double nmin1inv = 1/(nreal-1);
 
-
-		if ( (vitter_d_alpha_inverse *nreal) > Nreal)  {
+		if(n < 1) {
+			return N;
+		}else if ( (vitter_d_alpha_inverse *nreal) > Nreal)  {
 			return vitter_a_skip(n, N);
 		}
 		else
@@ -55,14 +58,13 @@ public class AlgorithmD {
 				for(X = Nreal * (1 - Vprime), S = (int)(X);
 						S >= qu1real;
 						X = Nreal * (1 - Vprime), S = (int)(X)) {
-					double randomValue = Math.random();
-					Vprime = Math.exp(Math.log(randomValue)*ninv);
+					Vprime = Math.exp(Math.log(Math.random())*ninv);
 				}
 
 				double U = Math.random();
 				double negSreal = -1*S;
 
-				y1 = Math.exp(Math.log((U*Nreal)/qu1real)*nmin1inv);
+				y1 = Math.exp(Math.log(U*Nreal/qu1real)*nmin1inv);
 				Vprime = y1*(((-1*X)/Nreal)+1)*(qu1real/(negSreal+qu1real));
 
 				if(Vprime <=1) {
