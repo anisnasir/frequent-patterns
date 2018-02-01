@@ -147,18 +147,31 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 	void addSubgraph(Triplet t) {
 		N++;
 		Ncurrent++;
-
+		
 		boolean flag = false;
-
-		if(Zprime < 0) {
-			Zprime = skipRP.vitter_d_skip(c1,c1+c2);
-		}
-
-		if(Zprime == 0) {
-			flag = true;
-			c1--;
+		if (c1+c2 ==0) {
+			if(reservoir.size() < M ) {
+				flag = true;
+			}else if (Math.random() < (M/(double)N)) {
+				flag = true;
+				//System.out.println("remove called from add subgraph");
+				Triplet temp = reservoir.getRandom();
+				reservoir.remove(temp);
+				removeFrequentPattern(temp);
+			}
 		}else {
-			c2--;
+			if(Zprime < 0) {
+				Zprime = skipRP.vitter_d_skip(c1,c1+c2);
+			}
+			
+			if(Zprime == 0) {
+				flag = true;
+				c1--;
+			}else {
+				c2--;
+			}
+			
+			Zprime--;
 		}
 
 		if(flag) {
@@ -166,8 +179,8 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 			addFrequentPattern(t);
 			//System.out.println("reservoir size after add method " + reservoir.size());
 		}
-		Zprime--;
 	}
+	
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);
 		if(!nodeMap.contains(edge)) {

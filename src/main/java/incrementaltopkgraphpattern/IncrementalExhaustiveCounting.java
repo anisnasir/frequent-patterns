@@ -21,7 +21,6 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 	THashMap<GraphPattern, Integer> frequentPatterns;
 	int numSubgraph;
 	public IncrementalExhaustiveCounting() {
-		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		counter = new THashMap<Triplet, Integer>();
 		numSubgraph = 0 ;
@@ -31,7 +30,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 		//System.out.println("+" + edge);
 		if(nodeMap.contains(edge))
 			return false;
-		
+
 		//System.out.println(nodeMap.map);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
@@ -41,7 +40,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 
 		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
 		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
-		
+
 		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
 
 		//iterate through source neighbors;
@@ -83,38 +82,15 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 	}
 
 	void removeSubgraph(Triplet t) {
-		/*if(counter.containsKey(t)) {
-			int count = counter.get(t);
-			if(count > 1)
-				counter.put(t, count-1);
-			else 
-				counter.remove(t);
-			numSubgraph--;
-			removeFrequentPattern(t);
-		}
-		else {
-			System.out.println("remove error " + t);
-			System.out.println(counter);
-			System.exit(1);
-		}*/
-		//removeFrequentPattern(t);
 		numSubgraph--;
 		removeFrequentPattern(t);
-		
 	}
-	
+
 	void addSubgraph(Triplet t) {
-	/*	if(counter.containsKey(t)) {
-			int count = counter.get(t);
-			counter.put(t, count+1);
-		}else {
-			counter.put(t, 1);
-		}
-		*/
 		addFrequentPattern(t);
 		numSubgraph++;
 	}
-	
+
 	void addFrequentPattern(Triplet t) {
 		GraphPattern p = new GraphPattern(t);
 		if(frequentPatterns.contains(p)) {
@@ -124,7 +100,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 			frequentPatterns.put(p, 1);
 		}
 	}
-	
+
 	void removeFrequentPattern(Triplet t) {
 		GraphPattern p = new GraphPattern(t);
 		if(frequentPatterns.contains(p)) {
@@ -135,7 +111,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 				frequentPatterns.remove(p);
 		}
 	}
-	
+
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
@@ -147,7 +123,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 		// This method is not implemented for incremental algorithms
 		return false;
 	}
-	
-	
+
+
 
 }
