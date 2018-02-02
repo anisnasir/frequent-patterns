@@ -115,7 +115,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 						set.add(triplet);
 						
 					}
-					count++;
 				}else {
 					if(reservoir.size() >= M) {
 						Triplet temp = reservoir.getRandom();
@@ -131,8 +130,8 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 						set.add(triplet);
 						
 					}
-					count++;
 				}
+				count++;
 			}
 
 			sum = sum-W;
