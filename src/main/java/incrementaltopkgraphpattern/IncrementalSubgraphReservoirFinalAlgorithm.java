@@ -35,7 +35,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 	int M; // maximum reservoir size
 	int sum;
 	AlgorithmZ skipFunction;
-	ReservoirSampling<Triplet> sampler; // = new ReservoirSampling<LabeledNeighbor>();
 	public IncrementalSubgraphReservoirFinalAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		this.nodeBottomK = new NodeBottomK();
@@ -47,7 +46,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		sum = 0;
 		skipFunction = new AlgorithmZ(M);
-		sampler = new ReservoirSampling<Triplet>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -64,6 +62,22 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
 		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
 
+		//update all triangles in the reservoir
+		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
+		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
+		//System.out.println("size "  + candidateTriangles.size());
+		for(Triplet t: candidateTriangles) {
+			if(t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) {
+				triangles.add(t);
+			}
+		}
+		if(triangles.size() > 0) {
+			for(Triplet t: triangles) {
+				Triplet newTriangle = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB,edge);
+				replaceSubgraphs(t, newTriangle);
+			}
+		}
+
 		int W = srcSketch.unionImprovedCardinality(dstSketch);
 		int i = 0 ;
 		//System.out.println("list " + list);
@@ -75,25 +89,13 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 				N = N+zrs+1;
 				sum = sum+zrs+1;
 			}
-			int count = 0;
-			while(count < i) {
-				//update all triangles in the reservoir
-				THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
-				ArrayList<Triplet> triangles = new ArrayList<Triplet>();
-				//System.out.println("size "  + candidateTriangles.size());
-				for(Triplet t: candidateTriangles) {
-					if(t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) {
-						triangles.add(t);
-					}
-				}
-				if(triangles.size() > 0) {
-					for(Triplet t: triangles) {
-						Triplet newTriangle = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB,edge);
-						replaceSubgraphs(t, newTriangle);
-					}
-				}
 
+			//System.out.println("i " + i);
+			int count = 0;
+			THashSet<Triplet> set = new THashSet<Triplet>();
+			while(count < i) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
+				//System.out.println(srcNeighbor + " " + dstNeighbor);
 
 				THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 				if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
@@ -105,8 +107,14 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 						removeFrequentPattern(temp);
 					}
 					Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-					reservoir.add(triplet); 
-					addFrequentPattern(triplet);
+					if(set.contains(triplet)) {
+
+					}else {
+						reservoir.add(triplet); 
+						addFrequentPattern(triplet);
+						set.add(triplet);
+						
+					}
 					count++;
 				}else {
 					if(reservoir.size() >= M) {
@@ -115,8 +123,14 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 						removeFrequentPattern(temp);
 					}
 					Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-					reservoir.add(triplet); 
-					addFrequentPattern(triplet);
+					if(set.contains(triplet)) {
+
+					}else {
+						reservoir.add(triplet); 
+						addFrequentPattern(triplet);
+						set.add(triplet);
+						
+					}
 					count++;
 				}
 			}

@@ -21,7 +21,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithmTest {
 		assertEquals(1, topk.getFrequentPatterns().size());
 		System.out.println(topk.getFrequentPatterns());
 	}
-	@Test
+	/*@Test
 	public void triangleAddition() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
 		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
@@ -58,5 +58,5 @@ public class IncrementalSubgraphReservoirImprovedAlgorithmTest {
 		assertEquals(4, topk.getFrequentPatterns().size());
 		System.out.println(topk.getFrequentPatterns());
 	
-	}
+	}*/
 }

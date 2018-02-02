@@ -100,7 +100,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 
 		int i = 0 ;
 		int W = list.size();
-		//System.out.println("list " + list);
+		//System.out.println("W " + W);
 		if(W> 0) {
 			while(sum <= W) {
 				i++;
@@ -111,6 +111,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 			//System.out.println("i equals "+ i);
 			List<Triplet> sample = sampler.selectKItems(list, i);
 
+			//System.out.println("sample size " + sample.size());
 			for(Triplet t: sample) {
 
 				if(reservoir.size() >= M) {
