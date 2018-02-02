@@ -22,6 +22,7 @@ import gnu.trove.map.TMap;
 import gnu.trove.map.hash.THashMap;
 import incrementaltopkgraphpattern.IncrementalExhaustiveCounting;
 import incrementaltopkgraphpattern.IncrementalSubgraphReservoirAlgorithm;
+import incrementaltopkgraphpattern.IncrementalSubgraphReservoirFinalAlgorithm;
 import incrementaltopkgraphpattern.IncrementalSubgraphReservoirImprovedAlgorithm;
 import incrementaltopkgraphpattern.IncrementalTriesteAlgorithm;
 import input.StreamEdge;
@@ -135,6 +136,12 @@ public class Main {
 			int size = (int) (Tkk*epsilonk);
 			System.out.println(size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedSecondAlgorithm(size, k);
+		}else if (simulatorType == 9) {
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
+			System.out.println(size);
+			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithm(size, k);
 		}
 
 
@@ -180,6 +187,8 @@ public class Main {
 			outFileName = outFileName+"_fully-dynamic-subgraph-improved-first-reservoir.log";
 		else if(simulatorType == 8)
 			outFileName = outFileName+"_fully-dynamic-subgraph-improved-second-reservoir.log";
+		else if(simulatorType == 9)
+			outFileName = outFileName+"_incremental-subgraph-final-reservoir.log";
 
 		BufferedWriter bw = null;
 		FileWriter fw = null;

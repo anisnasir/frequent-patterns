@@ -18,6 +18,9 @@ public class MapArray<T> {
 		rand = new Random(System.currentTimeMillis());
 	}
 
+	public boolean isEmpty() {
+		return (values.size() == 0);
+	}
 	public boolean add(T value) {
 		if (!contains(value)) {
 			int lastIndex = values.size();

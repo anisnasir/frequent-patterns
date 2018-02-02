@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 
 import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import struct.LabeledNode;
 import struct.MapArray;
 import struct.Triplet;
@@ -21,11 +22,11 @@ import struct.Triplet;
  * @param <T>
  */
 public class AdvancedSubgraphReservoir<T> implements Reservoir<T>{
-	private THashMap<LabeledNode, HashSet<T>> vertexSubgraphMap;
+	private THashMap<LabeledNode, THashSet<T>> vertexSubgraphMap;
 	MapArray<T> list;
 	
 	public AdvancedSubgraphReservoir() {
-		vertexSubgraphMap = new THashMap<LabeledNode, HashSet<T>>();
+		vertexSubgraphMap = new THashMap<LabeledNode, THashSet<T>>();
 		list = new MapArray<T>();
 		
 	}
@@ -47,11 +48,11 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T>{
 	}
 	public void add(LabeledNode a, T value) {
 		if(vertexSubgraphMap.contains(a)) {
-			HashSet<T> set = vertexSubgraphMap.get(a);
+			THashSet<T> set = vertexSubgraphMap.get(a);
 			set.add(value);
 			vertexSubgraphMap.put(a, set);
 		}else {
-			HashSet<T> set = new HashSet<T>();
+			THashSet<T> set = new THashSet<T>();
 			set.add(value);
 			vertexSubgraphMap.put(a, set);
 		}
@@ -97,7 +98,7 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T>{
 
 	public void remove(LabeledNode a, T value) {
 		if(vertexSubgraphMap.contains(a)) {
-			HashSet<T> set = vertexSubgraphMap.get(a);
+			THashSet<T> set = vertexSubgraphMap.get(a);
 			set.remove(value);
 			vertexSubgraphMap.put(a, set);
 		}
@@ -106,6 +107,12 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T>{
 
 	public int size() {
 		return list.size();
+	}
+	public THashSet<T> getAllTriplets(LabeledNode a) {
+		if(vertexSubgraphMap.contains(a))
+			return vertexSubgraphMap.get(a);
+		else 
+			return new THashSet<T>();
 	}
 }
 

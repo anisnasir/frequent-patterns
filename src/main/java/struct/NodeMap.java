@@ -11,8 +11,10 @@ import input.StreamEdge;
  */
 public class NodeMap {
 	public THashMap<LabeledNode,THashSet<LabeledNeighbor>>  map;
+	public THashMap<LabeledNode,THashSet<LabeledNode>>  onlyNodeMap;
 	public NodeMap() {
 		map = new THashMap<LabeledNode,THashSet<LabeledNeighbor>> ();
+		onlyNodeMap = new THashMap<LabeledNode,THashSet<LabeledNode>> ();
 	}
 	
 	void addNode(LabeledNode str) {
@@ -24,10 +26,18 @@ public class NodeMap {
 			THashSet<LabeledNeighbor> neighbors = map.get(src);
 			neighbors.add(temp);
 			map.put(src, neighbors);
+			
+			THashSet<LabeledNode> nodeNeighbors = onlyNodeMap.get(src);
+			nodeNeighbors.add(dest);
+			onlyNodeMap.put(src, nodeNeighbors);
 		}else {
 			THashSet<LabeledNeighbor> neighbors = new THashSet<LabeledNeighbor> ();
 			neighbors.add(temp);
 			map.put(src, neighbors);
+			
+			THashSet<LabeledNode> nodeNeighbors = new THashSet<LabeledNode> ();
+			nodeNeighbors.add(dest);
+			onlyNodeMap.put(src, nodeNeighbors);
 		}
 		
 	}
@@ -37,11 +47,17 @@ public class NodeMap {
 			LabeledNeighbor temp = new LabeledNeighbor(dest,edge.getEdgeLabel());
 			THashSet<LabeledNeighbor> neighbors = map.get(src);
 			neighbors.remove(temp);
+			
+			THashSet<LabeledNode> nodeNeighbors = onlyNodeMap.get(src);
+			nodeNeighbors.remove(dest);
+			
 			if(!neighbors.isEmpty()) {
 				map.put(src, neighbors);
+				onlyNodeMap.put(src, nodeNeighbors);
 			}
 			else {
 				map.remove(src);
+				onlyNodeMap.remove(src);
 			}
 		}
 	}
@@ -64,6 +80,13 @@ public class NodeMap {
 			return map.get(src);
 		}else 
 			return new THashSet<LabeledNeighbor>();
+	}
+	
+	public THashSet<LabeledNode> getNodeNeighbors(LabeledNode src) {
+		if(map.containsKey(src)) {
+			return onlyNodeMap.get(src);
+		}else 
+			return new THashSet<LabeledNode>();
 	}
 
 }

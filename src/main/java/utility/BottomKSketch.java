@@ -11,12 +11,16 @@ public class BottomKSketch<T> implements Serializable {
 	UniformHasher MMhash;
 	int k;
 	PriorityQueue<Double> list;
-	THashSet<Double> set ; 
+	PriorityQueue<Double> remaining;
+	THashSet<Double> set ;
+	THashSet<Double> remainingSet ;
 	public BottomKSketch(int k) {
 		this.k = k ;
 		MMhash = new UniformHasher();
 		list = new PriorityQueue<Double>(k, Collections.reverseOrder());
+		remaining = new PriorityQueue<Double>();
 		set = new THashSet<Double>();
+		remainingSet = new THashSet<Double>();
 	}
 
 	public boolean offerAll(THashSet<T> set) {
@@ -36,12 +40,21 @@ public class BottomKSketch<T> implements Serializable {
 		} else {
 			double peekElement = list.peek();
 			if(peekElement < hash) {
+				if(!remainingSet.contains(hash)) {
+					remainingSet.add(hash);
+					remaining.offer(hash);
+				}
 				return true;
 			}else {
 				double item = list.poll();
 				set.remove(item);
+
+				remainingSet.add(item);
+				remaining.add(item);
+
 				list.add(hash);
 				set.add(hash);
+
 				return true;
 			}
 		}
@@ -57,10 +70,18 @@ public class BottomKSketch<T> implements Serializable {
 		} else {
 			double peekElement = list.peek();
 			if(peekElement < hash) {
+				if(!remainingSet.contains(hash)) {
+					remainingSet.add(hash);
+					remaining.offer(hash);
+				}
 				return true;
 			}else {
 				double item = list.poll();
 				set.remove(item);
+				
+				remainingSet.add(item);
+				remaining.add(item);
+				
 				list.add(hash);
 				set.add(hash);
 				return true;
@@ -106,13 +127,23 @@ public class BottomKSketch<T> implements Serializable {
 		return X.cardinality();
 	}
 	public int unionImprovedCardinality(BottomKSketch<T> Y) {
+		
+		if(Y.list.size() < 1) {
+			return this.list.size();
+		}
+		if(list.size() < 1) {
+			return Y.list.size();
+		}
+		
+		
 		BottomKSketch<T> A = new BottomKSketch<T>(this.k);
 		A.union(this);
 		BottomKSketch<T> B = new BottomKSketch<T>(Y.k);
 		B.union(Y);
-		
+
 		double peekValue = Math.min(A.list.peek(), B.list.peek());
 
+		
 		while(A.list.size() > 0) {
 			if(A.list.peek() > peekValue) {
 				double value = A.list.poll();
@@ -121,7 +152,7 @@ public class BottomKSketch<T> implements Serializable {
 				break;
 
 		}
-
+		
 		while(B.list.size() > 0 ) {
 			if(B.list.peek() > peekValue) {
 				double value = B.list.poll();
@@ -129,8 +160,7 @@ public class BottomKSketch<T> implements Serializable {
 			}else 
 				break;
 		}
-
-		HashSet<Double> filter = new HashSet<Double>();
+		THashSet<Double> filter = new THashSet<Double>();
 		filter.addAll(A.set);
 		filter.addAll(B.set);
 		double cardinality = (filter.size()-1)/peekValue;
@@ -154,6 +184,22 @@ public class BottomKSketch<T> implements Serializable {
 		}
 		int results = (int)((intersection.size()-delta)/peekValue);
 		return results;
+	}
+	
+	public void remove(T o) {
+		double hash = MMhash.hash(o.toString());
+		if(set.contains(hash)) {
+			set.remove(hash);
+			list.remove(hash);
+			
+			if(list.size() < k && remainingSet.size() > 0) {
+				double value = remaining.poll();
+				remainingSet.remove(value);
+				
+				list.offer(value);
+				set.add(value);
+			}
+		}
 	}
 
 
