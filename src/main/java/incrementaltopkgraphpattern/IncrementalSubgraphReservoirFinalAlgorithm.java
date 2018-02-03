@@ -97,29 +97,33 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 				//System.out.println(srcNeighbor + " " + dstNeighbor);
 
-				THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
-				if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
-					//triangle -> hence, rejected!!!!!
-				}else if (randomVertexNeighbor.contains(src)) {
-					if(reservoir.size() >= M) {
-						Triplet temp = reservoir.getRandom();
-						reservoir.remove(temp);
-						removeFrequentPattern(temp);
-					}
-					Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-					reservoir.add(triplet); 
-					addFrequentPattern(triplet);
+				if(randomVertex == null) {
 
 				}else {
-					if(reservoir.size() >= M) {
-						Triplet temp = reservoir.getRandom();
-						reservoir.remove(temp);
-						removeFrequentPattern(temp);
-					}
-					Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-					reservoir.add(triplet); 
-					addFrequentPattern(triplet);
+					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
+					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
+						//triangle -> hence, rejected!!!!!
+					}else if (randomVertexNeighbor.contains(src)) {
+						if(reservoir.size() >= M) {
+							Triplet temp = reservoir.getRandom();
+							reservoir.remove(temp);
+							removeFrequentPattern(temp);
+						}
+						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+						reservoir.add(triplet); 
+						addFrequentPattern(triplet);
 
+					}else {
+						if(reservoir.size() >= M) {
+							Triplet temp = reservoir.getRandom();
+							reservoir.remove(temp);
+							removeFrequentPattern(temp);
+						}
+						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+						reservoir.add(triplet); 
+						addFrequentPattern(triplet);
+
+					}
 				}
 				count++;
 			}
@@ -147,6 +151,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 	public LabeledNeighbor getRandomNeighbor(THashSet<LabeledNeighbor> srcNeighbor, THashSet<LabeledNeighbor> dstNeighbor) {
 		int d_u = srcNeighbor.size();
 		int d_v = dstNeighbor.size();
+
+		if(d_u+d_v == 0) {
+			return null;
+		}
 
 		double value = d_u/(d_u+d_v);
 		if(Math.random() < value) {

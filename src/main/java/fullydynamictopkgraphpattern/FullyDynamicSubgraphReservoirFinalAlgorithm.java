@@ -218,6 +218,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	public LabeledNeighbor getRandomNeighbor(THashSet<LabeledNeighbor> srcNeighbor, THashSet<LabeledNeighbor> dstNeighbor) {
 		int d_u = srcNeighbor.size();
 		int d_v = dstNeighbor.size();
+		
+		if(d_u+d_v == 0) {
+			return null;
+		}
 
 		double value = d_u/(d_u+d_v);
 		if(Math.random() < value) {
