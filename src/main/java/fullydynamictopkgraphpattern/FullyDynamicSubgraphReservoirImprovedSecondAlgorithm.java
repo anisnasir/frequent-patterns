@@ -113,7 +113,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 			int W = list.size();
 			//System.out.println("list " + list);
 			if(W> 0) {
-				while(sum <= W) {
+				while(sum < W) {
 					i++;
 					int zrs = skipRS.apply(N);
 					N = N+zrs+1;

@@ -102,7 +102,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 		int W = list.size();
 		//System.out.println("W " + W);
 		if(W> 0) {
-			while(sum <= W) {
+			while(sum < W) {
 				i++;
 				int zrs = skipFunction.apply(N);
 				N = N+zrs+1;
