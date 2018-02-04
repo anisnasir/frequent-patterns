@@ -145,17 +145,22 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			int count = 0 ; 
 			while(count < W) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
-				//System.out.println(srcNeighbor + " " + dstNeighbor);
 
-				THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
-				if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
-					//triangle -> hence, rejected!!!!!
-				}else if (randomVertexNeighbor.contains(src)) {
-					Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-					addSubgraph(triplet);
+				if(randomVertex == null) {
+					break;
 				}else {
-					Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-					addSubgraph(triplet);
+					//System.out.println(srcNeighbor + " " + dstNeighbor);
+
+					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
+					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
+						//triangle -> hence, rejected!!!!!
+					}else if (randomVertexNeighbor.contains(src)) {
+						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+						addSubgraph(triplet);
+					}else {
+						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+						addSubgraph(triplet);
+					}
 				}
 				count++;
 			}
