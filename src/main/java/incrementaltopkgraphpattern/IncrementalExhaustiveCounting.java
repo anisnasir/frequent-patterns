@@ -25,6 +25,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns{
 		counter = new THashMap<Triplet, Integer>();
 		numSubgraph = 0 ;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
+		this.nodeMap = new NodeMap();
 	}
 	public boolean addEdge(StreamEdge edge) {
 		//System.out.println("+" + edge);
