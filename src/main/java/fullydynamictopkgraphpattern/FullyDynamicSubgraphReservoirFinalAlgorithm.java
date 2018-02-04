@@ -108,30 +108,34 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				while(count < i) {
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
+					if(randomVertex == null) {
 
-					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
-					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
-						//triangle -> hence, rejected!!!!!
-					}else if (randomVertexNeighbor.contains(src)) {
-						if(reservoir.size() >= M) {
-							Triplet temp = reservoir.getRandom();
-							reservoir.remove(temp);
-							removeFrequentPattern(temp);
-						}
-						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-
-						reservoir.add(triplet); 
-						addFrequentPattern(triplet);
 					}else {
-						if(reservoir.size() >= M) {
-							Triplet temp = reservoir.getRandom();
-							reservoir.remove(temp);
-							removeFrequentPattern(temp);
+						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
+
+						if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
+							//triangle -> hence, rejected!!!!!
+						}else if (randomVertexNeighbor.contains(src)) {
+							if(reservoir.size() >= M) {
+								Triplet temp = reservoir.getRandom();
+								reservoir.remove(temp);
+								removeFrequentPattern(temp);
+							}
+							Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+
+							reservoir.add(triplet); 
+							addFrequentPattern(triplet);
+						}else {
+							if(reservoir.size() >= M) {
+								Triplet temp = reservoir.getRandom();
+								reservoir.remove(temp);
+								removeFrequentPattern(temp);
+							}
+							Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+
+							reservoir.add(triplet); 
+							addFrequentPattern(triplet);
 						}
-						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-						
-						reservoir.add(triplet); 
-						addFrequentPattern(triplet);
 					}
 					count++;
 				}
@@ -147,31 +151,14 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 					//triangle -> hence, rejected!!!!!
 				}else if (randomVertexNeighbor.contains(src)) {
-					if(reservoir.size() >= M) {
-						Triplet temp = reservoir.getRandom();
-						reservoir.remove(temp);
-						removeFrequentPattern(temp);
-					}
 					Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-					reservoir.add(triplet); 
-					addFrequentPattern(triplet);
-
-
+					addSubgraph(triplet);
 				}else {
-					if(reservoir.size() >= M) {
-						Triplet temp = reservoir.getRandom();
-						reservoir.remove(temp);
-						removeFrequentPattern(temp);
-					}
 					Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-
-					reservoir.add(triplet); 
-					addFrequentPattern(triplet);
+					addSubgraph(triplet);
 				}
 				count++;
-
 			}
-
 		}
 		utility.handleEdgeAddition(edge, nodeMap);
 		//System.out.println(reservoir.size() + "  N " + N);
@@ -218,7 +205,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	public LabeledNeighbor getRandomNeighbor(THashSet<LabeledNeighbor> srcNeighbor, THashSet<LabeledNeighbor> dstNeighbor) {
 		int d_u = srcNeighbor.size();
 		int d_v = dstNeighbor.size();
-		
+
 		if(d_u+d_v == 0) {
 			return null;
 		}
