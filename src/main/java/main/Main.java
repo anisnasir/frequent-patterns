@@ -197,7 +197,7 @@ public class Main {
 		else if(simulatorType == 9)
 			outFileName = outFileName+"_incremental-subgraph-final-reservoir.log";
 		else if(simulatorType == 10)
-			outFileName = outFileName+"_full-dynamic-subgraph-final-reservoir.log";
+			outFileName = outFileName+"_fully-dynamic-subgraph-final-reservoir.log";
 
 		BufferedWriter bw = null;
 		FileWriter fw = null;

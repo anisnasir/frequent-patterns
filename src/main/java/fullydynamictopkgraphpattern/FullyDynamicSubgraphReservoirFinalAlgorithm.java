@@ -100,6 +100,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					i++;
 					int zrs = skipRS.apply(N);
 					N = N+zrs+1;
+					Ncurrent = Ncurrent+zrs+1;
 					sum = sum+zrs+1;
 				}
 
