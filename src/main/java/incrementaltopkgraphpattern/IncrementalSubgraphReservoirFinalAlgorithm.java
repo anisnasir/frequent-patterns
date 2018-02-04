@@ -92,14 +92,18 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 
 			//System.out.println("i " + i);
 			int count = 0;
-
+			THashSet<LabeledNeighbor> added = new THashSet<LabeledNeighbor>();
 			while(count < i) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 				//System.out.println(srcNeighbor + " " + dstNeighbor);
 
 				if(randomVertex == null) {
-
-				}else {
+					break;
+				}else if (added.contains(randomVertex)) {
+					
+				}
+				else {
+					added.add(randomVertex);
 					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
@@ -122,7 +126,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						reservoir.add(triplet); 
 						addFrequentPattern(triplet);
-
 					}
 				}
 				count++;

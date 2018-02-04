@@ -105,12 +105,16 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 				//System.out.println("i " + i);
 				int count = 0;
+				THashSet<LabeledNeighbor> added = new THashSet<LabeledNeighbor>();
 				while(count < i) {
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					if(randomVertex == null) {
-
-					}else {
+						break;
+					}else if(added.contains(randomVertex)) {
+						
+					} else {
+						added.add(randomVertex);
 						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 
 						if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
@@ -143,14 +147,17 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}else {
 			int count = 0 ; 
+			THashSet<LabeledNeighbor> added = new THashSet<LabeledNeighbor>();
 			while(count < W) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 
 				if(randomVertex == null) {
 					break;
-				}else {
+				}else if( added.contains(randomVertex)) { 
+					
+				} else {
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
-
+					added.add(randomVertex);
 					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
