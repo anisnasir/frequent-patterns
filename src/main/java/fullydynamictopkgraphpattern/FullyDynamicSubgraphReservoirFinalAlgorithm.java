@@ -85,14 +85,14 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				replaceSubgraphs(t, newTriangle);
 			}
 		}
-		
+
 		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
 		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
 		//int W = srcSketch.unionImprovedCardinality(dstSketch);
 		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
 		int W = fun.unionSet(srcNeighbor, dstNeighbor).size();
 		Ncurrent +=W;
-		
+
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
 			if(W> 0) {
@@ -101,27 +101,26 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					i++;
 					int zrs = skipRS.apply(N);
 					N = N+zrs+1;
-					
 					sum = sum+zrs+1;
 				}
 
+				//added i wedges to the reservoir
+				//we would randomly pick a vertex from the neighborhood of src and dst
+				//and add it to the reservoir
 				//System.out.println("i " + i);
 				int count = 0;
-				THashSet<LabeledNeighbor> added = new THashSet<LabeledNeighbor>();
+
 				while(count < i) {
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					if(randomVertex == null) {
 						break;
-					}else if(added.contains(randomVertex)) {
-						
 					} else {
-						added.add(randomVertex);
 						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 
 						if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 							//triangle -> hence, rejected!!!!!
-					
+
 						}else if (randomVertexNeighbor.contains(src)) {
 							if(reservoir.size() >= M) {
 								Triplet temp = reservoir.getRandom();
@@ -132,7 +131,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 							reservoir.add(triplet); 
 							addFrequentPattern(triplet);
-						
+
 						}else {
 							if(reservoir.size() >= M) {
 								Triplet temp = reservoir.getRandom();
@@ -158,7 +157,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				if(randomVertex == null) {
 					//break;
 				}else if( added.contains(randomVertex)) { 
-					
+
 				} else {
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					added.add(randomVertex);
@@ -175,9 +174,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 						addSubgraph(triplet);
 						count++;
 					}
-					
+
 				}
-				
+
 			}
 		}
 		utility.handleEdgeAddition(edge, nodeMap);
