@@ -150,33 +150,25 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}else {
 			int count = 0 ; 
-			THashSet<LabeledNeighbor> added = new THashSet<LabeledNeighbor>();
 			while(count < W) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 
 				if(randomVertex == null) {
-					//break;
-				}else if( added.contains(randomVertex)) { 
-
+					break;
 				} else {
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
-					added.add(randomVertex);
 					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
-						count++;
 					}else if (randomVertexNeighbor.contains(src)) {
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						addSubgraph(triplet);
-						count++;
 					}else {
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						addSubgraph(triplet);
-						count++;
 					}
-
+					count++;
 				}
-
 			}
 		}
 		utility.handleEdgeAddition(edge, nodeMap);
