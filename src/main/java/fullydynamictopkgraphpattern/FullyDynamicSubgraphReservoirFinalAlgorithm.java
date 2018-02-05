@@ -88,9 +88,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
 		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		int W = srcSketch.unionImprovedCardinality(dstSketch);
-		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		//int W = fun.unionSet(srcNeighbor, dstNeighbor).size();
+		//int W = srcSketch.unionImprovedCardinality(dstSketch);
+		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		int W = fun.unionSet(srcNeighbor, dstNeighbor).size();
 		
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
