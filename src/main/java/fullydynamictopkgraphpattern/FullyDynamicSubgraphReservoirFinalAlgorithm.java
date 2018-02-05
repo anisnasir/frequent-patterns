@@ -67,30 +67,30 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
-
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-
 		//update all triangles in the reservoir
 		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
-		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
+		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
 			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
-				triangles.add(t);
+				wedges.add(t);
 			}
 		}
-		if(triangles.size() > 0) {
-			for(Triplet t: triangles) {
+		if(wedges.size() > 0) {
+			for(Triplet t: wedges) {
 				Triplet newTriangle = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB,edge);
 				replaceSubgraphs(t, newTriangle);
 			}
 		}
-		int W = srcSketch.unionImprovedCardinality(dstSketch);
-
+		
+		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		//int W = srcSketch.unionImprovedCardinality(dstSketch);
+		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		int W = fun.unionSet(srcNeighbor, dstNeighbor).size();
 		
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
@@ -111,7 +111,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					if(randomVertex == null) {
-						//break;
+						break;
 					}else if(added.contains(randomVertex)) {
 						
 					} else {
@@ -120,7 +120,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 						if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 							//triangle -> hence, rejected!!!!!
-							count++;
+					
 						}else if (randomVertexNeighbor.contains(src)) {
 							if(reservoir.size() >= M) {
 								Triplet temp = reservoir.getRandom();
@@ -131,7 +131,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 							reservoir.add(triplet); 
 							addFrequentPattern(triplet);
-							count++;
+						
 						}else {
 							if(reservoir.size() >= M) {
 								Triplet temp = reservoir.getRandom();
@@ -142,10 +142,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 							reservoir.add(triplet); 
 							addFrequentPattern(triplet);
-							count++;
 						}
 					}
-					//count++;
+					count++;
 				}
 				sum = sum-W;
 			}
