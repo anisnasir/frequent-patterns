@@ -91,8 +91,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		//int W = srcSketch.unionImprovedCardinality(dstSketch);
 		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
 		int W = fun.unionSet(srcNeighbor, dstNeighbor).size();
-		Ncurrent +=W;
-
+		
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
 			if(W> 0) {
@@ -101,6 +100,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					i++;
 					int zrs = skipRS.apply(N);
 					N = N+zrs+1;
+					Ncurrent = Ncurrent+zrs+1;
 					sum = sum+zrs+1;
 				}
 
