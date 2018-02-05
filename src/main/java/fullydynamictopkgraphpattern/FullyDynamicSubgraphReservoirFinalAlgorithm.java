@@ -91,6 +91,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		}
 		int W = srcSketch.unionImprovedCardinality(dstSketch);
 
+		
 		if(c1+c2 == 0) {
 			int i = 0 ;
 			//System.out.println("list " + list);
@@ -244,6 +245,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
+
+		nodeBottomK.removeEdge(src, dst, edge);
 
 
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);

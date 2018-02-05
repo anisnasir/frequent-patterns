@@ -64,6 +64,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		topk.addEdge(d);
 		topk.addEdge(e);
 		//assertEquals(4, topk.getFrequentPatterns().size());
+		System.out.println(topk.getFrequentPatterns());
 		
 	}
 	@Test
@@ -78,7 +79,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		topk.addEdge(c);
 		topk.removeEdge(c);
 		//topk.removeEdge(a);
-		//System.out.println(topk.getFrequentPatterns());
+		System.out.println(topk.getFrequentPatterns());
+		
 	}
 
 	@Test
@@ -93,7 +95,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		topk.addEdge(c);
 		topk.removeEdge(c);
 		//topk.removeEdge(a);
-		//System.out.println(topk.getFrequentPatterns());
+		System.out.println(topk.getFrequentPatterns());
 	}
 
 }
