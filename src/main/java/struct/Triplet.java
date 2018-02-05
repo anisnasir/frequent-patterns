@@ -8,7 +8,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import input.StreamEdge;
 
 public class Triplet implements Comparable<Triplet>{
-	int numEdges;
+	public int numEdges;
 	public LabeledNode a;
 	public LabeledNode b;
 	public LabeledNode c;
@@ -20,6 +20,9 @@ public class Triplet implements Comparable<Triplet>{
 		edgeA = edgeB = edgeC = null;
 	}
 
+	public boolean isTriangle() { 
+		return (this.numEdges == 3);
+	}
 	public Triplet(LabeledNode a, LabeledNode b, LabeledNode c, StreamEdge edgeA, StreamEdge edgeB) {
 		numEdges = 2;
 		LabeledNode arr[] = new LabeledNode[3];

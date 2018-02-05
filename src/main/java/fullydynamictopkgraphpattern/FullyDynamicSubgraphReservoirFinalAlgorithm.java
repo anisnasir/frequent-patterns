@@ -79,7 +79,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
-			if(t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) {
+			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
 				triangles.add(t);
 			}
 		}
@@ -93,10 +93,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 		
 		if(c1+c2 == 0) {
-			int i = 0 ;
-			//System.out.println("list " + list);
 			//System.out.println("W "  + W);
 			if(W> 0) {
+				int i = 0 ;
 				while(sum <W) {
 					i++;
 					int zrs = skipRS.apply(N);
@@ -112,7 +111,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					if(randomVertex == null) {
-						break;
+						//break;
 					}else if(added.contains(randomVertex)) {
 						
 					} else {
@@ -154,7 +153,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 
 				if(randomVertex == null) {
-					break;
+					//break;
 				}else if( added.contains(randomVertex)) { 
 					
 				} else {
