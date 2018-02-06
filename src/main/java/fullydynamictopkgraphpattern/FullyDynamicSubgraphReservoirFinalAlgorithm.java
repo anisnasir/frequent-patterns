@@ -91,8 +91,6 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
 		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
 		int W = srcSketch.unionImprovedCardinality(dstSketch);
-
-
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
 			if(W> 0) {
@@ -282,7 +280,14 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		}
 		if(triangles.size() > 0) {
 			for(Triplet t: triangles) {
-				Triplet newWedge = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB);
+				Triplet newWedge = null;
+				if(edge.equals(t.edgeA)) {
+					newWedge = new Triplet(t.a,t.b,t.c,t.edgeB, t.edgeC);
+				}else if (edge.equals(t.edgeB)) {
+					newWedge = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeC);
+				}else {
+					newWedge = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB);
+				}
 				replaceSubgraphs(t, newWedge);
 			}
 		}
