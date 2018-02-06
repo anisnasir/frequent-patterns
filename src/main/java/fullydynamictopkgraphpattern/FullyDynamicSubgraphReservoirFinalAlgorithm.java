@@ -88,9 +88,13 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}
 
-		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		int W = srcSketch.unionImprovedCardinality(dstSketch);
+		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		//int W = srcSketch.unionImprovedCardinality(dstSketch);
+		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		int W = union.size();
+		
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
 			if(W> 0) {
@@ -244,10 +248,14 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		nodeBottomK.removeEdge(src, dst, edge);
 
 
-		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		int W = srcSketch.unionImprovedCardinality(dstSketch);
+		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		//int W = srcSketch.unionImprovedCardinality(dstSketch);
 
+		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		int W = union.size();
+		
 		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
