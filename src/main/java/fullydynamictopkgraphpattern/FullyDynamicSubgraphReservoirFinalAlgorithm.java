@@ -40,6 +40,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	AlgorithmD skipRP;
 	int Zprime;
 	Random rand;
+	ReservoirSampling<Triplet> sampler;
 
 	public FullyDynamicSubgraphReservoirFinalAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
@@ -57,6 +58,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		skipRS = new AlgorithmZ(M);
 		skipRP = new AlgorithmD();
+		sampler = new ReservoirSampling<Triplet>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -90,8 +92,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
 		//int W = srcSketch.unionImprovedCardinality(dstSketch);
 		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		int W = fun.unionSet(srcNeighbor, dstNeighbor).size();
-		
+		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		int W = union.size();
+
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
 			if(W> 0) {
@@ -108,7 +111,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				//we would randomly pick a vertex from the neighborhood of src and dst
 				//and add it to the reservoir
 				//System.out.println("i " + i);
-				int count = 0;
+				/*	int count = 0;
 
 				while(count < i) {
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
@@ -147,6 +150,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					count++;
 				}
 				sum = sum-W;
+			}*/
 			}
 		}else {
 			int count = 0 ; 
