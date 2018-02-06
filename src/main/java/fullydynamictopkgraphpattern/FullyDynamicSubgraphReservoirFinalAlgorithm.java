@@ -90,10 +90,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
 		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		//int W = srcSketch.unionImprovedCardinality(dstSketch);
-		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size();
+		int W = srcSketch.unionImprovedCardinality(dstSketch);
+
 
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
@@ -111,8 +109,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				//we would randomly pick a vertex from the neighborhood of src and dst
 				//and add it to the reservoir
 				//System.out.println("i " + i);
-				/*	int count = 0;
-
+				int count = 0 ;
 				while(count < i) {
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
@@ -150,7 +147,6 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					count++;
 				}
 				sum = sum-W;
-			}*/
 			}
 		}else {
 			int count = 0 ; 
@@ -250,59 +246,47 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		nodeBottomK.removeEdge(src, dst, edge);
 
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		int W = srcSketch.unionImprovedCardinality(dstSketch);
 
-		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
-		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
-
-		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
-
-		List<Triplet> list = new ArrayList<Triplet>();
-
-		for(LabeledNeighbor t: srcNeighbor) {
-			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
-				list.add(triplet);
-			} else {
-				srcCommonNeighbor.put(t, t);
+		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
+		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
+		for(Triplet t: candidateWedges) {
+			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
+				wedges.add(t);
 			}
 		}
 
-		for(LabeledNeighbor t: dstNeighbor) {
-			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(),dst.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
-				list.add(triplet);
-			}else {
-				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
-				LabeledNode a = src;
-				LabeledNode b = dst;
-				LabeledNode c = t.getDst();
-				StreamEdge edgeA = edge;
-				StreamEdge edgeB = new StreamEdge(c.getVertexId(), c.getVertexLabel(), src.getVertexId(), src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
-				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(), dst.getVertexLabel(), t.getEdgeLabel());
-
-				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
-				Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
-				if(reservoir.contains(tripletTriangle))
-					replaceSubgraphs(tripletTriangle, tripletWedge);
-
+		if(wedges.size() >0) {
+			int count = wedges.size();
+			for(Triplet t: wedges) {
+				reservoir.remove(t);
+				removeFrequentPattern(t);
+				Ncurrent--;
+				Zprime = -1;
 			}
+			c1+=count;
+			c2+= (W-count);
 		}
-
-		for(Triplet wedge: list) {
-			if(reservoir.contains(wedge)) {
-				reservoir.remove(wedge);
-				removeFrequentPattern(wedge);
-				c1++;
-			}else {
-				c2++;
-			}
-			Ncurrent--;
-			Zprime = -1;
-		}
-
 		//System.out.println(reservoir.size());
+
+		//update all triangles in the reservoir
+		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
+		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
+		//System.out.println("size "  + candidateTriangles.size());
+		for(Triplet t: candidateTriangles) {
+			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && t.isTriangle()) {
+				triangles.add(t);
+			}
+		}
+		if(triangles.size() > 0) {
+			for(Triplet t: triangles) {
+				Triplet newWedge = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB);
+				replaceSubgraphs(t, newWedge);
+			}
+		}
+
 		return false;
 	}
 

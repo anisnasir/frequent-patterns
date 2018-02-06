@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import gnu.trove.set.hash.THashSet;
+
 public class ReservoirSampling<T>
 {
 	public ReservoirSampling() { 
