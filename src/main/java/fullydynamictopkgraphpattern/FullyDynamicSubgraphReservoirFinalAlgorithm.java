@@ -248,6 +248,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		nodeBottomK.removeEdge(src, dst, edge);
 
 
+		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		
 		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
 		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
 		//int W = srcSketch.unionImprovedCardinality(dstSketch);
