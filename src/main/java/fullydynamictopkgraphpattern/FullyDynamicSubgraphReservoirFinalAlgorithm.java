@@ -77,7 +77,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
-			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
+			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst))) {
 				wedges.add(t);
 			}
 		}
@@ -95,11 +95,13 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		//int W = union.size();
 
+		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
+		
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
 			if(W> 0) {
 				int i = 0 ;
-				while(sum <=W) {
+				while(sum <W) {
 					i++;
 					int zrs = skipRS.apply(N);
 					N = N+zrs+1;
@@ -110,12 +112,14 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				//added i wedges to the reservoir
 				//we would randomly pick a vertex from the neighborhood of src and dst
 				//and add it to the reservoir
-				//System.out.println("i " + i);
+				//System.out.println("i " + i + " W " + W);
 				int count = 0 ;
 				while(count < i) {
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
+					//System.out.println(randomVertex);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					if(randomVertex == null) {
+						System.out.println("I am breaking" + randomVertex);
 						break;
 					} else {
 						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
@@ -223,13 +227,17 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			return null;
 		}
 
-		double value = d_u/(d_u+d_v);
-		if(Math.random() < value) {
+		double value = d_u/(double)(d_u+d_v);
+		double ran = Math.random();
+		//System.out.println(value + " " + ran);
+		if(ran <= value) {
 			//select neighbor of u or src
+			//System.out.println("src neighbor selected");
 			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(srcNeighbor);
 			return list.get(rand.nextInt(list.size()));
 		}else {
 			//select a neighbor of v or dst
+			//System.out.println("dst neighbor selected");
 			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(dstNeighbor);
 			return list.get(rand.nextInt(list.size()));
 		}
@@ -248,8 +256,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		nodeBottomK.removeEdge(src, dst, edge);
 
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		//THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
+		//THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
 		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);

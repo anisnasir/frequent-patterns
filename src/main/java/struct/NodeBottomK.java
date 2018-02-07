@@ -5,7 +5,7 @@ import input.StreamEdge;
 import utility.BottomKSketch;
 
 public class NodeBottomK {
-	int k = 10;
+	int k = 20;
 	public THashMap<LabeledNode,BottomKSketch<LabeledNeighbor>>  map;
 	public NodeBottomK() {
 		map = new THashMap<LabeledNode,BottomKSketch<LabeledNeighbor>> ();
