@@ -78,12 +78,12 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 			}
 		}
 
-		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
+		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 
 		
-		//int W = srcSketch.unionImprovedCardinality(dstSketch) - srcSketch.intersectionImprovedCardinality(dstSketch);
+		int W = srcSketch.unionImprovedCardinality(dstSketch) - srcSketch.intersectionImprovedCardinality(dstSketch);
 		int i = 0 ;
 		//System.out.println("list " + list);
 		//System.out.println("W "  + W);
