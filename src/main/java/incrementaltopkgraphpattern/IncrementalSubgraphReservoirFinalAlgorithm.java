@@ -78,7 +78,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 			}
 		}
 
-		int W = srcSketch.unionImprovedCardinality(dstSketch);
+		int W = srcSketch.unionImprovedCardinality(dstSketch) - srcSketch.intersectionImprovedCardinality(dstSketch);
 		int i = 0 ;
 		//System.out.println("list " + list);
 		//System.out.println("W "  + W);
