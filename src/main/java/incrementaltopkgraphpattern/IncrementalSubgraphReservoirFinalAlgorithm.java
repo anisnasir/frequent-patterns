@@ -159,7 +159,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 			return null;
 		}
 
-		double value = d_u/(d_u+d_v);
+		double value = d_u/(double)(d_u+d_v);
 		if(Math.random() < value) {
 			//select neighbor of u or src
 			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(srcNeighbor);
