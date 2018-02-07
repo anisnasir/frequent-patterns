@@ -88,18 +88,18 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}
 
-		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		//int W = srcSketch.unionImprovedCardinality(dstSketch);
-		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size();
-		
+		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		int W = srcSketch.unionImprovedCardinality(dstSketch);
+		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//int W = union.size();
+
 		if(c1+c2 == 0) {
 			//System.out.println("W "  + W);
 			if(W> 0) {
 				int i = 0 ;
-				while(sum <W) {
+				while(sum <=W) {
 					i++;
 					int zrs = skipRS.apply(N);
 					N = N+zrs+1;
@@ -250,15 +250,15 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
-		
-		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		//int W = srcSketch.unionImprovedCardinality(dstSketch);
 
-		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size();
-		
+		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		int W = srcSketch.unionImprovedCardinality(dstSketch);
+
+		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//int W = union.size();
+
 		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
