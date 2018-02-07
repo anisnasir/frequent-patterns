@@ -172,7 +172,12 @@ public class BottomKSketch<T> implements Serializable {
 		return results;
 	}
 	public int intersectionImprovedCardinality(BottomKSketch<T> Y) {
-		SetFunctions helper = new SetFunctions();
+		if(Y == null) 
+			return 0;
+		else if (Y.list.size() ==0) {
+			return 0;
+		}
+		SetFunctions<Double> helper = new SetFunctions<Double>();
 		THashSet<Double> intersection = helper.intersectionSet(set, Y.getSet());
 
 		double peekValue = Math.min(list.peek(), Y.list.peek());
