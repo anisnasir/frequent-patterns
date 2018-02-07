@@ -142,6 +142,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 							reservoir.add(triplet); 
 							addFrequentPattern(triplet);
 
+							count++;
+
 						}else {
 							if(reservoir.size() >= M) {
 								Triplet temp = reservoir.getRandom();
@@ -152,9 +154,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 							reservoir.add(triplet); 
 							addFrequentPattern(triplet);
+
+							count++;
 						}
 					}
-					count++;
 				}
 				sum = sum-W;
 			}
