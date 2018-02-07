@@ -276,7 +276,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
 		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size();
+		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 
 		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
