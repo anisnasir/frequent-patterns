@@ -13,7 +13,7 @@ import input.StreamEdge;
 
 public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 
-	/*@Test
+	@Test
 	public void singleWedgeAddition() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
 		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
@@ -40,7 +40,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		topk.removeEdge(c);
 		assertEquals(1, topk.getFrequentPatterns().size());
 
-	}*/
+	}
 	@Test
 	public void multipleTripletAddition() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
@@ -70,7 +70,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		System.out.println(topk.getFrequentPatterns());
 		
 	}
-	/*
+	
 	@Test
 	public void removeTriangle() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
@@ -100,6 +100,6 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		topk.removeEdge(c);
 		//topk.removeEdge(a);
 		System.out.println(topk.getFrequentPatterns());
-	}*/
+	}
 
 }

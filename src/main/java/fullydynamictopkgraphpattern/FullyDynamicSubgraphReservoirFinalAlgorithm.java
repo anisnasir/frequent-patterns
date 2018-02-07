@@ -186,7 +186,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		nodeBottomK.addEdge(src, dst, edge);
 		return false;
 	}
-	void addSubgraph(Triplet t) {
+	/*void addSubgraph(Triplet t) {
 		N++;
 		Ncurrent++;
 
@@ -214,6 +214,38 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 
 			Zprime--;
+		}
+
+		if(flag) {
+			reservoir.add(t); 
+			addFrequentPattern(t);
+			//System.out.println("reservoir size after add method " + reservoir.size());
+		}
+	}*/
+
+	void addSubgraph(Triplet t) {
+		N++;
+		Ncurrent++;
+
+		boolean flag = false;
+		if (c1+c2 ==0) {
+			if(reservoir.size() < M ) {
+				flag = true;
+			}else if (Math.random() < (M/(double)N)) {
+				flag = true;
+				//System.out.println("remove called from add subgraph");
+				Triplet temp = reservoir.getRandom();
+				reservoir.remove(temp);
+				removeFrequentPattern(temp);
+			}
+		}else {
+			int d = c1+c2;
+			if (Math.random() < (c1/(double)(d))) {
+				flag = true;
+				c1--;
+			}else {
+				c2--;
+			}
 		}
 
 		if(flag) {
