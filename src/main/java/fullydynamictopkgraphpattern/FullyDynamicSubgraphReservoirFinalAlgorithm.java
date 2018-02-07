@@ -37,10 +37,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	int c2;
 	int sum;
 	AlgorithmZ skipRS;
-	AlgorithmD skipRP;
+	//AlgorithmD skipRP;
 	int Zprime;
 	Random rand;
-	ReservoirSampling<LabeledNeighbor> sampler;
+	ReservoirSampling<Triplet> sampler;
 
 	public FullyDynamicSubgraphReservoirFinalAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
@@ -58,11 +58,102 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		Zprime=-1;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		skipRS = new AlgorithmZ(M);
-		skipRP = new AlgorithmD();
-		sampler = new ReservoirSampling<LabeledNeighbor>();
+		//skipRP = new AlgorithmD();
+		sampler = new ReservoirSampling<Triplet>();
 	}
-
 	public boolean addEdge(StreamEdge edge) {
+		if(nodeMap.contains(edge)) {
+			return false;
+		}
+		//System.out.println("+" + edge);
+		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
+		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
+
+
+		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+
+		//System.out.println("src neighbor" + srcNeighbor);
+		//System.out.println("dst neighbor " + dstNeighbor);
+
+		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
+		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
+
+		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
+
+		//System.out.println("common " +  common);
+
+		List<Triplet> list = new ArrayList<Triplet>();
+
+		for(LabeledNeighbor t: srcNeighbor) {
+			if(!common.contains(t)) {
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				list.add(triplet);
+			} else {
+				//System.out.println( " neighbor put "  + t );
+				srcCommonNeighbor.put(t, t);
+			}
+		}
+
+		for(LabeledNeighbor t: dstNeighbor) {
+			if(!common.contains(t)) {
+				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				list.add(triplet);
+			}else {
+				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
+				LabeledNode a = src;
+				LabeledNode b = dst;
+				LabeledNode c = t.getDst();
+				StreamEdge edgeA = edge;
+				StreamEdge edgeB = new StreamEdge(t.getDst().getVertexId() , t.getDst().getVertexLabel(), src.getVertexId(), src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
+				StreamEdge edgeC = new StreamEdge(t.getDst().getVertexId(), t.getDst().getVertexLabel(), dst.getVertexId(), dst.getVertexLabel(), t.getEdgeLabel());
+
+				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
+				if(reservoir.contains(tripletWedge)) {
+					Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
+					replaceSubgraphs(tripletWedge, tripletTriangle);
+				}
+
+			}
+		}
+
+		if(c1+c2 == 0) {
+			int i = 0 ;
+			int W = list.size();
+			//System.out.println("list " + list);
+			if(W> 0) {
+				while(sum < W) {
+					i++;
+					int zrs = skipRS.apply(N);
+					N = N+zrs+1;
+					Ncurrent= Ncurrent+zrs+1;
+					sum = sum+zrs+1;
+				}
+				//System.out.println("i equals "+ i);
+				List<Triplet> sample = sampler.selectKItems(list, i);
+
+				for(Triplet t: sample) {
+					if(reservoir.size() >= M) {
+						Triplet temp = reservoir.getRandom();
+						reservoir.remove(temp);
+						removeFrequentPattern(temp);
+					}
+					reservoir.add(t); 
+					addFrequentPattern(t);
+
+				}
+				sum = sum-W;
+			}
+		}else {
+			for(Triplet t: list) {
+				addSubgraph(t);
+			}
+		}
+		utility.handleEdgeAddition(edge, nodeMap);
+		//System.out.println(reservoir.size() + "  N " + N);
+		return false;
+	}
+	/*public boolean addEdge(StreamEdge edge) {
 		if(nodeMap.contains(edge)) {
 			return false;
 		}
@@ -188,7 +279,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		//System.out.println(reservoir.size() + "  N " + N);
 		nodeBottomK.addEdge(src, dst, edge);
 		return false;
-	}
+	}*/
 	/*void addSubgraph(Triplet t) {
 		N++;
 		Ncurrent++;
