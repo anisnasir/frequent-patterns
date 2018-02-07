@@ -172,9 +172,9 @@ public class BottomKSketch<T> implements Serializable {
 		return results;
 	}
 	public int intersectionImprovedCardinality(BottomKSketch<T> Y) {
-		if(Y == null) 
+		if(Y == null || this == null) 
 			return 0;
-		else if (Y.list.size() ==0) {
+		else if (Y.list.size() ==0 || this.list.size() == 0) {
 			return 0;
 		}
 		SetFunctions<Double> helper = new SetFunctions<Double>();
