@@ -278,7 +278,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
-			if((t.edgeA.equals(edge) || t.edgeB.equals(edge) || t.edgeC.equals(edge)) && !t.isTriangle()) {
+			if((t.edgeA.equals(edge) || t.edgeB.equals(edge)) && !t.isTriangle()) {
 				wedges.add(t);
 			}
 		}
