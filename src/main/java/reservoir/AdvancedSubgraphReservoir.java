@@ -76,7 +76,7 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T>{
 
 	public boolean remove(T value) {
 		if (!contains(value)) {
-			throw new NoSuchElementException();
+			return false;
 		}
 		if(list.contains(value)) {
 			list.remove(value);
