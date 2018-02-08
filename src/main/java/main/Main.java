@@ -159,13 +159,13 @@ public class Main {
 		 */
 		while(edge!=null) {
 			topkGraphPattern.addEdge(edge);
-			System.out.println("+ " + edge);
+			//System.out.println("+ " + edge);
 
 			//slide the window and get the last item if the window is full
 			if(simulatorType == 0 || simulatorType == 1 || simulatorType == 2 || simulatorType == 7 || simulatorType == 8 || simulatorType == 10)  {
 				StreamEdge oldestEdge = sw.add(edge);
 				if(oldestEdge != null) {
-					System.out.println("- " + oldestEdge);
+					//System.out.println("- " + oldestEdge);
 					topkGraphPattern.removeEdge(oldestEdge);
 				}
 			}

@@ -117,13 +117,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				int count = 0 ;
 				while(count < i) {
 					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
-					//System.out.println(randomVertex);
-					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					if(randomVertex == null) {
-						//System.out.println("I am breaking" + randomVertex);
 						break;
 					}else if (set.contains(randomVertex)) {
-
+						//wedge already added
 					}else {
 						set.add(randomVertex);
 						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
@@ -180,7 +177,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		addFrequentPattern(triplet);
 
 	}
-	void addSubgraph(Triplet t) {
+	/*void addSubgraph(Triplet t) {
 		N++;
 		Ncurrent++;
 
@@ -216,7 +213,38 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			//System.out.println("reservoir size after add method " + reservoir.size());
 		}
 	}
+	 */
+	void addSubgraph(Triplet t) {
+		N++;
+		Ncurrent++;
 
+		boolean flag = false;
+		if (c1+c2 ==0) {
+			if(reservoir.size() < M ) {
+				flag = true;
+			}else if (Math.random() < (M/(double)N)) {
+				flag = true;
+				//System.out.println("remove called from add subgraph");
+				Triplet temp = reservoir.getRandom();
+				reservoir.remove(temp);
+				removeFrequentPattern(temp);
+			}
+		}else {
+			int d = c1+c2;
+			if (Math.random() < (c1/(double)(d))) {
+				flag = true;
+				c1--;
+			}else {
+				c2--;
+			}
+		}
+
+		if(flag) {
+			reservoir.add(t); 
+			addFrequentPattern(t);
+			//System.out.println("reservoir size after add method " + reservoir.size());
+		}
+	}
 
 
 	public LabeledNeighbor getRandomNeighbor(THashSet<LabeledNeighbor> srcNeighbor, THashSet<LabeledNeighbor> dstNeighbor) {
