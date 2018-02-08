@@ -66,7 +66,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 
 		topk.removeEdge(c);
 		topk.removeEdge(b);
-		assertEquals(0, topk.getFrequentPatterns().size());
+
+		System.out.println(topk.c1 + " "  + topk.c2);
 
 	}
 	@Test

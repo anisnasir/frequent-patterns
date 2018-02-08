@@ -33,8 +33,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int Ncurrent;
-	int c1;
-	int c2;
+	public int c1;
+	public int c2;
 	int sum;
 	AlgorithmZ skipRS;
 	AlgorithmD skipRP;
@@ -75,15 +75,15 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 		//replaces the existing wedges in the reservoir with the triangles
 		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
-		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
+		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
 			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
-				wedges.add(t);
+				oldWedges.add(t);
 			}
 		}
-		if(wedges.size() > 0) {
-			for(Triplet t: wedges) {
+		if(oldWedges.size() > 0) {
+			for(Triplet t: oldWedges) {
 				Triplet newTriangle = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB,edge);
 				replaceSubgraphs(t, newTriangle);
 			}
@@ -95,7 +95,6 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
 		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
-		Ncurrent+=W;
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
 		if(c1+c2 == 0) {
@@ -106,7 +105,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					i++;
 					int zrs = skipRS.apply(N);
 					N = N+zrs+1;
-					
+					Ncurrent = Ncurrent+zrs+1;
 					sum = sum+zrs+1;
 				}
 				//added i wedges to the reservoir
@@ -289,9 +288,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
 		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
-
-
 		Ncurrent-=W;
+		
 		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
