@@ -290,6 +290,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 
+
+		Ncurrent-=W;
 		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
@@ -303,7 +305,6 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			for(Triplet t: wedges) {
 				reservoir.remove(t);
 				removeFrequentPattern(t);
-				Ncurrent--;
 				Zprime = -1;
 			}
 			c1+=count;
