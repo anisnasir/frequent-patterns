@@ -61,7 +61,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<Triplet>();
 	}
-	
+
 	public boolean addEdge(StreamEdge edge) {
 		if(nodeMap.contains(edge)) {
 			return false;
@@ -226,7 +226,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		}
 	}
 
-	
+
 
 	public LabeledNeighbor getRandomNeighbor(THashSet<LabeledNeighbor> srcNeighbor, THashSet<LabeledNeighbor> dstNeighbor) {
 		int d_u = srcNeighbor.size();
@@ -301,8 +301,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
-			if((t.edgeA.equals(edge) || t.edgeB.equals(edge) || t.edgeC.equals(edge)) && t.isTriangle()) {
-				triangles.add(t);
+			if(t.isTriangle()) {
+				if((t.edgeA.equals(edge) || t.edgeB.equals(edge) || t.edgeC.equals(edge))) {
+					triangles.add(t);
+				}
 			}
 		}
 		if(triangles.size() > 0) {
