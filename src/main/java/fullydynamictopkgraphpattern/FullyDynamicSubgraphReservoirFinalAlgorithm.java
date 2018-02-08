@@ -95,7 +95,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
 		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
-
+		Ncurrent+=W;
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
 		if(c1+c2 == 0) {
@@ -106,7 +106,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					i++;
 					int zrs = skipRS.apply(N);
 					N = N+zrs+1;
-					Ncurrent = Ncurrent+zrs+1;
+					
 					sum = sum+zrs+1;
 				}
 				//added i wedges to the reservoir
