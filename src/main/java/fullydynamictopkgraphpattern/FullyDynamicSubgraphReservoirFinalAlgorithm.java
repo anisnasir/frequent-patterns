@@ -73,12 +73,12 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		//update all triangles in the reservoir
+		//replaces the existing wedges in the reservoir with the triangles
 		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
-			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst))) {
+			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
 				wedges.add(t);
 			}
 		}
@@ -242,15 +242,12 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			//select neighbor of u or src
 			//System.out.println("src neighbor selected");
 			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(srcNeighbor);
-			int randInt = rand.nextInt(list.size());
-			//System.out.println(randInt);
 			return list.get(rand.nextInt(list.size()));
 		}else {
 			//select a neighbor of v or dst
 			//System.out.println("dst neighbor selected");
 			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(dstNeighbor);
-			int randInt = rand.nextInt(list.size());
-			return list.get(randInt);
+			return list.get(rand.nextInt(list.size()));
 		}
 	}
 
@@ -281,7 +278,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
-			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
+			if((t.edgeA.equals(edge) || t.edgeB.equals(edge) || t.edgeC.equals(edge)) && !t.isTriangle()) {
 				wedges.add(t);
 			}
 		}
@@ -304,7 +301,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
-			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && t.isTriangle()) {
+			if((t.edgeA.equals(edge) || t.edgeB.equals(edge) || t.edgeC.equals(edge)) && t.isTriangle()) {
 				triangles.add(t);
 			}
 		}
