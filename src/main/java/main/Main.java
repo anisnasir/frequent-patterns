@@ -173,7 +173,7 @@ public class Main {
 		}
 
 		long endTime = System.currentTimeMillis();
-		System.out.println("execution time: " + (endTime-startTime)/(double)1000);
+		System.out.println("execution time: " + (endTime-startTime)/(double)1000 + " secs.");
 		//create the output file name
 		String outFileName = "output_logs/output_"+fileName+"_"+windowSize+"_"+epsilon+"_"+delta+"_"+Tk+"_"+k;
 
