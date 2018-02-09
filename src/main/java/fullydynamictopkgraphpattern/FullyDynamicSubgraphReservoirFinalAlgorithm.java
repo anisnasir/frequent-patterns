@@ -94,8 +94,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
 		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
 		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		THashSet<LabeledNeighbor> intersection = fun.intersectionSet(srcNeighbor, dstNeighbor);
-		int W = union.size()-intersection.size();
+		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
 		if(c1+c2 == 0) {
@@ -113,57 +112,34 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				//we would randomly pick a vertex from the neighborhood of src and dst
 				//and add it to the reservoir
 				//System.out.println("i " + i + " W " + W);
-				if(i < (W/4)) {
-					THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
-					int count = 0 ;
-					while(count < i) {
-						LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
-						if(randomVertex == null) {
-							break;
-						}else if (set.contains(randomVertex)) {
-							//wedge already added
-						}else {
-							set.add(randomVertex);
-							THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
-							if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
-								//triangle -> hence, rejected!!!!!
-							}else if (randomVertexNeighbor.contains(src)) {
-								Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-								addToReservoir(triplet);
-								count++;
-							}else {
-								Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-								addToReservoir(triplet);
-								count++;
-							}
-						}
-					}
-				}else {
-					ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>();
-					for(LabeledNeighbor a: union) {
-						if(!intersection.contains(a)) {
-							list.add(a);
-						}
-					}
-					List<LabeledNeighbor> neighbors = sampler.selectKItems(list, i);
-					for(LabeledNeighbor n:neighbors) {
-						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(n.getDst());
+				THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
+				int count = 0 ;
+				while(count < i) {
+					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
+					if(randomVertex == null) {
+						break;
+					}else if (set.contains(randomVertex)) {
+						//wedge already added
+					}else {
+						set.add(randomVertex);
+						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 						if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 							//triangle -> hence, rejected!!!!!
 						}else if (randomVertexNeighbor.contains(src)) {
-							Triplet triplet = new Triplet(src, dst, n.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), n.getDst().getVertexId(), n.getDst().getVertexLabel(), n.getEdgeLabel()));
+							Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 							addToReservoir(triplet);
+							count++;
 						}else {
-							Triplet triplet = new Triplet(src, dst, n.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), n.getDst().getVertexId(), n.getDst().getVertexLabel(), n.getEdgeLabel()));
+							Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 							addToReservoir(triplet);
+							count++;
 						}
 					}
-					
 				}
 				sum = sum-W;
 			}
 		}else {
-			/*int count = 0 ; 
+			int count = 0 ; 
 			THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
 			while(count < W) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
@@ -188,21 +164,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 						count++;
 					}
 				}
-			}*/
-			for(LabeledNeighbor a: union) {
-				if(!intersection.contains(a)) {
-					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(a.getDst());
-					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
-						//triangle -> hence, rejected!!!!!
-					}else if (randomVertexNeighbor.contains(src)) {
-						Triplet triplet = new Triplet(src, dst, a.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), a.getDst().getVertexId(), a.getDst().getVertexLabel(), a.getEdgeLabel()));
-						addSubgraph(triplet);
-					}else {
-						Triplet triplet = new Triplet(src, dst, a.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), a.getDst().getVertexId(), a.getDst().getVertexLabel(), a.getEdgeLabel()));
-						addSubgraph(triplet);
-					}
-				}
 			}
+
 		}
 		utility.handleEdgeAddition(edge, nodeMap);
 		//System.out.println(reservoir.size() + "  N " + N);
