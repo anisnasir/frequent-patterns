@@ -140,12 +140,16 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}else {
 			int count = 0 ; 
+			THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
 			while(count < W) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 
 				if(randomVertex == null) {
 					break;
+				}	else if (set.contains(randomVertex)) {
+					
 				} else {
+					set.add(randomVertex);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
@@ -153,11 +157,12 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 					}else if (randomVertexNeighbor.contains(src)) {
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						addSubgraph(triplet);
+						count++;
 					}else {
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						addSubgraph(triplet);
+						count++;
 					}
-					count++;
 				}
 			}
 		}
