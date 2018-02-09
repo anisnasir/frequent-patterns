@@ -55,8 +55,7 @@ import topkgraphpattern.TopkGraphPatterns;
  */
 
 public class Main {
-	public static void main(String args[]) throws IOException {
-
+	public static void main(String args[]) throws IOException {	
 		//extract all parameters from the input
 		int simulatorType = Integer.parseInt(args[0]);
 		String directory = args[1] ;
@@ -91,7 +90,8 @@ public class Main {
 
 		//declare object of the algorithm interface
 		TopkGraphPatterns topkGraphPattern = null;
-
+		long startTime = System.currentTimeMillis();
+		
 		if(simulatorType == 0 ) {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
@@ -172,6 +172,8 @@ public class Main {
 			edge = reader.nextItem();
 		}
 
+		long endTime = System.currentTimeMillis();
+		System.out.println("execution time: " + (endTime-startTime)/(double)1000);
 		//create the output file name
 		String outFileName = "output_logs/output_"+fileName+"_"+windowSize+"_"+epsilon+"_"+delta+"_"+Tk+"_"+k;
 
