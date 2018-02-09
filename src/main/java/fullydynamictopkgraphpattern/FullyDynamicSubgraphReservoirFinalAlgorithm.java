@@ -114,16 +114,16 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				//and add it to the reservoir
 				//System.out.println("i " + i + " W " + W);
 				if(i < (W/4)) {
-					THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
+					//THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
 					int count = 0 ;
 					while(count < i) {
 						LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 						if(randomVertex == null) {
 							break;
-						}else if (set.contains(randomVertex)) {
+					//	}else if (set.contains(randomVertex)) {
 							//wedge already added
 						}else {
-							set.add(randomVertex);
+					//		set.add(randomVertex);
 							THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 							if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 								//triangle -> hence, rejected!!!!!
@@ -164,16 +164,16 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}else {
 			int count = 0 ; 
-			THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
+			//THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
 			while(count < W) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 
 				if(randomVertex == null) {
 					break;
-				}	else if (set.contains(randomVertex)) {
+				//}	else if (set.contains(randomVertex)) {
 
 				} else {
-					set.add(randomVertex);
+				//	set.add(randomVertex);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
