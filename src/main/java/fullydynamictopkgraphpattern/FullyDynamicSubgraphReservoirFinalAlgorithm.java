@@ -163,7 +163,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				sum = sum-W;
 			}
 		}else {
-			int count = 0 ; 
+			/*int count = 0 ; 
 			THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
 			while(count < W) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
@@ -186,6 +186,20 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						addSubgraph(triplet);
 						count++;
+					}
+				}
+			}*/
+			for(LabeledNeighbor a: union) {
+				if(!intersection.contains(a)) {
+					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(a.getDst());
+					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
+						//triangle -> hence, rejected!!!!!
+					}else if (randomVertexNeighbor.contains(src)) {
+						Triplet triplet = new Triplet(src, dst, a.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), a.getDst().getVertexId(), a.getDst().getVertexLabel(), a.getEdgeLabel()));
+						addSubgraph(triplet);
+					}else {
+						Triplet triplet = new Triplet(src, dst, a.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), a.getDst().getVertexId(), a.getDst().getVertexLabel(), a.getEdgeLabel()));
+						addSubgraph(triplet);
 					}
 				}
 			}

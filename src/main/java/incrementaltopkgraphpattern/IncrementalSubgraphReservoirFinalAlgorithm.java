@@ -121,7 +121,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						reservoir.add(triplet); 
 						addFrequentPattern(triplet);
-
+						count++;
 					}else {
 						if(reservoir.size() >= M) {
 							Triplet temp = reservoir.getRandom();
@@ -131,9 +131,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						reservoir.add(triplet); 
 						addFrequentPattern(triplet);
+						count++;
 					}
 				}
-				count++;
+				
 			}
 
 			sum = sum-W;
