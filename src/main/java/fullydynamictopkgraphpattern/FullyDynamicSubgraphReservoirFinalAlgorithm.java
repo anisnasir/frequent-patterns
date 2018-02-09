@@ -260,13 +260,13 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
+		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
 
-		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
+		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		Ncurrent-=W;
 
 		//remove all the wedges from the graphs
