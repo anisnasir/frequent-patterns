@@ -37,7 +37,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	public int c2;
 	int sum;
 	AlgorithmZ skipRS;
-	//AlgorithmD skipRP;
+	AlgorithmD skipRP;
 	int Zprime;
 	Random rand;
 	ReservoirSampling<LabeledNeighbor> sampler;
@@ -58,7 +58,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		Zprime=-1;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		skipRS = new AlgorithmZ(M);
-		//skipRP = new AlgorithmD();
+		skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<LabeledNeighbor>();
 	}
 
@@ -198,21 +198,18 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				removeFrequentPattern(temp);
 			}
 		}else {
-			//if(Zprime < 0) {
-				//Zprime = skipRP.vitter_d_skip(c1,c1+c2);
-			//}
-			
-			double value = c1/(double)(c1+c2);
+			if(Zprime < 0) {
+				Zprime = skipRP.vitter_d_skip(c1,c1+c2);
+			}
 
-			//if(Zprime == 0) {
-			if(Math.random() < value) {
+			if(Zprime == 0) {
 				flag = true;
 				c1--;
 			}else {
 				c2--;
 			}
 
-			//Zprime--;
+			Zprime--;
 		}
 
 		if(flag) {
@@ -281,7 +278,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			for(Triplet t: wedges) {
 				reservoir.remove(t);
 				removeFrequentPattern(t);
-				//Zprime = -1;
+				Zprime = -1;
 			}
 			c1+=count;
 			c2+= (W-count);
