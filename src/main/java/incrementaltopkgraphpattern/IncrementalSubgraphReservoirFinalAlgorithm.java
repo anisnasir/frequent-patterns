@@ -34,7 +34,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int sum;
-	AlgorithmZ skipFunction;
+	AlgorithmZ skipRS;
 	public IncrementalSubgraphReservoirFinalAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		this.nodeBottomK = new NodeBottomK();
@@ -45,7 +45,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 		M = size;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		sum = 0;
-		skipFunction = new AlgorithmZ(M);
+		skipRS = new AlgorithmZ(M);
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -59,93 +59,85 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-
-		//update all triangles in the reservoir
+		//replaces the existing wedges in the reservoir with the triangles
 		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
-		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
+		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
-			if(t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) {
-				triangles.add(t);
+			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
+				oldWedges.add(t);
 			}
 		}
-		if(triangles.size() > 0) {
-			for(Triplet t: triangles) {
+		if(oldWedges.size() > 0) {
+			for(Triplet t: oldWedges) {
 				Triplet newTriangle = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB,edge);
 				replaceSubgraphs(t, newTriangle);
 			}
 		}
 
-		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
+		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
+		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
+		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
-		
-		int W = srcSketch.unionImprovedCardinality(dstSketch) - srcSketch.intersectionImprovedCardinality(dstSketch);
-		int i = 0 ;
-		//System.out.println("list " + list);
 		//System.out.println("W "  + W);
 		if(W> 0) {
-			while(sum < W) {
+			int i = 0 ;
+			while(sum <W) {
 				i++;
-				int zrs = skipFunction.apply(N);
+				int zrs = skipRS.apply(N);
 				N = N+zrs+1;
 				sum = sum+zrs+1;
 			}
-
-			//System.out.println("i " + i);
-			int count = 0;
-			THashSet<LabeledNeighbor> added = new THashSet<LabeledNeighbor>();
+			//added i wedges to the reservoir
+			//we would randomly pick a vertex from the neighborhood of src and dst
+			//and add it to the reservoir
+			//System.out.println("i " + i + " W " + W);
+			THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
+			int count = 0 ;
 			while(count < i) {
 				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
-				//System.out.println(srcNeighbor + " " + dstNeighbor);
-
 				if(randomVertex == null) {
 					break;
-				}else if (added.contains(randomVertex)) {
-					
-				}
-				else {
-					added.add(randomVertex);
+				}else if (set.contains(randomVertex)) {
+					//wedge already added
+				}else {
+					set.add(randomVertex);
 					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
 					}else if (randomVertexNeighbor.contains(src)) {
-						if(reservoir.size() >= M) {
-							Triplet temp = reservoir.getRandom();
-							reservoir.remove(temp);
-							removeFrequentPattern(temp);
-						}
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-						reservoir.add(triplet); 
-						addFrequentPattern(triplet);
+						addToReservoir(triplet);
 						count++;
 					}else {
-						if(reservoir.size() >= M) {
-							Triplet temp = reservoir.getRandom();
-							reservoir.remove(temp);
-							removeFrequentPattern(temp);
-						}
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
-						reservoir.add(triplet); 
-						addFrequentPattern(triplet);
+						addToReservoir(triplet);
 						count++;
 					}
 				}
-				
 			}
-
 			sum = sum-W;
 		}
 
 		utility.handleEdgeAddition(edge, nodeMap);
-		nodeBottomK.addEdge(src, dst, edge);
 		//System.out.println(reservoir.size() + "  N " + N);
+		nodeBottomK.addEdge(src, dst, edge);
 		return false;
 	}
+	void addToReservoir(Triplet triplet) { 
+		if(reservoir.size() >= M) {
+			Triplet temp = reservoir.getRandom();
+			reservoir.remove(temp);
+			removeFrequentPattern(temp);
+		}
+		reservoir.add(triplet); 
+		addFrequentPattern(triplet);
 
+	}
 	public THashSet<LabeledNode> getNeighbors(THashSet<LabeledNeighbor> randomVertexNeighborWithEdgeLabels) {
 		THashSet<LabeledNode> results = new THashSet<LabeledNode>();
 		for(LabeledNeighbor a: randomVertexNeighborWithEdgeLabels) {
