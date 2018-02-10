@@ -37,7 +37,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	public int c2;
 	int sum;
 	AlgorithmZ skipRS;
-	//AlgorithmD skipRP;
+	AlgorithmD skipRP;
 	int Zprime;
 	Random rand;
 	ReservoirSampling<LabeledNeighbor> sampler;
@@ -58,7 +58,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		Zprime=-1;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		skipRS = new AlgorithmZ(M);
-		//skipRP = new AlgorithmD();
+		skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<LabeledNeighbor>();
 	}
 
@@ -147,7 +147,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				if(randomVertex == null) {
 					break;
 				}	else if (set.contains(randomVertex)) {
-
+					
 				} else {
 					set.add(randomVertex);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
@@ -182,7 +182,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		addFrequentPattern(triplet);
 
 	}
-	/*void addSubgraph(Triplet t) {
+	void addSubgraph(Triplet t) {
 		N++;
 		Ncurrent++;
 
@@ -210,38 +210,6 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 
 			Zprime--;
-		}
-
-		if(flag) {
-			reservoir.add(t); 
-			addFrequentPattern(t);
-			//System.out.println("reservoir size after add method " + reservoir.size());
-		}
-	}*/
-
-	void addSubgraph(Triplet t) {
-		N++;
-		Ncurrent++;
-
-		boolean flag = false;
-		if (c1+c2 ==0) {
-			if(reservoir.size() < M ) {
-				flag = true;
-			}else if (Math.random() < (M/(double)N)) {
-				flag = true;
-				//System.out.println("remove called from add subgraph");
-				Triplet temp = reservoir.getRandom();
-				reservoir.remove(temp);
-				removeFrequentPattern(temp);
-			}
-		}else {
-			int d = c1+c2;
-			if (Math.random() < (c1/(double)(d))) {
-				flag = true;
-				c1--;
-			}else {
-				c2--;
-			}
 		}
 
 		if(flag) {
