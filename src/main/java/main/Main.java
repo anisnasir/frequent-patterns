@@ -173,6 +173,10 @@ public class Main {
 			edge = reader.nextItem();
 		}
 
+		if(simulatorType ==3 ) { 
+			IncrementalSubgraphReservoirAlgorithm temp = (IncrementalSubgraphReservoirAlgorithm)topkGraphPattern;
+			System.out.println("number of edges in reservoir equals " + temp.getEdgeCount());
+		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("execution time: " + (endTime-startTime)/(double)1000 + " secs.");
 		//create the output file name

@@ -22,6 +22,9 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
 	THashMap<GraphPattern, Integer> frequentPatterns;
+	THashMap<StreamEdge,Integer> edgeCountMap;
+	int edgeCount;
+	
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	public IncrementalSubgraphReservoirAlgorithm(int size, int k ) { 
@@ -31,6 +34,9 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 		N = 0;
 		M = size;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
+		edgeCountMap = new THashMap<StreamEdge,Integer>();
+		edgeCount=0;
+		
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -142,6 +148,39 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 		}else {
 			frequentPatterns.put(p, 1);
 		}
+		
+		if(t.isTriangle()) {
+			incrementEdgeCount(t.edgeA);
+			incrementEdgeCount(t.edgeB);
+			incrementEdgeCount(t.edgeC);
+		}else {
+			incrementEdgeCount(t.edgeA);
+			incrementEdgeCount(t.edgeB);
+		}
+		
+	}
+	
+	void incrementEdgeCount(StreamEdge edge) {
+		if(edgeCountMap.contains(edge)) {
+			int count = edgeCountMap.get(edge);
+			edgeCountMap.put(edge, count+1);
+		}else {
+			edgeCount++;
+			edgeCountMap.put(edge, 1);
+		}
+		
+	}
+	void decrementEdgeCount(StreamEdge edge) {
+		if(edgeCountMap.contains(edge)) {
+			int count = edgeCountMap.get(edge);
+			if(count>1)
+				edgeCountMap.put(edge, count-1);
+			else {
+				edgeCountMap.remove(edge);
+				edgeCount--;
+			}
+		}
+		
 	}
 	
 	void removeFrequentPattern(Triplet t) {
@@ -153,6 +192,20 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 			else 
 				frequentPatterns.remove(p);
 		}
+		
+		if(t.isTriangle()) {
+			decrementEdgeCount(t.edgeA);
+			decrementEdgeCount(t.edgeB);
+			decrementEdgeCount(t.edgeC);
+		}else {
+			decrementEdgeCount(t.edgeA);
+			decrementEdgeCount(t.edgeB);
+		}
+		
+	}
+	
+	public int getEdgeCount() {
+		return this.edgeCount;
 	}
 	
 	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
