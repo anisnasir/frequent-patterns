@@ -91,7 +91,7 @@ public class Main {
 		//declare object of the algorithm interface
 		TopkGraphPatterns topkGraphPattern = null;
 		long startTime = System.currentTimeMillis();
-		
+
 		if(simulatorType == 0 ) {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
@@ -170,12 +170,13 @@ public class Main {
 					//System.out.println("- " + oldestEdge);
 					topkGraphPattern.removeEdge(oldestEdge);
 				}
-				if(simulatorType ==3 ) { 
-					IncrementalSubgraphReservoirAlgorithm temp = (IncrementalSubgraphReservoirAlgorithm)topkGraphPattern;
-					int count = temp.getEdgeCount();
-					if(count > maxEdges) {
-						maxEdges = count;
-					}
+
+			}
+			if(simulatorType ==3 ) { 
+				IncrementalSubgraphReservoirAlgorithm temp = (IncrementalSubgraphReservoirAlgorithm)topkGraphPattern;
+				int count = temp.getEdgeCount();
+				if(count > maxEdges) {
+					maxEdges = count;
 				}
 			}
 			edge = reader.nextItem();

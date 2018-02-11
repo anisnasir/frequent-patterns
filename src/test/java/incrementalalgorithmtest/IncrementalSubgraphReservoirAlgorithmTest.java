@@ -20,6 +20,7 @@ public class IncrementalSubgraphReservoirAlgorithmTest {
 		assertEquals(1, topk.getFrequentPatterns().size());
 
 		System.out.println(topk.getFrequentPatterns());
+		System.out.println(topk.getEdgeCount());
 	}
 	@Test
 	public void triangleAddition() {
