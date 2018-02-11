@@ -105,7 +105,7 @@ public class Main {
 			//double Tkk = Math.log(Tk/delta);
 			//int size = (int) (Tkk*epsilonk);
 			//System.out.println(size);
-			int size = 100000;
+			int size = 988471; //this one is the max from patent dataset
 			topkGraphPattern = new FullyDynamicTriesteAlgorithm(size, k );
 		}else if(simulatorType == 2) {
 			topkGraphPattern = new FullyDynamicExhaustiveCounting();
@@ -116,9 +116,10 @@ public class Main {
 			System.out.println(size);
 			topkGraphPattern = new IncrementalSubgraphReservoirAlgorithm(size, k);
 		}else if(simulatorType == 4) {
-			double epsilonk = (4+epsilon)/(epsilon*epsilon);
-			double Tkk = Math.log(Tk/delta);
-			int size = (int) (Tkk*epsilonk);
+			//double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			//double Tkk = Math.log(Tk/delta);
+			//int size = (int) (Tkk*epsilonk);
+			int size = 988471; //this one is the max from patent dataset
 			topkGraphPattern = new IncrementalTriesteAlgorithm(size, k );
 		}else if (simulatorType == 5) {
 			topkGraphPattern = new IncrementalExhaustiveCounting();
