@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+
 import fullydynamictopkgraphpattern.FullyDynamicExhaustiveCounting;
 import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirAlgorithm;
 import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirFinalAlgorithm;
@@ -159,6 +161,7 @@ public class Main {
 		 * <source-id,source-label,dest-id,dest-label,edge-label>
 		 */
 		int maxEdges = 0;
+		SummaryStatistics summary = new SummaryStatistics();
 		while(edge!=null) {
 			topkGraphPattern.addEdge(edge);
 			//System.out.println("+ " + edge);
@@ -178,12 +181,14 @@ public class Main {
 				if(count > maxEdges) {
 					maxEdges = count;
 				}
+				summary.addValue(count);
 			}
 			edge = reader.nextItem();
 		}
 
 		if(simulatorType ==3 ) { 
 			System.out.println("maximum number of edges in reservoir: " + maxEdges);
+			System.out.println(summary);
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("execution time: " + (endTime-startTime)/(double)1000 + " secs.");
