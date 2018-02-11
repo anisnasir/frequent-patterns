@@ -158,6 +158,7 @@ public class Main {
 		 * each line in the file represents a tuple of the form
 		 * <source-id,source-label,dest-id,dest-label,edge-label>
 		 */
+		int maxEdges = 0;
 		while(edge!=null) {
 			topkGraphPattern.addEdge(edge);
 			//System.out.println("+ " + edge);
@@ -169,13 +170,19 @@ public class Main {
 					//System.out.println("- " + oldestEdge);
 					topkGraphPattern.removeEdge(oldestEdge);
 				}
+				if(simulatorType ==3 ) { 
+					IncrementalSubgraphReservoirAlgorithm temp = (IncrementalSubgraphReservoirAlgorithm)topkGraphPattern;
+					int count = temp.getEdgeCount();
+					if(count > maxEdges) {
+						maxEdges = count;
+					}
+				}
 			}
 			edge = reader.nextItem();
 		}
 
 		if(simulatorType ==3 ) { 
-			IncrementalSubgraphReservoirAlgorithm temp = (IncrementalSubgraphReservoirAlgorithm)topkGraphPattern;
-			System.out.println("number of edges in reservoir equals " + temp.getEdgeCount());
+			System.out.println("maximum number of edges in reservoir: " + maxEdges);
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("execution time: " + (endTime-startTime)/(double)1000 + " secs.");
