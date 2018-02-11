@@ -105,7 +105,8 @@ public class Main {
 			//double Tkk = Math.log(Tk/delta);
 			//int size = (int) (Tkk*epsilonk);
 			//System.out.println(size);
-			int size = 988471; //this one is the max from patent dataset
+			int size = 1270176; //this one is the max from youtube dataset
+			//int size = 988471; //this one is the max from patent dataset
 			topkGraphPattern = new FullyDynamicTriesteAlgorithm(size, k );
 		}else if(simulatorType == 2) {
 			topkGraphPattern = new FullyDynamicExhaustiveCounting();
