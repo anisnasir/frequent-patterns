@@ -162,8 +162,6 @@ public class Main {
 		 * each line in the file represents a tuple of the form
 		 * <source-id,source-label,dest-id,dest-label,edge-label>
 		 */
-		int maxEdges = 0;
-		SummaryStatistics summary = new SummaryStatistics();
 		while(edge!=null) {
 			topkGraphPattern.addEdge(edge);
 			//System.out.println("+ " + edge);
@@ -177,20 +175,7 @@ public class Main {
 				}
 
 			}
-			if(simulatorType ==3 ) { 
-				IncrementalSubgraphReservoirAlgorithm temp = (IncrementalSubgraphReservoirAlgorithm)topkGraphPattern;
-				int count = temp.getEdgeCount();
-				if(count > maxEdges) {
-					maxEdges = count;
-				}
-				summary.addValue(count);
-			}
 			edge = reader.nextItem();
-		}
-
-		if(simulatorType ==3 ) { 
-			System.out.println("maximum number of edges in reservoir: " + maxEdges);
-			System.out.println(summary);
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("execution time: " + (endTime-startTime)/(double)1000 + " secs.");

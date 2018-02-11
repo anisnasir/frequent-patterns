@@ -75,12 +75,12 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 			}
 		}
 
-		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
-		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
+		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
+		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
 		//System.out.println("W "  + W);
@@ -104,11 +104,13 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 					break;
 				}else if (set.contains(randomVertex)) {
 					//wedge already added
+					count++;
 				}else {
 					set.add(randomVertex);
 					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
+						count++;
 					}else if (randomVertexNeighbor.contains(src)) {
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						addToReservoir(triplet);

@@ -58,7 +58,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		Zprime=-1;
 		frequentPatterns = new THashMap<GraphPattern, Integer>();
 		skipRS = new AlgorithmZ(M);
-		skipRP = new AlgorithmD();
+		//skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<LabeledNeighbor>();
 	}
 
@@ -89,12 +89,12 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}
 
-		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
-		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
+		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
+		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
 		if(c1+c2 == 0) {
@@ -120,11 +120,13 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 						break;
 					}else if (set.contains(randomVertex)) {
 						//wedge already added
+						count++;
 					}else {
 						set.add(randomVertex);
 						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 						if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 							//triangle -> hence, rejected!!!!!
+							count++;
 						}else if (randomVertexNeighbor.contains(src)) {
 							Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 							addToReservoir(triplet);
@@ -147,13 +149,14 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				if(randomVertex == null) {
 					break;
 				}	else if (set.contains(randomVertex)) {
-					
+					count++;
 				} else {
 					set.add(randomVertex);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
 					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
+						count++;
 					}else if (randomVertexNeighbor.contains(src)) {
 						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
 						addSubgraph(triplet);
@@ -182,7 +185,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		addFrequentPattern(triplet);
 
 	}
-	void addSubgraph(Triplet t) {
+	/*void addSubgraph(Triplet t) {
 		N++;
 		Ncurrent++;
 
@@ -218,7 +221,38 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			//System.out.println("reservoir size after add method " + reservoir.size());
 		}
 	}
+	 */
+	void addSubgraph(Triplet t) {
+		N++;
+		Ncurrent++;
 
+		boolean flag = false;
+		if (c1+c2 ==0) {
+			if(reservoir.size() < M ) {
+				flag = true;
+			}else if (Math.random() < (M/(double)N)) {
+				flag = true;
+				//System.out.println("remove called from add subgraph");
+				Triplet temp = reservoir.getRandom();
+				reservoir.remove(temp);
+				removeFrequentPattern(temp);
+			}
+		}else {
+			int d = c1+c2;
+			if (Math.random() < (c1/(double)(d))) {
+				flag = true;
+				c1--;
+			}else {
+				c2--;
+			}
+		}
+
+		if(flag) {
+			reservoir.add(t); 
+			addFrequentPattern(t);
+			//System.out.println("reservoir size after add method " + reservoir.size());
+		}
+	}
 
 	public LabeledNeighbor getRandomNeighbor(THashSet<LabeledNeighbor> srcNeighbor, THashSet<LabeledNeighbor> dstNeighbor) {
 		int d_u = srcNeighbor.size();
@@ -255,13 +289,13 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		//BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
+		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
 
-		SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
+		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
+		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		Ncurrent-=W;
 
 		//remove all the wedges from the graphs
