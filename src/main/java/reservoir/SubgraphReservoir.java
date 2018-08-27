@@ -1,11 +1,5 @@
 package reservoir;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.NoSuchElementException;
-import java.util.Random;
-
-import gnu.trove.map.hash.THashMap;
 import struct.MapArray;
 
 /**

@@ -7,15 +7,16 @@ import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
+import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
 import reservoir.SubgraphReservoir;
-import struct.GraphPattern;
 import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeBottomK;
 import struct.NodeMap;
 import struct.Triplet;
+import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.ReservoirSampling;
@@ -28,7 +29,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	AdvancedSubgraphReservoir<Triplet> reservoir;
-	THashMap<GraphPattern, Integer> frequentPatterns;
+	THashMap<Pattern, Integer> frequentPatterns;
 	NodeBottomK nodeBottomK;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
@@ -56,7 +57,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		c2=0;
 		sum = 0;
 		Zprime=-1;
-		frequentPatterns = new THashMap<GraphPattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Integer>();
 		skipRS = new AlgorithmZ(M);
 		//skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<LabeledNeighbor>();
@@ -74,7 +75,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		//replaces the existing wedges in the reservoir with the triangles
-		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
+		THashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
@@ -299,7 +300,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		Ncurrent-=W;
 
 		//remove all the wedges from the graphs
-		THashSet<Triplet> candidateWedges = reservoir.getAllTriplets(src);
+		THashSet<Triplet> candidateWedges = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
 			if((t.edgeA.equals(edge) || t.edgeB.equals(edge)) && !t.isTriangle()) {
@@ -321,7 +322,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		//System.out.println(reservoir.size());
 
 		//update all triangles in the reservoir and replace them with the wedges
-		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
+		THashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
@@ -358,7 +359,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	}
 
 	void addFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
@@ -368,7 +369,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	}
 
 	void removeFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			if(count >1)
@@ -378,14 +379,14 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		}
 	}
 
-	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
 	}
 	private void correctEstimates() {
 		double correctFactor = correctFactor();
-		List<GraphPattern> patterns = new ArrayList<GraphPattern>(frequentPatterns.keySet());
-		for(GraphPattern p: patterns) {
+		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
+		for(Pattern p: patterns) {
 			int count = frequentPatterns.get(p);
 			double value = count*correctFactor;
 			frequentPatterns.put(p, (int)value);

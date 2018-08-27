@@ -1,12 +1,12 @@
 package topkgraphpattern;
 
 import gnu.trove.map.hash.THashMap;
+import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
-import struct.GraphPattern;
 
 public interface TopkGraphPatterns {
 	boolean addEdge(StreamEdge edge);
 	boolean removeEdge(StreamEdge edge);
-	THashMap<GraphPattern, Integer> getFrequentPatterns();
+	THashMap<Pattern, Integer> getFrequentPatterns();
 	int getNumberofSubgraphs();
 }

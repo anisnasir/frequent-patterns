@@ -7,6 +7,14 @@ import java.util.Random;
 
 import gnu.trove.map.hash.THashMap;
 
+/**
+ * Data structure that implements add, contains, deleteRandom, remove in
+ * constant time.
+ * 
+ * @author anisnasir
+ *
+ * @param <T>
+ */
 public class MapArray<T> {
 	private THashMap<T, Integer> valueIndexes;
 	private ArrayList<T> values;
@@ -21,13 +29,14 @@ public class MapArray<T> {
 	public boolean isEmpty() {
 		return (values.size() == 0);
 	}
+
 	public boolean add(T value) {
 		if (!contains(value)) {
 			int lastIndex = values.size();
 			valueIndexes.put(value, lastIndex);
 			values.add(value);
 			return true;
-		}else 
+		} else
 			return false;
 	}
 

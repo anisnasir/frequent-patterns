@@ -7,15 +7,17 @@ import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
+import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
 import reservoir.SubgraphReservoir;
-import struct.GraphPattern;
 import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeBottomK;
 import struct.NodeMap;
 import struct.Triplet;
+import topkgraphpattern.Pattern;
+import topkgraphpattern.Subgraph;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.ReservoirSampling;
@@ -30,7 +32,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 	AdvancedSubgraphReservoir<Triplet> reservoir;
 	Random rand;
 
-	THashMap<GraphPattern, Integer> frequentPatterns;
+	THashMap<Pattern, Integer> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int sum;
@@ -43,7 +45,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 		reservoir = new AdvancedSubgraphReservoir<Triplet>();
 		N = 0;
 		M = size;
-		frequentPatterns = new THashMap<GraphPattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Integer>();
 		sum = 0;
 		skipRS = new AlgorithmZ(M);
 	}
@@ -60,7 +62,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		//replaces the existing wedges in the reservoir with the triangles
-		THashSet<Triplet> candidateTriangles = reservoir.getAllTriplets(src);
+		THashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
@@ -180,7 +182,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 	}
 
 	void addFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
@@ -190,7 +192,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 	}
 
 	void removeFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			if(count >1)
@@ -200,14 +202,14 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 		}
 	}
 
-	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
 	}
 	private void correctEstimates() {
 		double correctFactor = correctFactor();
-		List<GraphPattern> patterns = new ArrayList<GraphPattern>(frequentPatterns.keySet());
-		for(GraphPattern p: patterns) {
+		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
+		for(Pattern p: patterns) {
 			int count = frequentPatterns.get(p);
 			double value = count*correctFactor;
 			frequentPatterns.put(p, (int)value);

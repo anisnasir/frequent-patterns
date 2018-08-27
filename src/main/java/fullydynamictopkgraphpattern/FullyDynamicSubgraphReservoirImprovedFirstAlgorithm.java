@@ -6,13 +6,14 @@ import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
+import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.SubgraphReservoir;
-import struct.GraphPattern;
 import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
+import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.ReservoirSampling;
@@ -24,7 +25,7 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
-	THashMap<GraphPattern, Integer> frequentPatterns;
+	THashMap<Pattern, Integer> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int Ncurrent;
@@ -46,7 +47,7 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 		c2=0;
 		sum = 0;
 		sum2=0;
-		frequentPatterns = new THashMap<GraphPattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Integer>();
 		skipRS = new AlgorithmZ(M);
 		skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<Triplet>();
@@ -251,7 +252,7 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 	}
 
 	void addFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
@@ -261,7 +262,7 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 	}
 
 	void removeFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			if(count >1)
@@ -271,14 +272,14 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 		}
 	}
 
-	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
 	}
 	private void correctEstimates() {
 		double correctFactor = correctFactor();
-		List<GraphPattern> patterns = new ArrayList<GraphPattern>(frequentPatterns.keySet());
-		for(GraphPattern p: patterns) {
+		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
+		for(Pattern p: patterns) {
 			int count = frequentPatterns.get(p);
 			double value = count*correctFactor;
 			frequentPatterns.put(p, (int)value);

@@ -1,13 +1,15 @@
 package struct;
 
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import input.StreamEdge;
+import topkgraphpattern.Subgraph;
 
-public class Triplet implements Comparable<Triplet>{
+public class Triplet implements Comparable<Triplet>, Subgraph {
 	public int numEdges;
 	public LabeledNode a;
 	public LabeledNode b;
@@ -20,9 +22,10 @@ public class Triplet implements Comparable<Triplet>{
 		edgeA = edgeB = edgeC = null;
 	}
 
-	public boolean isTriangle() { 
+	public boolean isTriangle() {
 		return (this.numEdges == 3);
 	}
+
 	public Triplet(LabeledNode a, LabeledNode b, LabeledNode c, StreamEdge edgeA, StreamEdge edgeB) {
 		numEdges = 2;
 		LabeledNode arr[] = new LabeledNode[3];
@@ -30,21 +33,21 @@ public class Triplet implements Comparable<Triplet>{
 		arr[1] = b;
 		arr[2] = c;
 		Arrays.sort(arr);
-		
+
 		this.a = arr[0];
 		this.b = arr[1];
 		this.c = arr[2];
-		
-		if(edgeA.compareTo(edgeB) < 0) {
+
+		if (edgeA.compareTo(edgeB) < 0) {
 			this.edgeA = edgeA;
 			this.edgeB = edgeB;
-		}else {
+		} else {
 			this.edgeA = edgeB;
 			this.edgeB = edgeA;
 		}
 
-
 	}
+
 	public Triplet(LabeledNode a, LabeledNode b, LabeledNode c, StreamEdge edgeA, StreamEdge edgeB, StreamEdge edgeC) {
 		numEdges = 3;
 		LabeledNode arr[] = new LabeledNode[3];
@@ -52,16 +55,16 @@ public class Triplet implements Comparable<Triplet>{
 		arr[1] = b;
 		arr[2] = c;
 		Arrays.sort(arr);
-		
+
 		this.a = arr[0];
 		this.b = arr[1];
 		this.c = arr[2];
-		
-		StreamEdge [] edgeArray = new StreamEdge[3];
+
+		StreamEdge[] edgeArray = new StreamEdge[3];
 		edgeArray[0] = edgeA;
 		edgeArray[1] = edgeB;
 		edgeArray[2] = edgeC;
-		
+
 		Arrays.sort(edgeArray);
 		this.edgeA = edgeArray[0];
 		this.edgeB = edgeArray[1];
@@ -70,68 +73,60 @@ public class Triplet implements Comparable<Triplet>{
 	}
 
 	public int compareTo(Triplet o) {
-		if(this.numEdges < o.numEdges) {
+		if (this.numEdges < o.numEdges) {
 			return -1;
-		}else if(this.numEdges == o.numEdges) {
-			if(this.a.compareTo(o.a) < 0) {
+		} else if (this.numEdges == o.numEdges) {
+			if (this.a.compareTo(o.a) < 0) {
 				return -1;
-			}else if (this.a.compareTo(o.a) == 0) {
-				if(this.b.compareTo(o.b) < 0) {
+			} else if (this.a.compareTo(o.a) == 0) {
+				if (this.b.compareTo(o.b) < 0) {
 					return -1;
-				}else if(this.b.compareTo(o.b) ==0) {
-					if(this.c.compareTo(o.c) < 0)
+				} else if (this.b.compareTo(o.b) == 0) {
+					if (this.c.compareTo(o.c) < 0)
 						return -1;
-					else if(this.c.compareTo(o.c) == 0) {
-						if(this.edgeA.compareTo(o.edgeA) < 0) {
+					else if (this.c.compareTo(o.c) == 0) {
+						if (this.edgeA.compareTo(o.edgeA) < 0) {
 							return -1;
-						}else if(this.edgeA.compareTo(o.edgeA) == 0) {
-							if(this.edgeB.compareTo(o.edgeB) < 0) {
+						} else if (this.edgeA.compareTo(o.edgeA) == 0) {
+							if (this.edgeB.compareTo(o.edgeB) < 0) {
 								return -1;
-							}else if(this.edgeB.compareTo(o.edgeB) == 0) {
-								if(numEdges == 2) 
+							} else if (this.edgeB.compareTo(o.edgeB) == 0) {
+								if (numEdges == 2)
 									return 0;
 								else {
 									return this.edgeC.compareTo(o.edgeC);
 								}
-							}else
+							} else
 								return 1;
-						}else 
+						} else
 							return 1;
-					}else 
+					} else
 						return 1;
-				}else 
+				} else
 					return 1;
-			}else 
+			} else
 				return 1;
-		}else 
+		} else
 			return 1;
 	}
 
 	@Override
 	public int hashCode() {
-		//System.out.println("hashcode method");
-		if(this.numEdges == 2) {
-			int hashCode =  new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
-					// if deriving: appendSuper(super.hashCode()).
-					append(this.a).
-					append(this.b).
-					append(this.c).
-					append(this.edgeA).
-					append(this.edgeB).
-					append(this.numEdges).
-					toHashCode();
+		// System.out.println("hashcode method");
+		if (this.numEdges == 2) {
+			int hashCode = new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
+			// if deriving: appendSuper(super.hashCode()).
+					append(this.a).append(this.b).append(this.c).append(this.edgeA).append(this.edgeB)
+					.append(this.numEdges).toHashCode();
 			return hashCode;
-		}else {
-			int hashCode =  new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
-					// if deriving: appendSuper(super.hashCode()).
-					append(this.a).
-					append(this.b).
-					append(this.c).
-					//append(this.edgeA).
-					//append(this.edgeB).
-					//append(this.edgeC).
-					append(this.numEdges).
-					toHashCode();
+		} else {
+			int hashCode = new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
+			// if deriving: appendSuper(super.hashCode()).
+					append(this.a).append(this.b).append(this.c).
+					// append(this.edgeA).
+					// append(this.edgeB).
+					// append(this.edgeC).
+					append(this.numEdges).toHashCode();
 			return hashCode;
 		}
 
@@ -139,20 +134,25 @@ public class Triplet implements Comparable<Triplet>{
 
 	@Override
 	public boolean equals(Object o) {
-		if(o == null)
+		if (o == null)
 			return false;
-		
-		//System.out.println("equal method ");
-		Triplet t = (Triplet)o;
-		
+
+		// System.out.println("equal method ");
+		Triplet t = (Triplet) o;
+
 		return (this.compareTo(t) == 0);
 
 	}
 
 	public String toString() {
-		if(numEdges == 2) {
-			return a+":" + b + ":" + c + ":" + edgeA +":"+ edgeB;
-		}else 
-			return a+":" + b + ":" + c + ":" + edgeA +":"+ edgeB + ":" + edgeC;
+		if (numEdges == 2) {
+			return a + ":" + b + ":" + c + ":" + edgeA + ":" + edgeB;
+		} else
+			return a + ":" + b + ":" + c + ":" + edgeA + ":" + edgeB + ":" + edgeC;
+	}
+
+	@Override
+	public List<LabeledNode> getAllVertices() {
+		return Arrays.asList(a, b, c);
 	}
 }

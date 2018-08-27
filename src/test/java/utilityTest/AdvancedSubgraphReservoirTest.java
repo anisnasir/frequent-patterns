@@ -28,21 +28,21 @@ public class AdvancedSubgraphReservoirTest {
 		reservoir.add(t1);
 		reservoir.add(t);
 		
-		System.out.println(reservoir.getAllTriplets(a));
-		System.out.println(reservoir.getAllTriplets(b));
-		System.out.println(reservoir.getAllTriplets(c));
+		System.out.println(reservoir.getAllSubgraphs(a));
+		System.out.println(reservoir.getAllSubgraphs(b));
+		System.out.println(reservoir.getAllSubgraphs(c));
 		
 		reservoir.remove(t1);
 
-		System.out.println(reservoir.getAllTriplets(a));
-		System.out.println(reservoir.getAllTriplets(b));
-		System.out.println(reservoir.getAllTriplets(c));
+		System.out.println(reservoir.getAllSubgraphs(a));
+		System.out.println(reservoir.getAllSubgraphs(b));
+		System.out.println(reservoir.getAllSubgraphs(c));
 		
 		reservoir.remove(t);
 
-		System.out.println(reservoir.getAllTriplets(a));
-		System.out.println(reservoir.getAllTriplets(b));
-		System.out.println(reservoir.getAllTriplets(c));
+		System.out.println(reservoir.getAllSubgraphs(a));
+		System.out.println(reservoir.getAllSubgraphs(b));
+		System.out.println(reservoir.getAllSubgraphs(c));
 		
 		reservoir.remove(t);
 	}

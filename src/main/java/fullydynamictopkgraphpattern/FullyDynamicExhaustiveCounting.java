@@ -4,12 +4,13 @@ import java.util.Set;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
+import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
-import struct.GraphPattern;
 import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
+import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
@@ -18,14 +19,14 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	THashMap<Triplet, Integer> counter;
-	THashMap<GraphPattern, Integer> frequentPatterns;
+	THashMap<Pattern, Integer> frequentPatterns;
 	int numSubgraph;
 	public FullyDynamicExhaustiveCounting() {
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		counter = new THashMap<Triplet, Integer>();
 		numSubgraph = 0 ;
-		frequentPatterns = new THashMap<GraphPattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Integer>();
 	}
 	public boolean addEdge(StreamEdge edge) {
 		//System.out.println("+" + edge);
@@ -168,7 +169,7 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	}
 	
 	void addFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
@@ -178,7 +179,7 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	}
 	
 	void removeFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			if(count >1)
@@ -188,7 +189,7 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 		}
 	}
 	
-	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Integer> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 	public int getNumberofSubgraphs() {

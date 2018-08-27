@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -23,6 +24,7 @@ import java.io.FileWriter;
 
 import gnu.trove.map.TMap;
 import gnu.trove.map.hash.THashMap;
+import graphpattern.ThreeNodeGraphPattern;
 import incrementaltopkgraphpattern.IncrementalExhaustiveCounting;
 import incrementaltopkgraphpattern.IncrementalSubgraphReservoirAlgorithm;
 import incrementaltopkgraphpattern.IncrementalSubgraphReservoirFinalAlgorithm;
@@ -31,7 +33,8 @@ import incrementaltopkgraphpattern.IncrementalTriesteAlgorithm;
 import input.StreamEdge;
 import input.StreamEdgeReader;
 import slidingwindow.FixedSizeSlidingWindow;
-import struct.GraphPattern;
+import topkgraphpattern.Pattern;
+import topkgraphpattern.Subgraph;
 import topkgraphpattern.TopkGraphPatterns;
 
 /*
@@ -87,7 +90,7 @@ public class Main {
 		}
 
 		StreamEdgeReader reader = new StreamEdgeReader(in, sep);
-		StreamEdge edge = reader.nextItem();
+		Optional<StreamEdge> edge = reader.nextItem();
 		FixedSizeSlidingWindow sw = new FixedSizeSlidingWindow(windowSize);
 
 		//declare object of the algorithm interface
@@ -98,14 +101,14 @@ public class Main {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
-			System.out.println(size);
+			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirAlgorithm(size,k);
 		}else if(simulatorType == 1) {
-			//double epsilonk = (4+epsilon)/(epsilon*epsilon);
-			//double Tkk = Math.log(Tk/delta);
-			//int size = (int) (Tkk*epsilonk);
-			//System.out.println(size);
-			int size = 1270176; //this one is the max from youtube dataset
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
+			System.out.println("size of the reservoir: " + size);
+			//int size = 1270176; //this one is the max from youtube dataset
 			//int size = 988471; //this one is the max from patent dataset
 			topkGraphPattern = new FullyDynamicTriesteAlgorithm(size, k );
 		}else if(simulatorType == 2) {
@@ -114,13 +117,14 @@ public class Main {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
-			System.out.println(size);
+			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirAlgorithm(size, k);
 		}else if(simulatorType == 4) {
-			//double epsilonk = (4+epsilon)/(epsilon*epsilon);
-			//double Tkk = Math.log(Tk/delta);
-			//int size = (int) (Tkk*epsilonk);
-			int size = 988471; //this one is the max from patent dataset
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
+			System.out.println("size of the reservoir: " + size);
+			//int size = 988471; //this one is the max from patent dataset
 			topkGraphPattern = new IncrementalTriesteAlgorithm(size, k );
 		}else if (simulatorType == 5) {
 			topkGraphPattern = new IncrementalExhaustiveCounting();
@@ -128,31 +132,31 @@ public class Main {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
-			System.out.println(size);
+			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirImprovedAlgorithm(size, k);
 		}else if (simulatorType == 7) {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
-			System.out.println(size);
+			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedFirstAlgorithm(size, k);
 		}else if (simulatorType == 8) {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
-			System.out.println(size);
+			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedSecondAlgorithm(size, k);
 		}else if (simulatorType == 9) {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
-			System.out.println(size);
+			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithm(size, k);
 		}else if (simulatorType == 10) {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
-			System.out.println(size);
+			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, k);
 		}
 
@@ -162,16 +166,16 @@ public class Main {
 		 * each line in the file represents a tuple of the form
 		 * <source-id,source-label,dest-id,dest-label,edge-label>
 		 */
-		while(edge!=null) {
-			topkGraphPattern.addEdge(edge);
+		while(edge.isPresent()) {
+			topkGraphPattern.addEdge(edge.get());
 			//System.out.println("+ " + edge);
 
 			//slide the window and get the last item if the window is full
 			if(simulatorType == 0 || simulatorType == 1 || simulatorType == 2 || simulatorType == 7 || simulatorType == 8 || simulatorType == 10)  {
-				StreamEdge oldestEdge = sw.add(edge);
-				if(oldestEdge != null) {
+				Optional<StreamEdge> oldestEdge = sw.add(edge.get());
+				if(oldestEdge.isPresent()) {
 					//System.out.println("- " + oldestEdge);
-					topkGraphPattern.removeEdge(oldestEdge);
+					topkGraphPattern.removeEdge(oldestEdge.get());
 				}
 
 			}
@@ -216,10 +220,10 @@ public class Main {
 		bw.close();
 		System.out.println(topkGraphPattern.getNumberofSubgraphs());
 	}
-	public static void printMap(THashMap<GraphPattern,Integer> mp, BufferedWriter bw) throws IOException{
+	public static void printMap(THashMap<Pattern,Integer> mp, BufferedWriter bw) throws IOException{
 		Iterator it = mp.entrySet().iterator();
 		while (it.hasNext()) {
-			TMap.Entry<GraphPattern,Integer> pair = (TMap.Entry<GraphPattern,Integer>)it.next();
+			TMap.Entry<ThreeNodeGraphPattern,Integer> pair = (TMap.Entry<ThreeNodeGraphPattern,Integer>)it.next();
 			bw.write(pair.getKey() + " " + pair.getValue()+ "\n");
 			it.remove(); // avoids a ConcurrentModificationException
 		}

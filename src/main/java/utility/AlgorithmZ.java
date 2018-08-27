@@ -2,10 +2,11 @@ package utility;
 
 import java.util.Random;
 
-final public class AlgorithmZ  {
+final public class AlgorithmZ {
 	private static Random generator = new Random();
 	private final int n;
 	private double w;
+
 	public AlgorithmZ(int n) {
 		this.n = n;
 		this.w = Math.exp(-Math.log(generator.nextDouble()) / n);
@@ -13,70 +14,49 @@ final public class AlgorithmZ  {
 
 	public int apply(int t) {
 		int S = 0;
-		if (t <= (22.0 * n))
-		{
+		if (t <= (22.0 * n)) {
 			/* Process records using Algorithm X until t is large enough */
-			double		V,
-			quot;
-
-			V = generator.nextDouble();	/* Generate V */
+			double V = generator.nextDouble(); /* Generate V */
 			S = 0;
 			t += 1;
 			/* Note: "num" in Vitter's code is always equal to t - n */
-			quot = (t - (double) n) / t;
+			double quot = (t - (double) n) / t;
 			/* Find min S satisfying (4.1) */
-			while (quot > V)
-			{
+			while (quot > V) {
 				S += 1;
 				t += 1;
-				quot *= (t - (double) n) / t;
+				quot *= (t - (double) n) / (double) t;
 			}
-		}
-		else
-		{
+		} else {
 			/* Now apply Algorithm Z */
 			double W = this.w;
-			double		term = t - (double) n + 1;
+			double term = t - (double) n + 1;
 
-			for (;;)
-			{
-				double		numer,
-				numer_lim,
-				denom;
-				double		U,
-				X,
-				lhs,
-				rhs,
-				y,
-				tmp;
+			while (true) {
+				double numer, numer_lim, denom;
+				double U = generator.nextDouble();
 
 				/* Generate U and X */
-				U = generator.nextDouble();
-				X = t * (W - 1.0);
-				S = (int) X;		/* S is tentatively set to floor(X) */
+				double X = t * (W - 1.0);
+				S = (int) X; /* S is tentatively set to floor(X) */
 				/* Test if U <= h(S)/cg(X) in the manner of (6.3) */
-				tmp = (t + 1) / term;
-				lhs = Math.exp(Math.log(((U * tmp * tmp) * (term + S)) / (t + X)) / n);
-				rhs = (((t + X) / (term + S)) * term) / t;
-				if (lhs <= rhs)
-				{
+				double tmp = (t + 1) / term;
+				double lhs = Math.exp(Math.log(((U * tmp * tmp) * (term + S)) / (t + X)) / n);
+				double rhs = (((t + X) / (term + S)) * term) / t;
+				if (lhs <= rhs) {
 					W = rhs / lhs;
 					break;
 				}
 				/* Test if U <= f(S)/cg(X) */
-				y = (((U * (t + 1)) / term) * (t + S + 1)) / (t + X);
-				if ((double) n < S)
-				{
+				double y = (((U * (t + 1)) / term) * (t + S + 1)) / (t + X);
+				if ((double) n < S) {
 					denom = t;
 					numer_lim = term + S;
-				}
-				else
-				{
+				} else {
 					denom = t - (double) n + S;
 					numer_lim = t + 1;
 				}
-				for (numer = t + S; numer >= numer_lim; numer -= 1)
-				{
+				for (numer = t + S; numer >= numer_lim; numer -= 1) {
 					y *= numer / denom;
 					denom -= 1;
 				}
@@ -85,10 +65,9 @@ final public class AlgorithmZ  {
 					break;
 			}
 			this.w = W;
-			//this.w = Math.exp(-Math.log(generator.nextDouble()) / n);;
+			// this.w = Math.exp(-Math.log(generator.nextDouble()) / n);;
 		}
 		return S;
-
 
 	}
 }

@@ -8,13 +8,15 @@ import org.apache.commons.math3.distribution.HypergeometricDistribution;
 
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
+import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.EdgeReservoir;
-import struct.GraphPattern;
 import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
+import topkgraphpattern.Pattern;
+import topkgraphpattern.SubgraphType;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
@@ -23,7 +25,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<GraphPattern, Integer> frequentPatterns;
+	THashMap<Pattern, Integer> frequentPatterns;
 	int k ;
 	int M;
 	int N;
@@ -43,7 +45,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 		this.c1 = 0;
 		this.c2 = 0;
 		this.numSubgraphs  = 0 ;
-		frequentPatterns = new THashMap<GraphPattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Integer>();
 	}
 	public boolean addEdge(StreamEdge edge) {
 		N++;
@@ -185,7 +187,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 
 	}
 	void addFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
@@ -195,7 +197,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	}
 
 	void removeFrequentPattern(Triplet t) {
-		GraphPattern p = new GraphPattern(t);
+		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.contains(p)) {
 			int count = frequentPatterns.get(p);
 			if(count >1)
@@ -205,7 +207,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 		}
 	}
 
-	public THashMap<GraphPattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
 	}
@@ -217,11 +219,11 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 		initializeHypergeometricDistribution();
 		double wedgeCorrectFactor = correctFactorWedge();
 		double triangleCorrectFactor = correctFactorTriangle();
-		List<GraphPattern> patterns = new ArrayList<GraphPattern>(frequentPatterns.keySet());
-		for(GraphPattern p: patterns) {
+		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
+		for(Pattern p: patterns) {
 			int count = frequentPatterns.get(p);
 			double value;
-			if(p.isWedge())
+			if(p.getType() == SubgraphType.WEDGE)
 				value = count*wedgeCorrectFactor;
 			else 
 				value = count*triangleCorrectFactor;

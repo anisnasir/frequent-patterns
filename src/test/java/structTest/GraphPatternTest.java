@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
-import struct.GraphPattern;
 import struct.LabeledNode;
 import struct.Triplet;
 
@@ -25,10 +25,10 @@ public class GraphPatternTest {
 		Triplet t3 = new Triplet(a,b,c,edgeB,edgeC); // c-a-b  
 		Triplet t4 = new Triplet(a,b,c, edgeA,edgeB,edgeC); //a-b-c-a
 		
-		GraphPattern p1 = new GraphPattern (t1);
-		GraphPattern p2 = new GraphPattern(t2);
-		GraphPattern p3 = new GraphPattern(t3);
-		GraphPattern p4 = new GraphPattern(t4);
+		ThreeNodeGraphPattern p1 = new ThreeNodeGraphPattern (t1);
+		ThreeNodeGraphPattern p2 = new ThreeNodeGraphPattern(t2);
+		ThreeNodeGraphPattern p3 = new ThreeNodeGraphPattern(t3);
+		ThreeNodeGraphPattern p4 = new ThreeNodeGraphPattern(t4);
 		
 		System.out.println(p1);
 		System.out.println(p2);
@@ -65,11 +65,11 @@ public class GraphPatternTest {
 		Triplet t4 = new Triplet(a,b,c, edgeA,edgeB,edgeC); //a-b-c-a
 		Triplet t5 = new Triplet(a,b,c,edgeC,edgeB); // c-a-b  
 		
-		GraphPattern p1 = new GraphPattern (t1);
-		GraphPattern p2 = new GraphPattern(t2);
-		GraphPattern p3 = new GraphPattern(t3);
-		GraphPattern p4 = new GraphPattern(t4);
-		GraphPattern p5 = new GraphPattern(t5);
+		ThreeNodeGraphPattern p1 = new ThreeNodeGraphPattern (t1);
+		ThreeNodeGraphPattern p2 = new ThreeNodeGraphPattern(t2);
+		ThreeNodeGraphPattern p3 = new ThreeNodeGraphPattern(t3);
+		ThreeNodeGraphPattern p4 = new ThreeNodeGraphPattern(t4);
+		ThreeNodeGraphPattern p5 = new ThreeNodeGraphPattern(t5);
 		
 		System.out.println(p1);
 		System.out.println(p2);
