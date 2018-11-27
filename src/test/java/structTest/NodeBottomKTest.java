@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import input.StreamEdge;
-import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeBottomK;
 
@@ -16,15 +15,15 @@ public class NodeBottomKTest {
 		LabeledNode src = new LabeledNode("s1", 1);
 		LabeledNode dstA = new LabeledNode("s2", 2);
 		LabeledNode dstB = new LabeledNode("s3", 3);
-		StreamEdge edgeA = new StreamEdge("s1",1,  "s2", 2, "u");
-		StreamEdge edgeB = new StreamEdge("s1",1,  "s3", 3, "u");
+		StreamEdge edgeA = new StreamEdge("s1",1,  "s2", 2);
+		StreamEdge edgeB = new StreamEdge("s1",1,  "s3", 3);
 		
 		NodeBottomK map = new NodeBottomK();
-		map.addEdge(src, dstA, edgeA);
-		map.addEdge(src, dstB, edgeB);
+		map.addEdge(src, dstA);
+		map.addEdge(src, dstB);
 		
 		System.out.println(map.getUnionSize(src, dstA));
-		map.removeEdge(src, dstA, edgeA);
+		map.removeEdge(src, dstA);
 			
 	
 	}

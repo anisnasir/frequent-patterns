@@ -10,21 +10,18 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 	private int srcLabel;
 	private String dest;
 	private int dstLabel;
-	private String edgeLabel;
 
-	public StreamEdge(String src, int srcLabel, String dest, int dstLabel, String label) {
+	public StreamEdge(String src, int srcLabel, String dest, int dstLabel) {
 		if (src.compareTo(dest) < 0) {
 			this.src = src;
 			this.srcLabel = srcLabel;
 			this.dest = dest;
 			this.dstLabel = dstLabel;
-			this.edgeLabel = label;
 		} else {
 			this.src = dest;
 			this.srcLabel = dstLabel;
 			this.dest = src;
 			this.dstLabel = srcLabel;
-			this.edgeLabel = label;
 		}
 	}
 
@@ -53,22 +50,13 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 	}
 
 	public String toString() {
-		return this.src + " " + this.srcLabel + " " + this.dest + " " + this.dstLabel + " " + this.edgeLabel;
-	}
-
-	public String getEdgeLabel() {
-		return edgeLabel;
-	}
-
-	public void setEdgeLabel(String edgeLabel) {
-		this.edgeLabel = edgeLabel;
+		return this.src + " " + this.srcLabel + " " + this.dest + " " + this.dstLabel;
 	}
 
 	public int compareTo(StreamEdge o) {
 		if (src.compareTo(o.src) < 0) {
 			return -1;
 		} else if (src.compareTo(o.src) == 0) {
-
 			if (dest.compareTo(o.dest) < 0) {
 				return -1;
 			} else if (dest.compareTo(o.dest) == 0) {
@@ -77,11 +65,11 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 				} else if (srcLabel == o.srcLabel) {
 					if (dstLabel < o.dstLabel) {
 						return -1;
-					} else if (dstLabel == o.dstLabel) {
-						return edgeLabel.compareTo(o.edgeLabel);
-					} else
+					} else if(dstLabel == o.dstLabel) {
+						return 0;
+					}
+					else
 						return 1;
-
 				} else {
 					return 1;
 				}
@@ -96,7 +84,7 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 	public int hashCode() {
 		int hashCode = new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
 		// if deriving: appendSuper(super.hashCode()).
-				append(this.src).append(this.srcLabel).append(this.dest).append(this.dstLabel).append(this.edgeLabel)
+				append(this.src).append(this.srcLabel).append(this.dest).append(this.dstLabel)
 				.toHashCode();
 		return hashCode;
 	}

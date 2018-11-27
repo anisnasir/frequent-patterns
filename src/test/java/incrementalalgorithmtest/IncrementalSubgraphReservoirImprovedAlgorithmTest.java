@@ -4,16 +4,16 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import incrementaltopkgraphpattern.IncrementalSubgraphReservoirAlgorithm;
-import incrementaltopkgraphpattern.IncrementalSubgraphReservoirImprovedAlgorithm;
+import incremental.IncrementalSubgraphReservoirAlgorithm;
+import incremental.IncrementalSubgraphReservoirImprovedAlgorithm;
 import input.StreamEdge;
 
 public class IncrementalSubgraphReservoirImprovedAlgorithmTest {
 
 	@Test
 	public void singleWedgeAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2, "u");
-		StreamEdge b = new StreamEdge("a", 1, "c", 3, "u");
+		StreamEdge a = new StreamEdge("a", 1, "b", 2);
+		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		int size = 10;
 		IncrementalSubgraphReservoirImprovedAlgorithm topk = new IncrementalSubgraphReservoirImprovedAlgorithm(size, size);
 		topk.addEdge(a);

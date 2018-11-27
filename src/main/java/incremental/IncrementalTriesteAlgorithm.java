@@ -1,15 +1,14 @@
-package incrementaltopkgraphpattern;
+package incremental;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import gnu.trove.map.hash.THashMap;
-import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.EdgeReservoir;
-import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
@@ -23,7 +22,7 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Integer> frequentPatterns;
 	int k;
 	int M;
 	int N;
@@ -35,7 +34,7 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 		this.k = k;
 		this.M = size;
 		this.N = 0;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Integer>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -66,39 +65,34 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
-		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
+		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
+		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 
-		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
-
-		for (LabeledNeighbor t : srcNeighbor) {
+		for (LabeledNode t : srcNeighbor) {
 			if (!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(), edge, new StreamEdge(src.getVertexId(),
-						src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t, edge, new StreamEdge(src.getVertexId(),
+						src.getVertexLabel(), t.getVertexId(), t.getVertexLabel()));
 				addSubgraph(triplet);
-			} else {
-				srcCommonNeighbor.put(t, t);
-			}
+			} 
 		}
 
-		for (LabeledNeighbor t : dstNeighbor) {
+		for (LabeledNode t : dstNeighbor) {
 			if (!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(), edge, new StreamEdge(dst.getVertexId(),
-						dst.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t, edge, new StreamEdge(dst.getVertexId(),
+						dst.getVertexLabel(), t.getVertexId(), t.getVertexLabel()));
 				addSubgraph(triplet);
 			} else {
-				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
 				LabeledNode a = src;
 				LabeledNode b = dst;
-				LabeledNode c = t.getDst();
+				LabeledNode c = t;
 				StreamEdge edgeA = edge;
-				StreamEdge edgeB = new StreamEdge(t.getDst().getVertexId(), t.getDst().getVertexLabel(),
-						src.getVertexId(), src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
-				StreamEdge edgeC = new StreamEdge(t.getDst().getVertexId(), t.getDst().getVertexLabel(),
-						dst.getVertexId(), dst.getVertexLabel(), t.getEdgeLabel());
+				StreamEdge edgeB = new StreamEdge(t.getVertexId(), t.getVertexLabel(),
+						src.getVertexId(), src.getVertexLabel());
+				StreamEdge edgeC = new StreamEdge(t.getVertexId(), t.getVertexLabel(),
+						dst.getVertexId(), dst.getVertexLabel());
 
 				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC);
 				Triplet tripletTriangle = new Triplet(a, b, c, edgeA, edgeB, edgeC);
@@ -112,39 +106,34 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
-		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
+		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
+		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 
-		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
-
-		for (LabeledNeighbor t : srcNeighbor) {
+		for (LabeledNode t : srcNeighbor) {
 			if (!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(), edge, new StreamEdge(src.getVertexId(),
-						src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t, edge, new StreamEdge(src.getVertexId(),
+						src.getVertexLabel(), t.getVertexId(), t.getVertexLabel()));
 				removeSubgraph(triplet);
-			} else {
-				srcCommonNeighbor.put(t, t);
 			}
 		}
 
-		for (LabeledNeighbor t : dstNeighbor) {
+		for (LabeledNode t : dstNeighbor) {
 			if (!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(), edge, new StreamEdge(dst.getVertexId(),
-						dst.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t, edge, new StreamEdge(dst.getVertexId(),
+						dst.getVertexLabel(), t.getVertexId(), t.getVertexLabel()));
 				removeSubgraph(triplet);
 			} else {
-				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
 				LabeledNode a = src;
 				LabeledNode b = dst;
-				LabeledNode c = t.getDst();
+				LabeledNode c = t;
 				StreamEdge edgeA = edge;
 				StreamEdge edgeB = new StreamEdge(c.getVertexId(), c.getVertexLabel(), src.getVertexId(),
-						src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
+						src.getVertexLabel());
 				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(),
-						dst.getVertexLabel(), t.getEdgeLabel());
+						dst.getVertexLabel());
 
 				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC);
 				Triplet tripletTriangle = new Triplet(a, b, c, edgeA, edgeB, edgeC);
@@ -178,7 +167,7 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if (frequentPatterns.contains(p)) {
+		if (frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
@@ -188,7 +177,7 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if (frequentPatterns.contains(p)) {
+		if (frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
@@ -197,7 +186,7 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 		}
 	}
 
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
 	}

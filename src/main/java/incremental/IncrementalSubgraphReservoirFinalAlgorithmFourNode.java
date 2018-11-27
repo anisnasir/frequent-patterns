@@ -1,18 +1,17 @@
-package incrementaltopkgraphpattern;
+package incremental;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import gnu.trove.map.hash.THashMap;
-import gnu.trove.set.hash.THashSet;
 import graphpattern.FourNodeGraphPattern;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
 import reservoir.SubgraphReservoir;
-import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeBottomK;
 import struct.NodeMap;
@@ -37,7 +36,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	Random rand;
 	QuadripletGenerator subgraphGenerator;
 
-	THashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Integer> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int sum;
@@ -51,7 +50,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		reservoir = new AdvancedSubgraphReservoir<Quadriplet>();
 		N = 0;
 		M = size;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Integer>();
 		sum = 0;
 		skipRS = new AlgorithmZ(M);
 		subgraphGenerator = new QuadripletGenerator();
@@ -64,16 +63,16 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		// System.out.println("+" + edge);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		THashSet<LabeledNeighbor> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		THashSet<Path> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		THashSet<LabeledNeighbor> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		THashSet<Path> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		HashSet<Path> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<Path> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 
 		int subgraphCount = subgraphGenerator.getAllSubgraphsCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
 				dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
 
 		// replaces the existing wedges in the reservoir with the triangles
-		THashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
+		HashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
 		ArrayList<Quadriplet> oldSubgraphs = new ArrayList<Quadriplet>();
 		// System.out.println("size " + candidateTriangles.size());
 		for (Quadriplet t : candidateSubgraphs) {
@@ -94,7 +93,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		// int W =
 		// srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
 		// SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		// THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		// HashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		// int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		// System.out.println("W "+ W + " " + srcNeighbor + " " + dstNeighbor);
 
@@ -113,7 +112,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 			// we would randomly pick a vertex from the neighborhood of src and dst
 			// and add it to the reservoir
 			// System.out.println("i " + i + " W " + W);
-			THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
+			HashSet<LabeledNode> set = new HashSet<LabeledNode>();
 			int count = 0;
 			while (count < i) {
 				Quadriplet randomSubgraph = subgraphGenerator.getRandom(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
@@ -141,10 +140,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 
 	}
 
-	public THashSet<LabeledNode> getNeighbors(THashSet<LabeledNeighbor> randomVertexNeighborWithEdgeLabels) {
-		THashSet<LabeledNode> results = new THashSet<LabeledNode>();
-		for (LabeledNeighbor a : randomVertexNeighborWithEdgeLabels) {
-			results.add(a.getDst());
+	public HashSet<LabeledNode> getNeighbors(HashSet<LabeledNode> randomVertexNeighborWithEdgeLabels) {
+		HashSet<LabeledNode> results = new HashSet<LabeledNode>();
+		for (LabeledNode a : randomVertexNeighborWithEdgeLabels) {
+			results.add(a);
 		}
 		return results;
 	}
@@ -153,8 +152,8 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		return false;
 	}
 
-	public LabeledNeighbor getRandomNeighbor(THashSet<LabeledNeighbor> srcNeighbor,
-			THashSet<LabeledNeighbor> dstNeighbor) {
+	public LabeledNode getRandomNeighbor(HashSet<LabeledNode> srcNeighbor,
+			HashSet<LabeledNode> dstNeighbor) {
 		int d_u = srcNeighbor.size();
 		int d_v = dstNeighbor.size();
 
@@ -165,11 +164,11 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		double value = d_u / (double) (d_u + d_v);
 		if (Math.random() < value) {
 			// select neighbor of u or src
-			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(srcNeighbor);
+			ArrayList<LabeledNode> list = new ArrayList<LabeledNode>(srcNeighbor);
 			return list.get(rand.nextInt(list.size()));
 		} else {
 			// select a neighbor of v or dst
-			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(dstNeighbor);
+			ArrayList<LabeledNode> list = new ArrayList<LabeledNode>(dstNeighbor);
 			return list.get(rand.nextInt(list.size()));
 		}
 	}
@@ -185,7 +184,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if (frequentPatterns.contains(p)) {
+		if (frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
@@ -195,7 +194,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if (frequentPatterns.contains(p)) {
+		if (frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
@@ -204,7 +203,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		}
 	}
 
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
 	}

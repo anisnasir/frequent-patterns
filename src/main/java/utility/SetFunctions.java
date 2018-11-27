@@ -3,20 +3,18 @@ package utility;
 import java.util.HashSet;
 import java.util.Set;
 
-import gnu.trove.set.hash.THashSet;
-
 public class SetFunctions<T> {
-	public int intersection (THashSet<T> set, THashSet<T> tHashSet) {
-		THashSet<T> a;
-		THashSet<T> b;
+	public int intersection (HashSet<T> set, HashSet<T> HashSet) {
+		HashSet<T> a;
+		HashSet<T> b;
 		int counter = 0;
-		if(set == null || tHashSet == null)
+		if(set == null || HashSet == null)
 			return 0;
-		if (set.size() <= tHashSet.size()) {
+		if (set.size() <= HashSet.size()) {
 			a = set;
-			b = tHashSet; 
+			b = HashSet; 
 		} else {
-			a = tHashSet;
+			a = HashSet;
 			b = set;
 		}
 		for (T e : a) {
@@ -26,14 +24,14 @@ public class SetFunctions<T> {
 		}
 		return counter;
 	}
-	public THashSet<T> intersectionSet (THashSet<T> set1, THashSet<T> set2) {
+	public HashSet<T> intersectionSet (HashSet<T> set1, HashSet<T> set2) {
 		if(set1 == null)
-			return new THashSet<T>();
+			return new HashSet<T>();
 		else if (set2 == null)
-			return new THashSet<T>();
+			return new HashSet<T>();
 		Set<T> a;
 		Set<T> b;
-		THashSet<T> returnSet = new THashSet<T>();
+		HashSet<T> returnSet = new HashSet<T>();
 		if (set1.size() <= set2.size()) {
 			a = set1;
 			b = set2; 
@@ -49,12 +47,12 @@ public class SetFunctions<T> {
 		return returnSet;
 	}
 
-	public THashSet<T> unionSet (THashSet<T> set1, THashSet<T> set2) {
+	public HashSet<T> unionSet (HashSet<T> set1, HashSet<T> set2) {
 		if(set1 == null)
 			return set2;
 		else if (set2 == null)
 			return set1;
-		THashSet<T> returnSet = new THashSet <T>();
+		HashSet<T> returnSet = new HashSet <T>();
 		returnSet.addAll(set1);
 		returnSet.addAll(set2);
 		return returnSet;

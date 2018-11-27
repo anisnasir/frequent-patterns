@@ -6,30 +6,30 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import fullydynamictopkgraphpattern.FullyDynamicExhaustiveCounting;
-import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirAlgorithm;
-import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirFinalAlgorithm;
-import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirImprovedFirstAlgorithm;
-import fullydynamictopkgraphpattern.FullyDynamicSubgraphReservoirImprovedSecondAlgorithm;
-import fullydynamictopkgraphpattern.FullyDynamicTriesteAlgorithm;
+import fullydynamic.FullyDynamicExhaustiveCounting;
+import fullydynamic.FullyDynamicSubgraphReservoirAlgorithm;
+import fullydynamic.FullyDynamicSubgraphReservoirFinalAlgorithm;
+import fullydynamic.FullyDynamicSubgraphReservoirImprovedFirstAlgorithm;
+import fullydynamic.FullyDynamicSubgraphReservoirImprovedSecondAlgorithm;
+import fullydynamic.FullyDynamicTriesteAlgorithm;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-import gnu.trove.map.TMap;
-import gnu.trove.map.hash.THashMap;
 import graphpattern.ThreeNodeGraphPattern;
-import incrementaltopkgraphpattern.IncrementalExhaustiveCounting;
-import incrementaltopkgraphpattern.IncrementalSubgraphReservoirAlgorithm;
-import incrementaltopkgraphpattern.IncrementalSubgraphReservoirFinalAlgorithm;
-import incrementaltopkgraphpattern.IncrementalSubgraphReservoirImprovedAlgorithm;
-import incrementaltopkgraphpattern.IncrementalTriesteAlgorithm;
+import incremental.IncrementalExhaustiveCounting;
+import incremental.IncrementalSubgraphReservoirAlgorithm;
+import incremental.IncrementalSubgraphReservoirFinalAlgorithm;
+import incremental.IncrementalSubgraphReservoirImprovedAlgorithm;
+import incremental.IncrementalTriesteAlgorithm;
 import input.StreamEdge;
 import input.StreamEdgeReader;
 import slidingwindow.FixedSizeSlidingWindow;
@@ -220,10 +220,10 @@ public class Main {
 		bw.close();
 		System.out.println(topkGraphPattern.getNumberofSubgraphs());
 	}
-	public static void printMap(THashMap<Pattern,Integer> mp, BufferedWriter bw) throws IOException{
+	public static void printMap(HashMap<Pattern,Integer> mp, BufferedWriter bw) throws IOException{
 		Iterator it = mp.entrySet().iterator();
 		while (it.hasNext()) {
-			TMap.Entry<ThreeNodeGraphPattern,Integer> pair = (TMap.Entry<ThreeNodeGraphPattern,Integer>)it.next();
+			Map.Entry<ThreeNodeGraphPattern,Integer> pair = (Map.Entry<ThreeNodeGraphPattern,Integer>)it.next();
 			bw.write(pair.getKey() + " " + pair.getValue()+ "\n");
 			it.remove(); // avoids a ConcurrentModificationException
 		}

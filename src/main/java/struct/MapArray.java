@@ -2,10 +2,10 @@ package struct;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-import gnu.trove.map.hash.THashMap;
 
 /**
  * Data structure that implements add, contains, deleteRandom, remove in
@@ -16,12 +16,12 @@ import gnu.trove.map.hash.THashMap;
  * @param <T>
  */
 public class MapArray<T> {
-	private THashMap<T, Integer> valueIndexes;
+	private HashMap<T, Integer> valueIndexes;
 	private ArrayList<T> values;
 	private Random rand;
 
 	public MapArray() {
-		valueIndexes = new THashMap<>();
+		valueIndexes = new HashMap<>();
 		values = new ArrayList<>();
 		rand = new Random(System.currentTimeMillis());
 	}

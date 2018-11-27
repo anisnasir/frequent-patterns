@@ -2,21 +2,23 @@ package struct;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import input.StreamEdge;
 
 public class Path {
-	List<StreamEdge> path;
+	Set<StreamEdge> path;
 
 	Path() {
-		path = new ArrayList<StreamEdge>();
+		path = new TreeSet<StreamEdge>();
 	}
 
-	public List<StreamEdge> getPath() {
+	public Set<StreamEdge> getPath() {
 		return path;
 	}
 
-	public void setPath(List<StreamEdge> path) {
+	public void setPath(Set<StreamEdge> path) {
 		this.path = path;
 	}
 

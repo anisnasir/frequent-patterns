@@ -5,7 +5,6 @@ public class DFSEdge {
 	int vertex1Label;
 	String vertex2;
 	int vertex2Label;
-	String edgeLabel;
 
 	public String getVertex1Id() {
 		return vertex1;
@@ -14,7 +13,7 @@ public class DFSEdge {
 	@Override
 	public String toString() {
 		return "DFSEdge [vertex1Id=" + vertex1 + ", vertex1Label=" + vertex1Label + ", vertex2Id=" + vertex2
-				+ ", vertex2Label=" + vertex2Label + ", edgeLabel=" + edgeLabel + "]";
+				+ ", vertex2Label=" + vertex2Label + "]";
 	}
 
 	public void setVertex1Id(String vertex1Id) {
@@ -45,14 +44,6 @@ public class DFSEdge {
 		this.vertex2Label = vertex2Label;
 	}
 
-	public String getEdgeLabel() {
-		return edgeLabel;
-	}
-
-	public void setEdgeLabel(String edgeLabel) {
-		this.edgeLabel = edgeLabel;
-	}
-
 	public boolean equals(DFSEdge dfsEdge) {
 		if (!this.vertex1.equals(dfsEdge.vertex1)) {
 			return false;
@@ -66,9 +57,6 @@ public class DFSEdge {
 		if (this.vertex2Label != dfsEdge.vertex2Label) {
 			return false;
 		}
-		if (!this.edgeLabel.equals(dfsEdge.edgeLabel)) {
-			return false;
-		}
 		return true;
 	}
 
@@ -80,8 +68,7 @@ public class DFSEdge {
 				&& vertex2.compareTo(edge.vertex2) < 0) {
 			return true;
 		}
-		if (vertex2.compareTo(vertex1) < 0 && edge.vertex2.compareTo(edge.vertex1) < 0 && vertex2.equals(edge.vertex2)
-				&& edgeLabel.equals(edge.edgeLabel)) {
+		if (vertex2.compareTo(vertex1) < 0 && edge.vertex2.compareTo(edge.vertex1) < 0 && vertex2.equals(edge.vertex2)) {
 			return true;
 		}
 		if (vertex2.compareTo(vertex1) > 0 && edge.vertex2.compareTo(edge.vertex1) > 0
@@ -93,23 +80,22 @@ public class DFSEdge {
 			return true;
 		}
 		if (this.vertex2.compareTo(vertex1) > 0 && edge.vertex2.compareTo(edge.vertex1) > 0
-				&& edge.vertex1.equals(vertex1) && vertex1Label == edge.vertex1Label && edgeLabel.equals(edge.edgeLabel)
+				&& edge.vertex1.equals(vertex1) && vertex1Label == edge.vertex1Label
 				&& vertex2Label < edge.vertex2Label) {
 			return true;
 		}
 		if (vertex2.compareTo(vertex1) > 0 && edge.vertex2.compareTo(edge.vertex1) > 0 && edge.vertex1.equals(vertex1)
-				&& vertex1Label == edge.vertex1Label && edgeLabel.equalsIgnoreCase(edgeLabel)
+				&& vertex1Label == edge.vertex1Label 
 				&& vertex2Label < edge.vertex2Label) {
 			return true;
 		}
 		return false;
 	}
 
-	public DFSEdge(String vertex1, int vertex1Label, String vertex2, int vertex2Label, String edgeLabel) {
+	public DFSEdge(String vertex1, int vertex1Label, String vertex2, int vertex2Label) {
 		this.vertex1 = vertex1;
 		this.vertex1Label = vertex1Label;
 		this.vertex2 = vertex2;
 		this.vertex2Label = vertex2Label;
-		this.edgeLabel = edgeLabel;
 	}
 }

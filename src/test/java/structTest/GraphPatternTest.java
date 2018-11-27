@@ -16,9 +16,9 @@ public class GraphPatternTest {
 		LabeledNode a = new LabeledNode("a",1);
 		LabeledNode b = new LabeledNode("b",2);
 		LabeledNode c = new LabeledNode("c",3);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2, "u"); //ab
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3, "u"); //ac
-		StreamEdge edgeC = new StreamEdge("b",2 , "c" , 3, "u"); //bc
+		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2); //ab
+		StreamEdge edgeB = new StreamEdge("a",1, "c", 3); //ac
+		StreamEdge edgeC = new StreamEdge("b",2 , "c" , 3); //bc
 		
 		Triplet t1 = new Triplet(a,b,c,edgeA, edgeB); // b-a-c  
 		Triplet t2 = new Triplet(a,b,c,edgeA,edgeC); // a-b-c   
@@ -55,9 +55,9 @@ public class GraphPatternTest {
 		LabeledNode a = new LabeledNode("a",1);
 		LabeledNode b = new LabeledNode("b",1);
 		LabeledNode c = new LabeledNode("c",3);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 1, "u"); //ab
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3, "u"); //ac
-		StreamEdge edgeC = new StreamEdge("b",1 , "c" , 3, "u"); //bc
+		StreamEdge edgeA = new StreamEdge("a",1,  "b", 1); //ab
+		StreamEdge edgeB = new StreamEdge("a",1, "c", 3); //ac
+		StreamEdge edgeC = new StreamEdge("b",1 , "c" , 3); //bc
 		
 		Triplet t1 = new Triplet(a,b,c,edgeA, edgeB); // b-a-c  a - b b - c 
 		Triplet t2 = new Triplet(a,b,c,edgeA,edgeC); // a-b-c   

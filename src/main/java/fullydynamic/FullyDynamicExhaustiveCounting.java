@@ -1,12 +1,11 @@
-package fullydynamictopkgraphpattern;
+package fullydynamic;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
-import gnu.trove.map.hash.THashMap;
-import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
-import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
@@ -18,15 +17,15 @@ import utility.SetFunctions;
 public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
-	THashMap<Triplet, Integer> counter;
-	THashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Triplet, Integer> counter;
+	HashMap<Pattern, Integer> frequentPatterns;
 	int numSubgraph;
 	public FullyDynamicExhaustiveCounting() {
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
-		counter = new THashMap<Triplet, Integer>();
+		counter = new HashMap<Triplet, Integer>();
 		numSubgraph = 0 ;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Integer>();
 	}
 	public boolean addEdge(StreamEdge edge) {
 		//System.out.println("+" + edge);
@@ -37,37 +36,32 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
-		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
+		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
+		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 		
-		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
-
 		//iterate through source neighbors;
-		for(LabeledNeighbor t: srcNeighbor) {
+		for(LabeledNode t: srcNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t,edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getVertexId(), t.getVertexLabel()));
 				addSubgraph(triplet);
-			} else {
-				srcCommonNeighbor.put(t, t);
 			}
 		}
 
 		//iteration through destination neighbors
-		for(LabeledNeighbor t: dstNeighbor) {
+		for(LabeledNode t: dstNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId(),t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t,edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getVertexId(),t.getVertexLabel()));
 				addSubgraph(triplet);
 			}else {
-				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
 				LabeledNode a = src;
 				LabeledNode b = dst;
-				LabeledNode c = t.getDst();
+				LabeledNode c = t;
 				StreamEdge edgeA = edge;
-				StreamEdge edgeB = new StreamEdge(t.getDst().getVertexId(),t.getDst().getVertexLabel(),  src.getVertexId(),src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
-				StreamEdge edgeC = new StreamEdge(t.getDst().getVertexId(), t.getDst().getVertexLabel(), dst.getVertexId(), dst.getVertexLabel(), t.getEdgeLabel());
+				StreamEdge edgeB = new StreamEdge(t.getVertexId(),t.getVertexLabel(),  src.getVertexId(),src.getVertexLabel());
+				StreamEdge edgeC = new StreamEdge(t.getVertexId(), t.getVertexLabel(), dst.getVertexId(), dst.getVertexLabel());
 
 				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
 				removeSubgraph(tripletWedge);
@@ -92,38 +86,33 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
-		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
-		
-		THashMap<LabeledNeighbor, LabeledNeighbor> commonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
+		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
+		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 		
 		//iterate through source neighbors
-		for(LabeledNeighbor t: srcNeighbor) {
+		for(LabeledNode t: srcNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(),src.getVertexLabel(), t.getDst().getVertexId(),t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t,edge, new StreamEdge(src.getVertexId(),src.getVertexLabel(), t.getVertexId(),t.getVertexLabel()));
 				removeSubgraph(triplet);
-			} else {
-				commonNeighbor.put(t, t);
 			}
 		}
 
 		//iterate through destination neighbors
-		for(LabeledNeighbor t: dstNeighbor) {
+		for(LabeledNode t: dstNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t, edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getVertexId(), t.getVertexLabel()));
 				removeSubgraph(triplet);
 			}else {
-				LabeledNeighbor comNeighbor = commonNeighbor.get(t);
 				LabeledNode a = src;
 				LabeledNode b = dst;
-				LabeledNode c = t.getDst();
+				LabeledNode c = t;
 				
 				StreamEdge edgeA = edge;
-				StreamEdge edgeB = new StreamEdge(c.getVertexId() , c.getVertexLabel(), src.getVertexId(), src.getVertexLabel(), comNeighbor.getEdgeLabel());
-				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(),dst.getVertexLabel(), t.getEdgeLabel());
+				StreamEdge edgeB = new StreamEdge(c.getVertexId() , c.getVertexLabel(), src.getVertexId(), src.getVertexLabel());
+				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(),dst.getVertexLabel());
 				
 				Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
 				removeSubgraph(tripletTriangle);
@@ -170,7 +159,7 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.contains(p)) {
+		if(frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
@@ -180,7 +169,7 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.contains(p)) {
+		if(frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
@@ -189,7 +178,7 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 		}
 	}
 	
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Integer> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 	public int getNumberofSubgraphs() {

@@ -1,15 +1,14 @@
-package fullydynamictopkgraphpattern;
+package fullydynamic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import gnu.trove.map.hash.THashMap;
-import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.SubgraphReservoir;
-import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
@@ -21,11 +20,11 @@ import utility.SetFunctions;
 import utility.AlgorithmD;
 import utility.AlgorithmZ;
 
-public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements TopkGraphPatterns {
+public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
-	THashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Integer> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int Ncurrent;
@@ -34,9 +33,9 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 	int sum;
 	AlgorithmZ skipRS;
 	AlgorithmD skipRP;
-	int Zprime;
+	int sum2;
 	ReservoirSampling<Triplet> sampler; // = new ReservoirSampling<LabeledNeighbor>();
-	public FullyDynamicSubgraphReservoirImprovedSecondAlgorithm(int size, int k ) { 
+	public FullyDynamicSubgraphReservoirImprovedFirstAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		reservoir = new SubgraphReservoir<Triplet>();
@@ -46,8 +45,8 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 		Ncurrent = 0 ;
 		c2=0;
 		sum = 0;
-		Zprime=-1;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		sum2=0;
+		frequentPatterns = new HashMap<Pattern, Integer>();
 		skipRS = new AlgorithmZ(M);
 		skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<Triplet>();
@@ -62,43 +61,37 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		//System.out.println("src neighbor" + srcNeighbor);
 		//System.out.println("dst neighbor " + dstNeighbor);
 
-		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
-		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
-
-		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
+		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
+		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 
 		//System.out.println("common " +  common);
 
 		List<Triplet> list = new ArrayList<Triplet>();
 
-		for(LabeledNeighbor t: srcNeighbor) {
+		for(LabeledNode t: srcNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t,edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getVertexId(), t.getVertexLabel()));
 				list.add(triplet);
-			} else {
-				//System.out.println( " neighbor put "  + t );
-				srcCommonNeighbor.put(t, t);
 			}
 		}
 
-		for(LabeledNeighbor t: dstNeighbor) {
+		for(LabeledNode t: dstNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t,edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), t.getVertexId() , t.getVertexLabel()));
 				list.add(triplet);
 			}else {
-				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
 				LabeledNode a = src;
 				LabeledNode b = dst;
-				LabeledNode c = t.getDst();
+				LabeledNode c = t;
 				StreamEdge edgeA = edge;
-				StreamEdge edgeB = new StreamEdge(t.getDst().getVertexId() , t.getDst().getVertexLabel(), src.getVertexId(), src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
-				StreamEdge edgeC = new StreamEdge(t.getDst().getVertexId(), t.getDst().getVertexLabel(), dst.getVertexId(), dst.getVertexLabel(), t.getEdgeLabel());
+				StreamEdge edgeB = new StreamEdge(t.getVertexId() , t.getVertexLabel(), src.getVertexId(), src.getVertexLabel());
+				StreamEdge edgeC = new StreamEdge(t.getVertexId(), t.getVertexLabel(), dst.getVertexId(), dst.getVertexLabel());
 
 				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
 				if(reservoir.contains(tripletWedge)) {
@@ -161,18 +154,13 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 				removeFrequentPattern(temp);
 			}
 		}else {
-			if(Zprime < 0) {
-				Zprime = skipRP.vitter_d_skip(c1,c1+c2);
-			}
-			
-			if(Zprime == 0) {
+			int d = c1+c2;
+			if (Math.random() < (c1/(double)(d))) {
 				flag = true;
 				c1--;
 			}else {
 				c2--;
 			}
-			
-			Zprime--;
 		}
 
 		if(flag) {
@@ -181,7 +169,6 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 			//System.out.println("reservoir size after add method " + reservoir.size());
 		}
 	}
-	
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);
 		if(!nodeMap.contains(edge)) {
@@ -193,37 +180,32 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		SetFunctions<LabeledNeighbor> functions = new SetFunctions<LabeledNeighbor>();
-		Set<LabeledNeighbor> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
-
-		THashMap<LabeledNeighbor, LabeledNeighbor> srcCommonNeighbor = new THashMap<LabeledNeighbor, LabeledNeighbor>();
+		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
+		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
 
 		List<Triplet> list = new ArrayList<Triplet>();
-
-		for(LabeledNeighbor t: srcNeighbor) {
+		
+		for(LabeledNode t: srcNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getDst().getVertexId() , t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t,edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), t.getVertexId() , t.getVertexLabel()));
 				list.add(triplet);
-			} else {
-				srcCommonNeighbor.put(t, t);
 			}
 		}
 
-		for(LabeledNeighbor t: dstNeighbor) {
+		for(LabeledNode t: dstNeighbor) {
 			if(!common.contains(t)) {
-				Triplet triplet = new Triplet(src, dst, t.getDst(),edge, new StreamEdge(dst.getVertexId(),dst.getVertexLabel(), t.getDst().getVertexId(), t.getDst().getVertexLabel(), t.getEdgeLabel()));
+				Triplet triplet = new Triplet(src, dst, t,edge, new StreamEdge(dst.getVertexId(),dst.getVertexLabel(), t.getVertexId(), t.getVertexLabel()));
 				list.add(triplet);
 			}else {
-				LabeledNeighbor srcComNeighbor = srcCommonNeighbor.get(t);
 				LabeledNode a = src;
 				LabeledNode b = dst;
-				LabeledNode c = t.getDst();
+				LabeledNode c = t;
 				StreamEdge edgeA = edge;
-				StreamEdge edgeB = new StreamEdge(c.getVertexId(), c.getVertexLabel(), src.getVertexId(), src.getVertexLabel(), srcComNeighbor.getEdgeLabel());
-				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(), dst.getVertexLabel(), t.getEdgeLabel());
+				StreamEdge edgeB = new StreamEdge(c.getVertexId(), c.getVertexLabel(), src.getVertexId(), src.getVertexLabel());
+				StreamEdge edgeC = new StreamEdge(c.getVertexId(), c.getVertexLabel(), dst.getVertexId(), dst.getVertexLabel());
 
 				Triplet tripletWedge = new Triplet(a, b, c, edgeB, edgeC );
 				Triplet tripletTriangle = new Triplet(a, b, c,edgeA, edgeB, edgeC );
@@ -232,7 +214,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 
 			}
 		}
-
+		
 		for(Triplet wedge: list) {
 			if(reservoir.contains(wedge)) {
 				reservoir.remove(wedge);
@@ -242,7 +224,6 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 				c2++;
 			}
 			Ncurrent--;
-			Zprime = -1;
 		}
 
 		//System.out.println(reservoir.size());
@@ -260,7 +241,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.contains(p)) {
+		if(frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
@@ -270,7 +251,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.contains(p)) {
+		if(frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
@@ -279,7 +260,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 		}
 	}
 
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
 	}

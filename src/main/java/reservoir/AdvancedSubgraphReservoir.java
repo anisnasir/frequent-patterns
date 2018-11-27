@@ -1,9 +1,9 @@
 package reservoir;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
-import gnu.trove.map.hash.THashMap;
-import gnu.trove.set.hash.THashSet;
 import struct.LabeledNode;
 import struct.MapArray;
 import struct.Triplet;
@@ -15,11 +15,11 @@ import topkgraphpattern.Subgraph;
  * @param <T>
  */
 public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
-	private THashMap<LabeledNode, THashSet<T>> vertexSubgraphMap;
+	private HashMap<LabeledNode, HashSet<T>> vertexSubgraphMap;
 	MapArray<T> list;
 
 	public AdvancedSubgraphReservoir() {
-		vertexSubgraphMap = new THashMap<LabeledNode, THashSet<T>>();
+		vertexSubgraphMap = new HashMap<LabeledNode, HashSet<T>>();
 		list = new MapArray<T>();
 
 	}
@@ -39,12 +39,12 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 	}
 
 	public void add(LabeledNode a, T value) {
-		if (vertexSubgraphMap.contains(a)) {
-			THashSet<T> set = vertexSubgraphMap.get(a);
+		if (vertexSubgraphMap.containsKey(a)) {
+			HashSet<T> set = vertexSubgraphMap.get(a);
 			set.add(value);
 			vertexSubgraphMap.put(a, set);
 		} else {
-			THashSet<T> set = new THashSet<T>();
+			HashSet<T> set = new HashSet<T>();
 			set.add(value);
 			vertexSubgraphMap.put(a, set);
 		}
@@ -84,8 +84,8 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 	}
 
 	public void remove(LabeledNode a, T value) {
-		if (vertexSubgraphMap.contains(a)) {
-			THashSet<T> set = vertexSubgraphMap.get(a);
+		if (vertexSubgraphMap.containsKey(a)) {
+			HashSet<T> set = vertexSubgraphMap.get(a);
 			set.remove(value);
 			vertexSubgraphMap.put(a, set);
 		}
@@ -95,10 +95,10 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 		return list.size();
 	}
 
-	public THashSet<T> getAllSubgraphs(LabeledNode a) {
-		if (vertexSubgraphMap.contains(a))
+	public HashSet<T> getAllSubgraphs(LabeledNode a) {
+		if (vertexSubgraphMap.containsKey(a))
 			return vertexSubgraphMap.get(a);
 		else
-			return new THashSet<T>();
+			return new HashSet<T>();
 	}
 }

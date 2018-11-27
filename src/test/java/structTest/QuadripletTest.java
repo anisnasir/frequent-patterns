@@ -18,9 +18,9 @@ public class QuadripletTest {
 		LabeledNode b = new LabeledNode("b",2);
 		LabeledNode c = new LabeledNode("c",3);
 		LabeledNode d = new LabeledNode("d",4);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2, "u");
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3, "u");
-		StreamEdge edgeC = new StreamEdge("a",1, "d", 3, "u");
+		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2);
+		StreamEdge edgeB = new StreamEdge("a",1, "c", 3);
+		StreamEdge edgeC = new StreamEdge("a",1, "d", 3);
 		Quadriplet quadriplet = new Quadriplet();
 		quadriplet.addEdge(edgeA);
 		quadriplet.addEdge(edgeB);
@@ -34,8 +34,8 @@ public class QuadripletTest {
 		LabeledNode b = new LabeledNode("b",2);
 		LabeledNode c = new LabeledNode("c",3);
 		LabeledNode d = new LabeledNode("d",4);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2, "u");
-		StreamEdge edgeC = new StreamEdge("c",3, "d", 4, "u");
+		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2);
+		StreamEdge edgeC = new StreamEdge("c",3, "d", 4);
 		Quadriplet quadriplet = new Quadriplet();
 		quadriplet.addEdge(edgeA);
 		quadriplet.addEdge(edgeC);
@@ -47,8 +47,8 @@ public class QuadripletTest {
 		LabeledNode a = new LabeledNode("a",1);
 		LabeledNode b = new LabeledNode("b",2);
 		LabeledNode c = new LabeledNode("c",3);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2, "u");
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3, "u");
+		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2);
+		StreamEdge edgeB = new StreamEdge("a",1, "c", 3);
 		Quadriplet quadriplet = new Quadriplet();
 		quadriplet.addEdge(edgeA);
 		quadriplet.addEdge(edgeB);
@@ -61,22 +61,22 @@ public class QuadripletTest {
 		LabeledNode b = new LabeledNode("b",2);
 		LabeledNode c = new LabeledNode("c",3);
 		LabeledNode d = new LabeledNode("d",4);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2, "u");
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3, "u");
-		StreamEdge edgeC = new StreamEdge("a",1, "d", 3, "u");
+		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2);
+		StreamEdge edgeB = new StreamEdge("a",1, "c", 3);
+		StreamEdge edgeC = new StreamEdge("a",1, "d", 3);
 		Quadriplet quadriplet = new Quadriplet();
 		quadriplet.addEdge(edgeA);
 		quadriplet.addEdge(edgeB);
 		quadriplet.addEdge(edgeC);
 		
-		assertEquals(-1481952074, quadriplet.hashCode());
+		assertEquals(1818592971, quadriplet.hashCode());
 	}
 	
 	@Test
 	public void getTypeTest() {
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2, "u");
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3, "u");
-		StreamEdge edgeC = new StreamEdge("a",1, "d", 4, "u");
+		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2);
+		StreamEdge edgeB = new StreamEdge("a",1, "c", 3);
+		StreamEdge edgeC = new StreamEdge("a",1, "d", 4);
 		Quadriplet quadriplet = new Quadriplet();
 		quadriplet.addEdge(edgeA);
 		quadriplet.addEdge(edgeB);

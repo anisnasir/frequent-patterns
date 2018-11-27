@@ -19,8 +19,8 @@ public class EdgeHandler {
 		LabeledNode srcNode = new LabeledNode(src,srcLabel);
 		LabeledNode dstNode = new LabeledNode(dest,dstLabel);
 		
-		nodeMap.addEdge(srcNode, dstNode,item);
-		nodeMap.addEdge(dstNode, srcNode, item);
+		nodeMap.addEdge(srcNode, dstNode);
+		nodeMap.addEdge(dstNode, srcNode);
 	}
 	
 	public void handleEdgeDeletion(StreamEdge oldestEdge, NodeMap nodeMap ) {
@@ -34,7 +34,7 @@ public class EdgeHandler {
 		LabeledNode dstNode = new LabeledNode(dest,dstLabel);
 					
 		//removes from each others neighbor table
-		nodeMap.removeEdge(srcNode, dstNode, oldestEdge);
-		nodeMap.removeEdge(dstNode, srcNode, oldestEdge);
+		nodeMap.removeEdge(srcNode, dstNode);
+		nodeMap.removeEdge(dstNode, srcNode);
 	}
 }

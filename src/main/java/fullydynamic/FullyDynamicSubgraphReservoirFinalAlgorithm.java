@@ -1,17 +1,16 @@
-package fullydynamictopkgraphpattern;
+package fullydynamic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import gnu.trove.map.hash.THashMap;
-import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
 import reservoir.SubgraphReservoir;
-import struct.LabeledNeighbor;
 import struct.LabeledNode;
 import struct.NodeBottomK;
 import struct.NodeMap;
@@ -29,7 +28,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	AdvancedSubgraphReservoir<Triplet> reservoir;
-	THashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Integer> frequentPatterns;
 	NodeBottomK nodeBottomK;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
@@ -41,7 +40,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	AlgorithmD skipRP;
 	int Zprime;
 	Random rand;
-	ReservoirSampling<LabeledNeighbor> sampler;
+	ReservoirSampling<LabeledNode> sampler;
 
 	public FullyDynamicSubgraphReservoirFinalAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
@@ -57,10 +56,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		c2=0;
 		sum = 0;
 		Zprime=-1;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Integer>();
 		skipRS = new AlgorithmZ(M);
 		//skipRP = new AlgorithmD();
-		sampler = new ReservoirSampling<LabeledNeighbor>();
+		sampler = new ReservoirSampling<LabeledNode>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -71,11 +70,11 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		//replaces the existing wedges in the reservoir with the triangles
-		THashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
+		HashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
@@ -90,11 +89,11 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}
 
-		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		BottomKSketch<LabeledNode> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNode> dstSketch = nodeBottomK.getSketch(dst);
 		int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
 		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//HashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
@@ -113,10 +112,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				//we would randomly pick a vertex from the neighborhood of src and dst
 				//and add it to the reservoir
 				//System.out.println("i " + i + " W " + W);
-				THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
+				HashSet<LabeledNode> set = new HashSet<LabeledNode>();
 				int count = 0 ;
 				while(count < i) {
-					LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
+					LabeledNode randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 					if(randomVertex == null) {
 						break;
 					}else if (set.contains(randomVertex)) {
@@ -124,16 +123,16 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 						count++;
 					}else {
 						set.add(randomVertex);
-						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
+						HashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
 						if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 							//triangle -> hence, rejected!!!!!
 							count++;
 						}else if (randomVertexNeighbor.contains(src)) {
-							Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+							Triplet triplet = new Triplet(src, dst, randomVertex,edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getVertexId(), randomVertex.getVertexLabel()));
 							addToReservoir(triplet);
 							count++;
 						}else {
-							Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+							Triplet triplet = new Triplet(src, dst, randomVertex,edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getVertexId(), randomVertex.getVertexLabel()));
 							addToReservoir(triplet);
 							count++;
 						}
@@ -143,9 +142,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			}
 		}else {
 			int count = 0 ;
-			THashSet<LabeledNeighbor> set = new THashSet<LabeledNeighbor>();
+			HashSet<LabeledNode> set = new HashSet<LabeledNode>();
 			while(count < W) {
-				LabeledNeighbor randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
+				LabeledNode randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
 
 				if(randomVertex == null) {
 					break;
@@ -154,16 +153,16 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 				} else {
 					set.add(randomVertex);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
-					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex.getDst());
+					HashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
 						count++;
 					}else if (randomVertexNeighbor.contains(src)) {
-						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+						Triplet triplet = new Triplet(src, dst, randomVertex,edge, new StreamEdge(src.getVertexId(), src.getVertexLabel(), randomVertex.getVertexId(), randomVertex.getVertexLabel()));
 						addSubgraph(triplet);
 						count++;
 					}else {
-						Triplet triplet = new Triplet(src, dst, randomVertex.getDst(),edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getDst().getVertexId(), randomVertex.getDst().getVertexLabel(), randomVertex.getEdgeLabel()));
+						Triplet triplet = new Triplet(src, dst, randomVertex,edge, new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), randomVertex.getVertexId(), randomVertex.getVertexLabel()));
 						addSubgraph(triplet);
 						count++;
 					}
@@ -173,7 +172,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		}
 		utility.handleEdgeAddition(edge, nodeMap);
 		//System.out.println(reservoir.size() + "  N " + N);
-		nodeBottomK.addEdge(src, dst, edge);
+		nodeBottomK.addEdge(src, dst);
 		return false;
 	}
 	void addToReservoir(Triplet triplet) { 
@@ -255,7 +254,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		}
 	}
 
-	public LabeledNeighbor getRandomNeighbor(THashSet<LabeledNeighbor> srcNeighbor, THashSet<LabeledNeighbor> dstNeighbor) {
+	public LabeledNode getRandomNeighbor(HashSet<LabeledNode> srcNeighbor, HashSet<LabeledNode> dstNeighbor) {
 		int d_u = srcNeighbor.size();
 		int d_v = dstNeighbor.size();
 
@@ -266,10 +265,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		double value = d_u/(double)(d_u+d_v);
 		double ran = Math.random();
 		if(ran <= value) {
-			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(srcNeighbor);
+			ArrayList<LabeledNode> list = new ArrayList<LabeledNode>(srcNeighbor);
 			return list.get(rand.nextInt(list.size()));
 		}else {
-			ArrayList<LabeledNeighbor> list = new ArrayList<LabeledNeighbor>(dstNeighbor);
+			ArrayList<LabeledNode> list = new ArrayList<LabeledNode>(dstNeighbor);
 			return list.get(rand.nextInt(list.size()));
 		}
 	}
@@ -284,23 +283,23 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
-		nodeBottomK.removeEdge(src, dst, edge);
+		nodeBottomK.removeEdge(src, dst);
 
 
-		THashSet<LabeledNeighbor> srcNeighbor = nodeMap.getNeighbors(src);
-		THashSet<LabeledNeighbor> dstNeighbor = nodeMap.getNeighbors(dst);
+		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
-		BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
+		BottomKSketch<LabeledNode> srcSketch = nodeBottomK.getSketch(src);
+		BottomKSketch<LabeledNode> dstSketch = nodeBottomK.getSketch(dst);
 		int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
 
 		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		//THashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		//HashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		Ncurrent-=W;
 
 		//remove all the wedges from the graphs
-		THashSet<Triplet> candidateWedges = reservoir.getAllSubgraphs(src);
+		HashSet<Triplet> candidateWedges = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
 			if((t.edgeA.equals(edge) || t.edgeB.equals(edge)) && !t.isTriangle()) {
@@ -322,7 +321,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		//System.out.println(reservoir.size());
 
 		//update all triangles in the reservoir and replace them with the wedges
-		THashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
+		HashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
@@ -360,7 +359,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.contains(p)) {
+		if(frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
@@ -370,7 +369,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.contains(p)) {
+		if(frequentPatterns.containsKey(p)) {
 			int count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
@@ -379,7 +378,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		}
 	}
 
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Integer> getFrequentPatterns() {
 		correctEstimates();
 		return this.frequentPatterns;
 	}

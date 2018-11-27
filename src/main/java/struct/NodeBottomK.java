@@ -1,75 +1,72 @@
 package struct;
 
-import gnu.trove.map.hash.THashMap;
+import java.util.HashMap;
+
 import input.StreamEdge;
 import utility.BottomKSketch;
 
 public class NodeBottomK {
 	int k = 20;
-	public THashMap<LabeledNode, BottomKSketch<LabeledNeighbor>> map;
+	public HashMap<LabeledNode, BottomKSketch<LabeledNode>> map;
 
 	public NodeBottomK() {
-		map = new THashMap<LabeledNode, BottomKSketch<LabeledNeighbor>>();
+		map = new HashMap<LabeledNode, BottomKSketch<LabeledNode>>();
 	}
 
 	void addNode(LabeledNode str) {
-		map.put(str, new BottomKSketch<LabeledNeighbor>(k));
+		map.put(str, new BottomKSketch<LabeledNode>(k));
 	}
 
-	public void addEdge(LabeledNode src, LabeledNode dest, StreamEdge edge) {
-		LabeledNeighbor temp = new LabeledNeighbor(dest, edge.getEdgeLabel());
+	public void addEdge(LabeledNode src, LabeledNode dest) {
 		if (map.containsKey(src)) {
-			BottomKSketch<LabeledNeighbor> neighbors = map.get(src);
-			neighbors.offer(temp);
+			BottomKSketch<LabeledNode> neighbors = map.get(src);
+			neighbors.offer(dest);
 			map.put(src, neighbors);
 		} else {
-			BottomKSketch<LabeledNeighbor> neighbors = new BottomKSketch<LabeledNeighbor>(k);
-			neighbors.offer(temp);
+			BottomKSketch<LabeledNode> neighbors = new BottomKSketch<LabeledNode>(k);
+			neighbors.offer(dest);
 			map.put(src, neighbors);
 		}
 
-		LabeledNeighbor temp1 = new LabeledNeighbor(src, edge.getEdgeLabel());
 		if (map.containsKey(dest)) {
-			BottomKSketch<LabeledNeighbor> neighbors = map.get(dest);
-			neighbors.offer(temp1);
+			BottomKSketch<LabeledNode> neighbors = map.get(dest);
+			neighbors.offer(src);
 			map.put(dest, neighbors);
 		} else {
-			BottomKSketch<LabeledNeighbor> neighbors = new BottomKSketch<LabeledNeighbor>(k);
-			neighbors.offer(temp1);
+			BottomKSketch<LabeledNode> neighbors = new BottomKSketch<LabeledNode>(k);
+			neighbors.offer(src);
 			map.put(dest, neighbors);
 		}
 	}
 
 	public boolean contains(LabeledNode str) {
-		return map.contains(str);
+		return map.containsKey(str);
 	}
 
-	public BottomKSketch<LabeledNeighbor> getSketch(LabeledNode str) {
-		if (map.contains(str))
+	public BottomKSketch<LabeledNode> getSketch(LabeledNode str) {
+		if (map.containsKey(str))
 			return map.get(str);
 		else
-			return new BottomKSketch<LabeledNeighbor>(k);
+			return new BottomKSketch<LabeledNode>(k);
 	}
 
-	public void removeEdge(LabeledNode src, LabeledNode dest, StreamEdge edge) {
-		LabeledNeighbor temp = new LabeledNeighbor(dest, edge.getEdgeLabel());
+	public void removeEdge(LabeledNode src, LabeledNode dest) {
 		if (map.containsKey(src)) {
-			BottomKSketch<LabeledNeighbor> neighbors = map.get(src);
-			neighbors.remove(temp);
+			BottomKSketch<LabeledNode> neighbors = map.get(src);
+			neighbors.remove(dest);
 			map.put(src, neighbors);
 		}
 
-		LabeledNeighbor temp1 = new LabeledNeighbor(src, edge.getEdgeLabel());
 		if (map.containsKey(dest)) {
-			BottomKSketch<LabeledNeighbor> neighbors = map.get(dest);
-			neighbors.remove(temp1);
+			BottomKSketch<LabeledNode> neighbors = map.get(dest);
+			neighbors.remove(src);
 			map.put(dest, neighbors);
 		}
 	}
 
 	public int getUnionSize(LabeledNode src, LabeledNode dest) {
-		BottomKSketch<LabeledNeighbor> srcSketch = map.get(src);
-		BottomKSketch<LabeledNeighbor> dstSketch = map.get(dest);
+		BottomKSketch<LabeledNode> srcSketch = map.get(src);
+		BottomKSketch<LabeledNode> dstSketch = map.get(dest);
 		return srcSketch.unionImprovedCardinality(dstSketch);
 	}
 

@@ -35,9 +35,8 @@ public class StreamEdgeReader {
 			int srcLabel = Integer.parseInt(tokens[1]);
 			String dest = tokens[2];
 			int dstLabel = Integer.parseInt(tokens[3]);
-			String label = tokens[4];
 
-			return Optional.of(new StreamEdge(src, srcLabel, dest, dstLabel, label));
+			return Optional.of(new StreamEdge(src, srcLabel, dest, dstLabel));
 
 		} catch (IOException e) {
 			System.err.println("Unable to read from file");
