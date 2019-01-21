@@ -68,6 +68,27 @@ public class Quadriplet implements Comparable<Quadriplet>, Subgraph {
 			edges.add(edge);
 		}
 	}
+	
+	public void removeEdge(StreamEdge edge) {
+		if (edges.contains(edge)) {
+			LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
+			LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
+			
+			if (subgraph.containsKey(src)) {
+				TreeSet<LabeledNode> treeSet = subgraph.get(src);
+				treeSet.remove(dst);
+				subgraph.put(src, treeSet);
+			} 
+
+			if (subgraph.containsKey(dst)) {
+				TreeSet<LabeledNode> treeSet = subgraph.get(dst);
+				treeSet.remove(src);
+				subgraph.put(dst, treeSet);
+			} 
+			numEdges--;
+			edges.remove(edge);
+		}
+	}
 
 	public boolean isQuadriplet() {
 		Set<LabeledNode> nodeSet = subgraph.keySet();
@@ -92,17 +113,6 @@ public class Quadriplet implements Comparable<Quadriplet>, Subgraph {
 			}
 		}
 		return (visited.size() == 4);
-	}
-	
-	public void addEdgesForNode(NodeMap nodeMap, LabeledNode src) {
-		Set<LabeledNode> srcNeighbors = nodeMap.getNeighbors(src);
-		Set<LabeledNode> vertices = subgraph.keySet();
-		for(LabeledNode srcNeighbor: srcNeighbors) {
-			if(vertices.contains(srcNeighbor)) {
-				this.addEdge(new StreamEdge(src.vertexId, src.vertexLabel, srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
-			}
-		}
-		
 	}
 
 	private int DFSCode() {

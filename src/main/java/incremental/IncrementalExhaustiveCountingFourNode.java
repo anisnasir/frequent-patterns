@@ -9,8 +9,8 @@ import graphpattern.FourNodeGraphPattern;
 import input.StreamEdge;
 import struct.LabeledNode;
 import struct.NodeMap;
-import struct.Path;
 import struct.Quadriplet;
+import struct.Triplet;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.SubgraphType;
 import topkgraphpattern.TopkGraphPatterns;
@@ -42,9 +42,9 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
 		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Path> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
 		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Path> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 		
 		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
 		
@@ -103,7 +103,7 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 
 	@Override
 	public boolean removeEdge(StreamEdge edge) {
-		// This method is not implemented for incremental algorithms
+		//Unimplemented for 
 		return false;
 	}
 

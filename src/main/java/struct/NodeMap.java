@@ -55,6 +55,15 @@ public class NodeMap {
 		return false;
 
 	}
+	
+	public boolean contains(LabeledNode src, LabeledNode dst) {
+		if (map.containsKey(src)) {
+			HashSet<LabeledNode> neighbors = map.get(src);
+			return neighbors.contains(dst);
+		}
+		return false;
+
+	}
 
 	public HashSet<LabeledNode> getNeighbors(LabeledNode src) {
 		if (map.containsKey(src)) {
@@ -63,28 +72,59 @@ public class NodeMap {
 			return new HashSet<LabeledNode>();
 	}
 
-	public HashSet<Path> getTwoHopNeighbors(LabeledNode src) {
+	public HashSet<Triplet> getTwoHopNeighbors(LabeledNode src) {
 		if (map.containsKey(src)) {
 			HashSet<LabeledNode> neighbors = map.get(src);
-			HashSet<Path> result = new HashSet<Path>();
+			HashSet<Triplet> result = new HashSet<Triplet>();
 			for (LabeledNode neighbor : neighbors) {
 				if (map.containsKey(neighbor)) {
 					HashSet<LabeledNode> neighborNeighbors = map.get(neighbor);
 					for (LabeledNode neighborNeighbor : neighborNeighbors) {
 						if (!neighborNeighbor.equals(src)) {
-							Path path = new Path();
-							path.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(), neighbor.getVertexId(),
-									neighbor.getVertexLabel()));
-							path.addEdge(new StreamEdge(neighbor.getVertexId(), neighbor.getVertexLabel(),
-									neighborNeighbor.getVertexId(), neighborNeighbor.getVertexLabel()));
-							result.add(path);
+							Triplet t = null;
+							if(neighbors.contains(neighborNeighbor)) {
+								//triangle
+								t = new Triplet(src, neighbor, neighborNeighbor,
+										new StreamEdge(src.getVertexId(), src.getVertexLabel(), neighbor.getVertexId(),
+												neighbor.getVertexLabel()),
+										new StreamEdge(neighbor.getVertexId(), neighbor.getVertexLabel(),
+												neighborNeighbor.getVertexId(), neighborNeighbor.getVertexLabel()),
+										new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+												neighborNeighbor.getVertexId(), neighborNeighbor.getVertexLabel()));
+							} else {
+								//wedge
+								t = new Triplet(src, neighbor, neighborNeighbor,
+										new StreamEdge(src.getVertexId(), src.getVertexLabel(), neighbor.getVertexId(),
+												neighbor.getVertexLabel()),
+										new StreamEdge(neighbor.getVertexId(), neighbor.getVertexLabel(),
+												neighborNeighbor.getVertexId(), neighborNeighbor.getVertexLabel()));
+							}
+							result.add(t);
 						}
 					}
 				}
 			}
 			return result;
 		} else
-			return new HashSet<Path>();
+			return new HashSet<Triplet>();
+	}
+	
+	public HashSet<LabeledNode> getTwoHopNeighbors(LabeledNode src, HashSet<LabeledNode> neighbors) {
+		if (map.containsKey(src)) {
+			HashSet<LabeledNode> result = new HashSet<LabeledNode>();
+			for (LabeledNode neighbor : neighbors) {
+				if (map.containsKey(neighbor)) {
+					HashSet<LabeledNode> neighborNeighbors = map.get(neighbor);
+					for (LabeledNode neighborNeighbor : neighborNeighbors) {
+						if (!neighborNeighbor.equals(src)) {	
+							result.add(neighborNeighbor);
+						}
+					}
+				}
+			}
+			return result;
+		} else
+			return new HashSet<LabeledNode>();
 	}
 
 	public HashSet<LabeledNode> getNodeNeighbors(LabeledNode src) {

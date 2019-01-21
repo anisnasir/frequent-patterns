@@ -65,13 +65,13 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
-			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
+			if((t.nodeA.equals(dst) || t.nodeB.equals(dst) || t.nodeC.equals(dst)) && !t.isTriangle()) {
 				oldWedges.add(t);
 			}
 		}
 		if(oldWedges.size() > 0) {
 			for(Triplet t: oldWedges) {
-				Triplet newTriangle = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB,edge);
+				Triplet newTriangle = new Triplet(t.nodeA,t.nodeB,t.nodeC,t.edgeA, t.edgeB,edge);
 				replaceSubgraphs(t, newTriangle);
 			}
 		}

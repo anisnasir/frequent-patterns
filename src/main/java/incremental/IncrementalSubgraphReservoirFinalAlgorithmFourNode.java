@@ -15,7 +15,6 @@ import reservoir.SubgraphReservoir;
 import struct.LabeledNode;
 import struct.NodeBottomK;
 import struct.NodeMap;
-import struct.Path;
 import struct.Quadriplet;
 import struct.Triplet;
 import topkgraphpattern.Pattern;
@@ -62,14 +61,22 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		}
 		// System.out.println("+" + edge);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
-		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
 		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Path> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		HashSet<LabeledNode> srcTwoHopNeighbor = nodeMap.getTwoHopNeighbors(src, srcOneHopNeighbor);
+		
+		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
 		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Path> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
-
-		int subgraphCount = subgraphGenerator.getAllSubgraphsCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
-				dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
+		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
+		
+		
+		int[] subgraphCountArray = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
+				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
+		
+		int subgraphCount = 0;
+		for(int count:subgraphCountArray) {
+			subgraphCount+=count;
+		}
+		
 
 		// replaces the existing wedges in the reservoir with the triangles
 		HashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
@@ -86,17 +93,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 				replaceSubgraphs(t, newQuadriplet);
 				subgraphCount--;
 			}
-		}
-
-		// BottomKSketch<LabeledNeighbor> srcSketch = nodeBottomK.getSketch(src);
-		// BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
-		// int W =
-		// srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
-		// SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		// HashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		// int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
-		// System.out.println("W "+ W + " " + srcNeighbor + " " + dstNeighbor);
-
+		}		
 		int W = subgraphCount;
 
 		// System.out.println("W " + W);
@@ -108,23 +105,19 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 				N = N + zrs + 1;
 				sum = sum + zrs + 1;
 			}
-			// added i wedges to the reservoir
-			// we would randomly pick a vertex from the neighborhood of src and dst
-			// and add it to the reservoir
-			// System.out.println("i " + i + " W " + W);
 			HashSet<LabeledNode> set = new HashSet<LabeledNode>();
 			int count = 0;
 			while (count < i) {
-				Quadriplet randomSubgraph = subgraphGenerator.getRandom(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
-				addToReservoir(randomSubgraph);
-				count++;
+				Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor, subgraphCountArray);
+				if(randomSubgraph!=null) {
+					addToReservoir(randomSubgraph);
+					count++;
+				}
 			}
 			sum = sum - W;
 		}
 
 		utility.handleEdgeAddition(edge, nodeMap);
-		// System.out.println(reservoir.size() + " N " + N);
-		//nodeBottomK.addEdge(src, dst, edge);
 		return false;
 
 	}

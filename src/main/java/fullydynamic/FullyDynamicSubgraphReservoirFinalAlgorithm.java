@@ -78,23 +78,23 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
-			if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst)) && !t.isTriangle()) {
+			if((t.nodeA.equals(dst) || t.nodeB.equals(dst) || t.nodeC.equals(dst)) && !t.isTriangle()) {
 				oldWedges.add(t);
 			}
 		}
 		if(oldWedges.size() > 0) {
 			for(Triplet t: oldWedges) {
-				Triplet newTriangle = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB,edge);
+				Triplet newTriangle = new Triplet(t.nodeA,t.nodeB,t.nodeC,t.edgeA, t.edgeB,edge);
 				replaceSubgraphs(t, newTriangle);
 			}
 		}
 
-		BottomKSketch<LabeledNode> srcSketch = nodeBottomK.getSketch(src);
-		BottomKSketch<LabeledNode> dstSketch = nodeBottomK.getSketch(dst);
-		int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
-		//SetFunctions<LabeledNeighbor> fun = new SetFunctions<LabeledNeighbor>();
-		//HashSet<LabeledNeighbor> union = fun.unionSet(srcNeighbor, dstNeighbor);
-		//int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
+		//BottomKSketch<LabeledNode> srcSketch = nodeBottomK.getSketch(src);
+		//BottomKSketch<LabeledNode> dstSketch = nodeBottomK.getSketch(dst);
+		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
+		SetFunctions<LabeledNode> fun = new SetFunctions<LabeledNode>();
+		HashSet<LabeledNode> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
 		if(c1+c2 == 0) {
@@ -120,7 +120,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 						break;
 					}else if (set.contains(randomVertex)) {
 						//wedge already added
-						count++;
+						//count++;
 					}else {
 						set.add(randomVertex);
 						HashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
@@ -326,7 +326,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
 			if(t.isTriangle()) {
-				if((t.a.equals(dst) || t.b.equals(dst) || t.c.equals(dst))) {
+				if((t.nodeA.equals(dst) || t.nodeB.equals(dst) || t.nodeC.equals(dst))) {
 					triangles.add(t);
 				}
 			}
@@ -335,11 +335,11 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 			for(Triplet t: triangles) {
 				Triplet newWedge = null;
 				if(edge.equals(t.edgeA)) {
-					newWedge = new Triplet(t.a,t.b,t.c,t.edgeB, t.edgeC);
+					newWedge = new Triplet(t.nodeA,t.nodeB,t.nodeC,t.edgeB, t.edgeC);
 				}else if (edge.equals(t.edgeB)) {
-					newWedge = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeC);
+					newWedge = new Triplet(t.nodeA,t.nodeB,t.nodeC,t.edgeA, t.edgeC);
 				}else {
-					newWedge = new Triplet(t.a,t.b,t.c,t.edgeA, t.edgeB);
+					newWedge = new Triplet(t.nodeA,t.nodeB,t.nodeC,t.edgeA, t.edgeB);
 				}
 				replaceSubgraphs(t, newWedge);
 			}

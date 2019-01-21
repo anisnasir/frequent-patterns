@@ -11,14 +11,70 @@ import topkgraphpattern.Subgraph;
 
 public class Triplet implements Comparable<Triplet>, Subgraph {
 	public int numEdges;
-	public LabeledNode a;
-	public LabeledNode b;
-	public LabeledNode c;
+	public LabeledNode nodeA;
+	public LabeledNode nodeB;
+	public LabeledNode nodeC;
+	public int getNumEdges() {
+		return numEdges;
+	}
+
+	public void setNumEdges(int numEdges) {
+		this.numEdges = numEdges;
+	}
+
+	public LabeledNode getNodeA() {
+		return nodeA;
+	}
+
+	public void setNodeA(LabeledNode nodeA) {
+		this.nodeA = nodeA;
+	}
+
+	public LabeledNode getNodeB() {
+		return nodeB;
+	}
+
+	public void setNodeB(LabeledNode nodeB) {
+		this.nodeB = nodeB;
+	}
+
+	public LabeledNode getNodeC() {
+		return nodeC;
+	}
+
+	public void setNodeC(LabeledNode nodeC) {
+		this.nodeC = nodeC;
+	}
+
+	public StreamEdge getEdgeA() {
+		return edgeA;
+	}
+
+	public void setEdgeA(StreamEdge edgeA) {
+		this.edgeA = edgeA;
+	}
+
+	public StreamEdge getEdgeB() {
+		return edgeB;
+	}
+
+	public void setEdgeB(StreamEdge edgeB) {
+		this.edgeB = edgeB;
+	}
+
+	public StreamEdge getEdgeC() {
+		return edgeC;
+	}
+
+	public void setEdgeC(StreamEdge edgeC) {
+		this.edgeC = edgeC;
+	}
+
 	public StreamEdge edgeA, edgeB, edgeC;
 
 	public Triplet() {
 		numEdges = 0;
-		a = b = c = null;
+		nodeA = nodeB = nodeC = null;
 		edgeA = edgeB = edgeC = null;
 	}
 
@@ -34,9 +90,9 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 		arr[2] = c;
 		Arrays.sort(arr);
 
-		this.a = arr[0];
-		this.b = arr[1];
-		this.c = arr[2];
+		this.nodeA = arr[0];
+		this.nodeB = arr[1];
+		this.nodeC = arr[2];
 
 		if (edgeA.compareTo(edgeB) < 0) {
 			this.edgeA = edgeA;
@@ -56,9 +112,9 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 		arr[2] = c;
 		Arrays.sort(arr);
 
-		this.a = arr[0];
-		this.b = arr[1];
-		this.c = arr[2];
+		this.nodeA = arr[0];
+		this.nodeB = arr[1];
+		this.nodeC = arr[2];
 
 		StreamEdge[] edgeArray = new StreamEdge[3];
 		edgeArray[0] = edgeA;
@@ -76,15 +132,15 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 		if (this.numEdges < o.numEdges) {
 			return -1;
 		} else if (this.numEdges == o.numEdges) {
-			if (this.a.compareTo(o.a) < 0) {
+			if (this.nodeA.compareTo(o.nodeA) < 0) {
 				return -1;
-			} else if (this.a.compareTo(o.a) == 0) {
-				if (this.b.compareTo(o.b) < 0) {
+			} else if (this.nodeA.compareTo(o.nodeA) == 0) {
+				if (this.nodeB.compareTo(o.nodeB) < 0) {
 					return -1;
-				} else if (this.b.compareTo(o.b) == 0) {
-					if (this.c.compareTo(o.c) < 0)
+				} else if (this.nodeB.compareTo(o.nodeB) == 0) {
+					if (this.nodeC.compareTo(o.nodeC) < 0)
 						return -1;
-					else if (this.c.compareTo(o.c) == 0) {
+					else if (this.nodeC.compareTo(o.nodeC) == 0) {
 						if (this.edgeA.compareTo(o.edgeA) < 0) {
 							return -1;
 						} else if (this.edgeA.compareTo(o.edgeA) == 0) {
@@ -116,13 +172,13 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 		if (this.numEdges == 2) {
 			int hashCode = new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
 			// if deriving: appendSuper(super.hashCode()).
-					append(this.a).append(this.b).append(this.c).append(this.edgeA).append(this.edgeB)
+					append(this.nodeA).append(this.nodeB).append(this.nodeC).append(this.edgeA).append(this.edgeB)
 					.append(this.numEdges).toHashCode();
 			return hashCode;
 		} else {
 			int hashCode = new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
 			// if deriving: appendSuper(super.hashCode()).
-					append(this.a).append(this.b).append(this.c).
+					append(this.nodeA).append(this.nodeB).append(this.nodeC).
 					// append(this.edgeA).
 					// append(this.edgeB).
 					// append(this.edgeC).
@@ -146,13 +202,42 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 
 	public String toString() {
 		if (numEdges == 2) {
-			return a + ":" + b + ":" + c + ":" + edgeA + ":" + edgeB;
+			return nodeA + ":" + nodeB + ":" + nodeC + ":" + edgeA + ":" + edgeB;
 		} else
-			return a + ":" + b + ":" + c + ":" + edgeA + ":" + edgeB + ":" + edgeC;
+			return nodeA + ":" + nodeB + ":" + nodeC + ":" + edgeA + ":" + edgeB + ":" + edgeC;
 	}
 
 	@Override
 	public List<LabeledNode> getAllVertices() {
-		return Arrays.asList(a, b, c);
+		return Arrays.asList(nodeA, nodeB, nodeC);
+	}
+	
+	public List<StreamEdge> getAllEdges() {
+		if(this.numEdges == 0) {
+			return new ArrayList<StreamEdge>();
+		} else if (this.numEdges == 2) { 
+			List<StreamEdge> list = new ArrayList<StreamEdge>();
+			list.add(edgeA);
+			list.add(edgeB);
+			return list;
+		} else {
+			List<StreamEdge> list = new ArrayList<StreamEdge>();
+			list.add(edgeA);
+			list.add(edgeB);
+			list.add(edgeC);
+			return list;
+		}
+	}
+	
+	public List<LabeledNode> getAllNodes() { 
+		List<LabeledNode> list = new ArrayList<LabeledNode>();
+		list.add(nodeA);
+		list.add(nodeB);
+		list.add(nodeC);
+		return list;
+	}
+	
+	public boolean contains(LabeledNode a) {
+		return (a.equals(nodeA) || a.equals(nodeB) || a.equals(nodeC));
 	}
 }

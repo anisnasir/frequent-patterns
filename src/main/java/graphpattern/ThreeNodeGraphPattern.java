@@ -69,9 +69,9 @@ public class ThreeNodeGraphPattern implements Comparable<ThreeNodeGraphPattern>,
 			isWedge = false;
 			int[] arr = new int[3];
 
-			arr[0] = t.a.getVertexLabel();
-			arr[1] = t.b.getVertexLabel();
-			arr[2] = t.c.getVertexLabel();
+			arr[0] = t.nodeA.getVertexLabel();
+			arr[1] = t.nodeB.getVertexLabel();
+			arr[2] = t.nodeC.getVertexLabel();
 
 			Arrays.sort(arr);
 			label1 = arr[0];
