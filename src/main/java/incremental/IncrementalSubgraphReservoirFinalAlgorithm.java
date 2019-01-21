@@ -86,6 +86,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 
 		//System.out.println("W "  + W);
 		if(W> 0) {
+			
 			int i = 0 ;
 			while(sum <W) {
 				i++;

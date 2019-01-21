@@ -46,8 +46,10 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
 		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 		
+		long startTime = System.nanoTime();
 		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
 		
+		System.out.println("step 1 " + (System.nanoTime()-startTime));
 		for(Quadriplet subgraph: subgraphs) {
 			if(subgraph.getType() == SubgraphType.LINE || subgraph.getType() == SubgraphType.STAR) {
 				addSubgraph(subgraph);

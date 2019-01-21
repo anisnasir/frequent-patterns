@@ -16,27 +16,27 @@ public class StreamEdgeReader {
 		this.sep = sep;
 	}
 
-	public Optional<StreamEdge> nextItem() throws IOException {
+	public StreamEdge nextItem() throws IOException {
 		String line = null;
 		try {
 			line = in.readLine();
 
 			if (line == null || line.length() == 0)
-				return Optional.empty();
+				return null;
 
 			if (line.startsWith("#"))
-				return Optional.empty();
+				return null;
 
 			String[] tokens = line.split(sep);
 			if (tokens.length < 5)
-				return Optional.empty();
+				return null;
 
 			String src = tokens[0];
 			int srcLabel = Integer.parseInt(tokens[1]);
 			String dest = tokens[2];
 			int dstLabel = Integer.parseInt(tokens[3]);
 
-			return Optional.of(new StreamEdge(src, srcLabel, dest, dstLabel));
+			return new StreamEdge(src, srcLabel, dest, dstLabel);
 
 		} catch (IOException e) {
 			System.err.println("Unable to read from file");

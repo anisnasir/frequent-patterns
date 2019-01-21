@@ -368,7 +368,7 @@ public class QuadripletGenerator {
 				if(!dstOneHopNeighbor.contains(s)) {
 					HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 					for(LabeledNode t: nNeighbors) {
-						if(!dstOneHopNeighbor.contains(t) && !visitedSrc.contains(t)) {
+						if(!dstOneHopNeighbor.contains(t) && !visitedSrc.contains(t) && !t.equals(src)) {
 							visitedSrc.add(t);
 							Quadriplet quadriplet = new Quadriplet();
 							quadriplet.addEdge(edge);
@@ -389,7 +389,7 @@ public class QuadripletGenerator {
 				if(!srcOneHopNeighbor.contains(s)) {
 					HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 					for(LabeledNode t: nNeighbors) {
-						if(!srcOneHopNeighbor.contains(t) && !visitedDst.contains(t)) {
+						if(!srcOneHopNeighbor.contains(t) && !visitedDst.contains(t) && !t.equals(dst)) {
 							visitedDst.add(t);
 							Quadriplet quadriplet = new Quadriplet();
 							quadriplet.addEdge(edge);
@@ -408,31 +408,36 @@ public class QuadripletGenerator {
 			List<Quadriplet> result = new ArrayList<Quadriplet>();
 			// combine srcNeighbors, src, dst, dstNeighbors
 			for (LabeledNode srcNeighbor : srcOneHopNeighbor) {
-				for (LabeledNode dstNeighbor : dstOneHopNeighbor) {
-					if (!dstNeighbor.equals(srcNeighbor)) {
-						Quadriplet quadriplet = new Quadriplet();
-						quadriplet.addEdge(edge);
-						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
-								srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
-						quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
-								dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
+				if (!dstOneHopNeighbor.contains(srcNeighbor) && !dstTwoHopNeighbors.contains(srcNeighbor)) {
+					for (LabeledNode dstNeighbor : dstOneHopNeighbor) {
+						if (!srcOneHopNeighbor.contains(dstNeighbor) && !srcTwoHopNeighbors.contains(dstNeighbor)) {
+							if (!dstNeighbor.equals(srcNeighbor)) {
+								Quadriplet quadriplet = new Quadriplet();
+								quadriplet.addEdge(edge);
+								quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+										srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
+								quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
+										dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
 
-						if (nodeMap.contains(src, dstNeighbor)) {
-							quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
-									dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
-						}
+								if (nodeMap.contains(src, dstNeighbor)) {
+									quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+											dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
+								}
 
-						if (nodeMap.contains(dst, srcNeighbor)) {
-							quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
-									srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
-						}
+								if (nodeMap.contains(dst, srcNeighbor)) {
+									quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
+											srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
+								}
 
-						if (nodeMap.contains(srcNeighbor, dstNeighbor)) {
-							quadriplet.addEdge(new StreamEdge(srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel(),
-									dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
+								if (nodeMap.contains(srcNeighbor, dstNeighbor)) {
+									quadriplet.addEdge(
+											new StreamEdge(srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel(),
+													dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
+								}
+								if (quadriplet.getType().equals(SubgraphType.LINE))
+									result.add(quadriplet);
+							}
 						}
-						if (quadriplet.getType().equals(SubgraphType.LINE))
-							result.add(quadriplet);
 					}
 				}
 			}

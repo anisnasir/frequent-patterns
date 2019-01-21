@@ -26,8 +26,10 @@ import java.io.FileWriter;
 
 import graphpattern.ThreeNodeGraphPattern;
 import incremental.IncrementalExhaustiveCounting;
+import incremental.IncrementalExhaustiveCountingFourNode;
 import incremental.IncrementalSubgraphReservoirAlgorithm;
 import incremental.IncrementalSubgraphReservoirFinalAlgorithm;
+import incremental.IncrementalSubgraphReservoirFinalAlgorithmFourNode;
 import incremental.IncrementalSubgraphReservoirImprovedAlgorithm;
 import incremental.IncrementalTriesteAlgorithm;
 import input.StreamEdge;
@@ -90,7 +92,7 @@ public class Main {
 		}
 
 		StreamEdgeReader reader = new StreamEdgeReader(in, sep);
-		Optional<StreamEdge> edge = reader.nextItem();
+		StreamEdge edge = reader.nextItem();
 		FixedSizeSlidingWindow sw = new FixedSizeSlidingWindow(windowSize);
 
 		//declare object of the algorithm interface
@@ -152,12 +154,28 @@ public class Main {
 			int size = (int) (Tkk*epsilonk);
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithm(size, k);
-		}else if (simulatorType == 10) {
+		} else if (simulatorType == 10) {
 			double epsilonk = (4+epsilon)/(epsilon*epsilon);
 			double Tkk = Math.log(Tk/delta);
 			int size = (int) (Tkk*epsilonk);
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, k);
+		} else if (simulatorType == 11) {
+			topkGraphPattern = new IncrementalExhaustiveCountingFourNode();
+		} else if (simulatorType == 12) {
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
+			System.out.println("size of the reservoir: " + size);
+			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithmFourNode(size, k);
+		} else if (simulatorType == 13) {
+			topkGraphPattern = new FullyDynamicExhaustiveCounting();
+		} else if (simulatorType == 14) {
+			double epsilonk = (4+epsilon)/(epsilon*epsilon);
+			double Tkk = Math.log(Tk/delta);
+			int size = (int) (Tkk*epsilonk);
+			System.out.println("size of the reservoir: " + size);
+			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithmFourNode(size, k);
 		}
 
 
@@ -166,13 +184,17 @@ public class Main {
 		 * each line in the file represents a tuple of the form
 		 * <source-id,source-label,dest-id,dest-label,edge-label>
 		 */
-		while(edge.isPresent()) {
-			topkGraphPattern.addEdge(edge.get());
+		
+		
+		long edgeCount = 1;
+		long PRINT_AFTER = 100000;
+		while(edge != null) {
+			topkGraphPattern.addEdge(edge);
 			//System.out.println("+ " + edge);
 
 			//slide the window and get the last item if the window is full
-			if(simulatorType == 0 || simulatorType == 1 || simulatorType == 2 || simulatorType == 7 || simulatorType == 8 || simulatorType == 10)  {
-				Optional<StreamEdge> oldestEdge = sw.add(edge.get());
+			if(isFullyDynamicAlgorithm(simulatorType))  {
+				Optional<StreamEdge> oldestEdge = sw.add(edge);
 				if(oldestEdge.isPresent()) {
 					//System.out.println("- " + oldestEdge);
 					topkGraphPattern.removeEdge(oldestEdge.get());
@@ -180,6 +202,11 @@ public class Main {
 
 			}
 			edge = reader.nextItem();
+			edgeCount++;
+			
+			if(edgeCount % PRINT_AFTER == 0) {
+				System.out.println(String.format("%dk edges read in %d secs", (edgeCount/1000), ((System.currentTimeMillis() - startTime)/1000)));
+			}
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("execution time: " + (endTime-startTime)/(double)1000 + " secs.");
@@ -208,6 +235,14 @@ public class Main {
 			outFileName = outFileName+"_incremental-subgraph-final-reservoir.log";
 		else if(simulatorType == 10)
 			outFileName = outFileName+"_fully-dynamic-subgraph-final-reservoir.log";
+		else if(simulatorType == 11)
+			outFileName = outFileName+"_incremental-exhaustive-four-node.log";
+		else if(simulatorType == 12)
+			outFileName = outFileName+"_incremental-subgraph-final-four-node.log";
+		else if(simulatorType == 13)
+			outFileName = outFileName+"_fully-dynamic-exhaustive-four-node.log";
+		else if(simulatorType == 14)
+			outFileName = outFileName+"_fully-dynamic-subgraph-final-four-node-reservoir.log";
 
 		BufferedWriter bw = null;
 		FileWriter fw = null;
@@ -229,5 +264,7 @@ public class Main {
 		}
 	}
 
-
+	private static boolean isFullyDynamicAlgorithm(int simulatorType) {
+		return simulatorType == 0 || simulatorType == 1 || simulatorType == 2 || simulatorType == 7 || simulatorType == 8 || simulatorType == 10 || simulatorType == 13 || simulatorType == 14;
+	}
 }

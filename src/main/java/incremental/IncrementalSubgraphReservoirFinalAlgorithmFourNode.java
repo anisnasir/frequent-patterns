@@ -68,16 +68,17 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
 		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
 		
-		
+		long startTime = System.nanoTime();
 		int[] subgraphCountArray = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
 				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
-		
+		System.out.println("step 1 " + (System.nanoTime()-startTime));
 		int subgraphCount = 0;
 		for(int count:subgraphCountArray) {
 			subgraphCount+=count;
 		}
 		
 
+		startTime = System.nanoTime();
 		// replaces the existing wedges in the reservoir with the triangles
 		HashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
 		ArrayList<Quadriplet> oldSubgraphs = new ArrayList<Quadriplet>();
@@ -93,11 +94,13 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 				replaceSubgraphs(t, newQuadriplet);
 				subgraphCount--;
 			}
-		}		
+		}	
+		System.out.println("step 2 " + (System.nanoTime()-startTime));
 		int W = subgraphCount;
 
 		// System.out.println("W " + W);
 		if (W > 0) {
+			startTime = System.nanoTime();
 			int i = 0;
 			while (sum < W) {
 				i++;
@@ -105,8 +108,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 				N = N + zrs + 1;
 				sum = sum + zrs + 1;
 			}
+			System.out.println("step 3 " + (System.nanoTime()-startTime));
 			HashSet<LabeledNode> set = new HashSet<LabeledNode>();
 			int count = 0;
+			startTime = System.nanoTime();
 			while (count < i) {
 				Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor, subgraphCountArray);
 				if(randomSubgraph!=null) {
@@ -114,6 +119,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 					count++;
 				}
 			}
+			System.out.println("step 4 " + (System.nanoTime()-startTime));
 			sum = sum - W;
 		}
 
