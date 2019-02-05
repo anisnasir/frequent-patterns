@@ -52,13 +52,13 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		frequentPatterns = new HashMap<Pattern, Integer>();
 		sum = 0;
 		skipRS = new AlgorithmZ(M);
-		subgraphGenerator = new QuadripletGenerator();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
 		if (nodeMap.contains(edge)) {
 			return false;
 		}
+		QuadripletGenerator subgraphGenerator = new QuadripletGenerator();
 		// System.out.println("+" + edge);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
@@ -68,17 +68,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
 		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
 		
-		long startTime = System.nanoTime();
-		int[] subgraphCountArray = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
+		int subgraphCount = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
 				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
-		System.out.println("step 1 " + (System.nanoTime()-startTime));
-		int subgraphCount = 0;
-		for(int count:subgraphCountArray) {
-			subgraphCount+=count;
-		}
 		
-
-		startTime = System.nanoTime();
+		//System.out.println("time taken 1. " + (System.nanoTime()-startTime));
 		// replaces the existing wedges in the reservoir with the triangles
 		HashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
 		ArrayList<Quadriplet> oldSubgraphs = new ArrayList<Quadriplet>();
@@ -95,12 +88,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 				subgraphCount--;
 			}
 		}	
-		System.out.println("step 2 " + (System.nanoTime()-startTime));
 		int W = subgraphCount;
 
 		// System.out.println("W " + W);
 		if (W > 0) {
-			startTime = System.nanoTime();
 			int i = 0;
 			while (sum < W) {
 				i++;
@@ -108,18 +99,16 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 				N = N + zrs + 1;
 				sum = sum + zrs + 1;
 			}
-			System.out.println("step 3 " + (System.nanoTime()-startTime));
-			HashSet<LabeledNode> set = new HashSet<LabeledNode>();
 			int count = 0;
-			startTime = System.nanoTime();
 			while (count < i) {
-				Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor, subgraphCountArray);
+				Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 				if(randomSubgraph!=null) {
 					addToReservoir(randomSubgraph);
 					count++;
 				}
+				
 			}
-			System.out.println("step 4 " + (System.nanoTime()-startTime));
+			//System.out.println("time taken 2. " + (System.nanoTime()-startTime));
 			sum = sum - W;
 		}
 

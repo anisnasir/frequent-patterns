@@ -43,7 +43,6 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNode implements Topk
 	int Zprime;
 	Random rand;
 	ReservoirSampling<LabeledNode> sampler;
-	QuadripletGenerator subgraphGenerator;
 
 	public FullyDynamicSubgraphReservoirFinalAlgorithmFourNode(int size, int k ) { 
 		this.nodeMap = new NodeMap();
@@ -62,13 +61,14 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNode implements Topk
 		skipRS = new AlgorithmZ(M);
 		//skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<LabeledNode>();
-		subgraphGenerator = new QuadripletGenerator();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
 		if(nodeMap.contains(edge)) {
 			return false;
 		}
+
+		QuadripletGenerator subgraphGenerator = new QuadripletGenerator();
 		//System.out.println("+" + edge);
 		// System.out.println("+" + edge);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
@@ -80,13 +80,8 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNode implements Topk
 		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
 		
 		
-		int[] subgraphCountArray = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
+		int subgraphCount = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
 				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
-		
-		int subgraphCount = 0;
-		for(int count:subgraphCountArray) {
-			subgraphCount+=count;
-		}
 
 		//replaces the existing wedges in the reservoir with the triangles
 		HashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
@@ -119,7 +114,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNode implements Topk
 				
 				int count = 0;
 				while (count < i) {
-					Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor, subgraphCountArray);
+					Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 					if(randomSubgraph!=null) {
 						addToReservoir(randomSubgraph);
 						count++;
@@ -131,7 +126,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNode implements Topk
 			int count = 0 ;
 			HashSet<Quadriplet> set = new HashSet<Quadriplet>();
 			while(count < W) {
-				Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor, subgraphCountArray);
+				Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 
 				if (set.contains(randomSubgraph)) {
 					count++;
@@ -214,6 +209,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNode implements Topk
 		}
 		utility.handleEdgeDeletion(edge, nodeMap);
 
+		QuadripletGenerator subgraphGenerator = new QuadripletGenerator();
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
 		HashSet<LabeledNode> srcTwoHopNeighbor = nodeMap.getTwoHopNeighbors(src, srcOneHopNeighbor);
@@ -222,17 +218,12 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNode implements Topk
 		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
 		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
 		
-		int[] subgraphCountArray = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
+		int subgraphCount = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
 				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
-		
-		int subgraphCount = 0;
-		for(int count:subgraphCountArray) {
-			subgraphCount+=count;
-		}
 		
 		int W = subgraphCount;
 		
-		Ncurrent-=W;
+		Ncurrent -= W;
 
 		//remove all the wedges from the graphs
 		HashSet<Quadriplet> candidateWedges = reservoir.getAllSubgraphs(src);

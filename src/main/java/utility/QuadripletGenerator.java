@@ -2,8 +2,10 @@ package utility;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -16,9 +18,11 @@ import topkgraphpattern.SubgraphType;
 
 public class QuadripletGenerator {
 	public QuadripletGenerator() { 
-		
+		cache = new ArrayList<List<Quadriplet>>();
+		rand = new Random();
 	}
-	Random rand = new Random();
+	List<List<Quadriplet>> cache;
+	Random rand;
 
 	public Set<Quadriplet> getAllSubgraphs(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
 			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
@@ -228,16 +232,73 @@ public class QuadripletGenerator {
 		return count;
 	}
 	
-	public int[] getNewConnectedSubgraphCount(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
+	public int getNewConnectedSubgraphCount(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
 			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
 			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors) {
-		SetFunctions<LabeledNode> setFunctions = new SetFunctions<LabeledNode>();
-		int[] results = new int[5];
-		HashSet<LabeledNode> commonNeighbor = setFunctions.intersectionSet(srcOneHopNeighbor, dstOneHopNeighbor);
-		results[0] = choose(srcOneHopNeighbor.size() - commonNeighbor.size(), 2);
-		results[1] = choose(dstOneHopNeighbor.size() - commonNeighbor.size(), 2);
 		
-		int classThreeCount = 0;
+		int count = 0;
+		List<Quadriplet> classOneList = new ArrayList<Quadriplet>();
+		List<LabeledNode> srcNeighbors = new ArrayList<LabeledNode>(srcOneHopNeighbor);
+		for(int i = 0 ;i< srcNeighbors.size()-1;i++) {
+			LabeledNode firstNeighbor = srcNeighbors.get(i);
+			if (!dstOneHopNeighbor.contains(firstNeighbor)) {
+				for (int j = i + 1; j < srcNeighbors.size(); j++) {
+					LabeledNode secondNeighbor = srcNeighbors.get(j);
+					if(!dstOneHopNeighbor.contains(secondNeighbor)) {
+						Quadriplet quadriplet = new Quadriplet();
+						quadriplet.addEdge(edge);
+						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+								firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel()));
+
+						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+								secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
+
+						if (nodeMap.contains(firstNeighbor, secondNeighbor)) {
+							quadriplet
+									.addEdge(new StreamEdge(firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel(),
+											secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
+
+						}
+						classOneList.add(quadriplet);
+					}
+				}
+			}
+		}
+		count += classOneList.size();
+		cache.add(classOneList);
+		
+		List<Quadriplet> classTwoList = new ArrayList<Quadriplet>();
+		List<LabeledNode> dstNeighbors = new ArrayList<LabeledNode>(dstOneHopNeighbor);
+		for(int i = 0 ;i< dstNeighbors.size()-1;i++) {
+			LabeledNode firstNeighbor = dstNeighbors.get(i);
+			if (!srcOneHopNeighbor.contains(firstNeighbor)) {
+				for (int j = i + 1; j < dstNeighbors.size(); j++) {
+					LabeledNode secondNeighbor = dstNeighbors.get(j);
+					if(!srcOneHopNeighbor.contains(secondNeighbor)) {
+						Quadriplet quadriplet = new Quadriplet();
+						quadriplet.addEdge(edge);
+						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+								firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel()));
+
+						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+								secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
+
+						if (nodeMap.contains(firstNeighbor, secondNeighbor)) {
+							quadriplet
+									.addEdge(new StreamEdge(firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel(),
+											secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
+
+						}
+						classTwoList.add(quadriplet);
+					}
+				}
+			}
+		}
+		count += classTwoList.size();
+		cache.add(classTwoList);
+		
+		
+		List<Quadriplet> classThreeList = new ArrayList<Quadriplet>();
 		HashSet<LabeledNode> visitedSrc = new HashSet<LabeledNode>();
 		for (LabeledNode s : srcOneHopNeighbor) {
 			if(!dstOneHopNeighbor.contains(s)) {
@@ -245,53 +306,94 @@ public class QuadripletGenerator {
 				for(LabeledNode t: nNeighbors) {
 					if(!dstOneHopNeighbor.contains(t) && !visitedSrc.contains(t) && !t.equals(src)) {
 						visitedSrc.add(t);
-						classThreeCount++;
+						Quadriplet quadriplet = new Quadriplet();
+						quadriplet.addEdge(edge);
+						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+								s.getVertexId(), s.getVertexLabel()));
+						quadriplet.addEdge(new StreamEdge(s.getVertexId(), s.getVertexLabel(),
+								t.getVertexId(), t.getVertexLabel()));
+						classThreeList.add(quadriplet);
 					}
 				}
 			}
 		}
-		results[2]=classThreeCount;
+		count += classThreeList.size();
+		cache.add(classThreeList);
 
-		int classFourCount = 0;
+		List<Quadriplet> classFourList = new ArrayList<Quadriplet>();
 		HashSet<LabeledNode> visitedDst = new HashSet<LabeledNode>();
-		for (LabeledNode s1 : dstOneHopNeighbor) {
-			if(!srcOneHopNeighbor.contains(s1)) {
-				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s1);
+		for (LabeledNode s : dstOneHopNeighbor) {
+			if(!srcOneHopNeighbor.contains(s)) {
+				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 				for(LabeledNode t: nNeighbors) {
 					if(!srcOneHopNeighbor.contains(t) && !visitedDst.contains(t) && !t.equals(dst)) {
 						visitedDst.add(t);
-						classFourCount++;
+						Quadriplet quadriplet = new Quadriplet();
+						quadriplet.addEdge(edge);
+						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+								s.getVertexId(), s.getVertexLabel()));
+						quadriplet.addEdge(new StreamEdge(s.getVertexId(), s.getVertexLabel(),
+								t.getVertexId(), t.getVertexLabel()));
+						classFourList.add(quadriplet);
+						
 					}
 				}
 			}
 		}
-		results[3] = classFourCount;
+		count += classFourList.size();
+		cache.add(classFourList);
 
-		int classFiveCount = 0;
+		List<Quadriplet> classFiveList = new ArrayList<Quadriplet>();
 		// combine srcNeighbors, src, dst, dstNeighbors
 		for (LabeledNode srcNeighbor : srcOneHopNeighbor) {
-			if(!dstOneHopNeighbor.contains(srcNeighbor) && !dstTwoHopNeighbors.contains(srcNeighbor)) {
+			if (!dstOneHopNeighbor.contains(srcNeighbor) && !dstTwoHopNeighbors.contains(srcNeighbor)) {
 				for (LabeledNode dstNeighbor : dstOneHopNeighbor) {
 					if (!srcOneHopNeighbor.contains(dstNeighbor) && !srcTwoHopNeighbors.contains(dstNeighbor)) {
-						classFiveCount++;
+						if (!dstNeighbor.equals(srcNeighbor)) {
+							Quadriplet quadriplet = new Quadriplet();
+							quadriplet.addEdge(edge);
+							quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+									srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
+							quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
+									dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
+
+							if (nodeMap.contains(src, dstNeighbor)) {
+								quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+										dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
+							}
+
+							if (nodeMap.contains(dst, srcNeighbor)) {
+								quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
+										srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
+							}
+
+							if (nodeMap.contains(srcNeighbor, dstNeighbor)) {
+								quadriplet.addEdge(
+										new StreamEdge(srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel(),
+												dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
+							}
+							if (quadriplet.getType().equals(SubgraphType.LINE))
+								classFiveList.add(quadriplet);
+						}
 					}
 				}
 			}
 		}
-		results[4] = classFiveCount;
+		count += classFiveList.size();
+		cache.add(classFiveList);
 
-		return results;
+		return count;
 	}
 
 	public Quadriplet getRandomNewConnectedSubgraphs(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
 			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
-			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors, int[] subgraphCountArray) {
+			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors) {
 
-		int classOneCount = subgraphCountArray[0];
-		int classTwoCount = subgraphCountArray[1];
-		int classThreeCount = subgraphCountArray[2];
-		int classFourCount = subgraphCountArray[3];
-		int classFiveCount = subgraphCountArray[4];
+		int classOneCount = cache.get(0).size();
+		int classTwoCount = cache.get(1).size();
+		int classThreeCount = cache.get(2).size();
+		int classFourCount = cache.get(3).size();
+		int classFiveCount = cache.get(4).size();
 
 		int count = classOneCount + classTwoCount + classThreeCount + classFourCount + classFiveCount;
 		double firstClassProbability = classOneCount / (double) count;
@@ -300,157 +402,19 @@ public class QuadripletGenerator {
 		double fourthClassProbability = classFourCount / (double) count + thirdClassProbability;
 
 		double coin = Math.random();
-
+		List<Quadriplet> result = null;
 		if (coin < firstClassProbability) {
-			List<LabeledNode> neighborList = new ArrayList<LabeledNode>(srcOneHopNeighbor);
-			List<LabeledNode> uniqueNeighbors = new ArrayList<LabeledNode>();
-			for (int i = 0; i < neighborList.size(); i++) {
-				LabeledNode neighbor = neighborList.get(i);
-				if (!dstOneHopNeighbor.contains(neighbor)) {
-					uniqueNeighbors.add(neighbor);
-				}
-			}
-			if (uniqueNeighbors.size() < 2) {
-				return null;
-			} else {
-				Collections.shuffle(uniqueNeighbors);
-				LabeledNode firstNeighbor = uniqueNeighbors.get(0);
-				LabeledNode secondNeighbor = uniqueNeighbors.get(1);
-				Quadriplet quadriplet = new Quadriplet();
-				quadriplet.addEdge(edge);
-				quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(), firstNeighbor.getVertexId(),
-						firstNeighbor.getVertexLabel()));
-
-				quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(), secondNeighbor.getVertexId(),
-						secondNeighbor.getVertexLabel()));
-
-				if (nodeMap.contains(firstNeighbor, secondNeighbor)) {
-					quadriplet.addEdge(new StreamEdge(firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel(),
-							secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
-
-				}
-				return quadriplet;
-			}
+			result = cache.get(0);
 		} else if (coin < secondClassProbability) {
-			List<LabeledNode> neighborList = new ArrayList<LabeledNode>(dstOneHopNeighbor);
-			List<LabeledNode> uniqueNeighbors = new ArrayList<LabeledNode>();
-			for (int i = 0; i < neighborList.size(); i++) {
-				LabeledNode neighbor = neighborList.get(i);
-				if (!srcOneHopNeighbor.contains(neighbor)) {
-					uniqueNeighbors.add(neighbor);
-				}
-			}
-			if (uniqueNeighbors.size() < 2) {
-				return null;
-			} else {
-				Collections.shuffle(uniqueNeighbors);
-				LabeledNode firstNeighbor = uniqueNeighbors.get(0);
-				LabeledNode secondNeighbor = uniqueNeighbors.get(1);
-				Quadriplet quadriplet = new Quadriplet();
-				quadriplet.addEdge(edge);
-				quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), firstNeighbor.getVertexId(),
-						firstNeighbor.getVertexLabel()));
-
-				quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(), secondNeighbor.getVertexId(),
-						secondNeighbor.getVertexLabel()));
-
-				if (nodeMap.contains(firstNeighbor, secondNeighbor)) {
-					quadriplet.addEdge(new StreamEdge(firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel(),
-							secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
-
-				}
-				return quadriplet;
-			}
+			result = cache.get(1);
 		} else if (coin < thirdClassProbability) {
-			List<Quadriplet> result = new ArrayList<Quadriplet>();
-			HashSet<LabeledNode> visitedSrc = new HashSet<LabeledNode>();
-			for (LabeledNode s : srcOneHopNeighbor) {
-				if(!dstOneHopNeighbor.contains(s)) {
-					HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
-					for(LabeledNode t: nNeighbors) {
-						if(!dstOneHopNeighbor.contains(t) && !visitedSrc.contains(t) && !t.equals(src)) {
-							visitedSrc.add(t);
-							Quadriplet quadriplet = new Quadriplet();
-							quadriplet.addEdge(edge);
-							quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
-									s.getVertexId(), s.getVertexLabel()));
-							quadriplet.addEdge(new StreamEdge(s.getVertexId(), s.getVertexLabel(),
-									t.getVertexId(), t.getVertexLabel()));
-							result.add(quadriplet);
-						}
-					}
-				}
-			}
-			return result.size() != 0 ? result.get(rand.nextInt(result.size())) : null;
+			result = cache.get(2);
 		} else if (coin < fourthClassProbability) {
-			List<Quadriplet> result = new ArrayList<Quadriplet>();
-			HashSet<LabeledNode> visitedDst = new HashSet<LabeledNode>();
-			for (LabeledNode s : dstOneHopNeighbor) {
-				if(!srcOneHopNeighbor.contains(s)) {
-					HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
-					for(LabeledNode t: nNeighbors) {
-						if(!srcOneHopNeighbor.contains(t) && !visitedDst.contains(t) && !t.equals(dst)) {
-							visitedDst.add(t);
-							Quadriplet quadriplet = new Quadriplet();
-							quadriplet.addEdge(edge);
-							quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
-									s.getVertexId(), s.getVertexLabel()));
-							quadriplet.addEdge(new StreamEdge(s.getVertexId(), s.getVertexLabel(),
-									t.getVertexId(), t.getVertexLabel()));
-							result.add(quadriplet);
-							
-						}
-					}
-				}
-			}
-			return result.size() != 0 ? result.get(rand.nextInt(result.size())) : null;
+			result = cache.get(3);
 		} else {
-			List<Quadriplet> result = new ArrayList<Quadriplet>();
-			// combine srcNeighbors, src, dst, dstNeighbors
-			for (LabeledNode srcNeighbor : srcOneHopNeighbor) {
-				if (!dstOneHopNeighbor.contains(srcNeighbor) && !dstTwoHopNeighbors.contains(srcNeighbor)) {
-					for (LabeledNode dstNeighbor : dstOneHopNeighbor) {
-						if (!srcOneHopNeighbor.contains(dstNeighbor) && !srcTwoHopNeighbors.contains(dstNeighbor)) {
-							if (!dstNeighbor.equals(srcNeighbor)) {
-								Quadriplet quadriplet = new Quadriplet();
-								quadriplet.addEdge(edge);
-								quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
-										srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
-								quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
-										dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
-
-								if (nodeMap.contains(src, dstNeighbor)) {
-									quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
-											dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
-								}
-
-								if (nodeMap.contains(dst, srcNeighbor)) {
-									quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
-											srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel()));
-								}
-
-								if (nodeMap.contains(srcNeighbor, dstNeighbor)) {
-									quadriplet.addEdge(
-											new StreamEdge(srcNeighbor.getVertexId(), srcNeighbor.getVertexLabel(),
-													dstNeighbor.getVertexId(), dstNeighbor.getVertexLabel()));
-								}
-								if (quadriplet.getType().equals(SubgraphType.LINE))
-									result.add(quadriplet);
-							}
-						}
-					}
-				}
-			}
-			return result.size() != 0 ? result.get(rand.nextInt(result.size())) : null;
+			result = cache.get(4);
 		}
+		
+		return result.size() != 0 ? result.get(rand.nextInt(result.size())) : null;
 	}
-
-	private int choose(long total, long choose) {
-		if (total < choose)
-			return 0;
-		if (choose == 0 || choose == total)
-			return 1;
-		return choose(total - 1, choose - 1) + choose(total - 1, choose);
-	}
-
 }
