@@ -260,4 +260,9 @@ public class Quadriplet implements Comparable<Quadriplet>, Subgraph {
 		return new ArrayList<LabeledNode>(subgraph.keySet());
 	}
 
+	@Override
+	public Set<StreamEdge> getAllEdges() {
+		return edges;
+	}
+
 }

@@ -1,0 +1,38 @@
+package graphpattern;
+
+public class LabeledStreamEdge implements Comparable<LabeledStreamEdge>{
+	int labelA;
+	int labelB;
+	
+	LabeledStreamEdge(int labelA, int labelB) {
+		if(labelA < labelB) {
+			this.labelA = labelA;
+			this.labelB = labelB;
+		} else {
+			this.labelB = labelA;
+			this.labelA = labelB;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "LabeledStreamEdge [labelA=" + labelA + ", label2=" + labelB + "]";
+	}
+
+	@Override
+	public int compareTo(LabeledStreamEdge o) {
+		if(this.labelA < o.labelA) {
+			return -1;
+		} else if (this.labelA == o.labelA) { 
+			if(this.labelB < o.labelB) {
+				return -1;
+			} else if (this.labelB == o.labelB) {
+				return 0;
+			} else {
+				return 1;
+			}
+		} else {
+			return 1;
+		}
+	}
+}

@@ -2,7 +2,9 @@ package struct;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -212,16 +214,16 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 		return Arrays.asList(nodeA, nodeB, nodeC);
 	}
 	
-	public List<StreamEdge> getAllEdges() {
+	public Set<StreamEdge> getAllEdges() {
 		if(this.numEdges == 0) {
-			return new ArrayList<StreamEdge>();
+			return new HashSet<StreamEdge>();
 		} else if (this.numEdges == 2) { 
-			List<StreamEdge> list = new ArrayList<StreamEdge>();
+			Set<StreamEdge> list = new HashSet<StreamEdge>();
 			list.add(edgeA);
 			list.add(edgeB);
 			return list;
 		} else {
-			List<StreamEdge> list = new ArrayList<StreamEdge>();
+			Set<StreamEdge> list = new HashSet<StreamEdge>();
 			list.add(edgeA);
 			list.add(edgeB);
 			list.add(edgeC);

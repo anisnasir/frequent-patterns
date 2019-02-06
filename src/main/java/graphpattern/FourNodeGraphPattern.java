@@ -1,27 +1,28 @@
 package graphpattern;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import input.StreamEdge;
 import struct.LabeledNode;
 import struct.Quadriplet;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.SubgraphType;
 
 public class FourNodeGraphPattern implements Comparable<FourNodeGraphPattern>, Pattern {
-	TreeSet<Integer> labels;
+	TreeSet<LabeledStreamEdge> labels;
 	SubgraphType type;
 	int numEdges;
 	int maxDegree;
 
 	public FourNodeGraphPattern(Quadriplet t) {
-		labels = new TreeSet<Integer>();
-		List<LabeledNode> labeledNodes = t.getAllVertices();
-		for (LabeledNode labeledNode : labeledNodes) {
-			labels.add(labeledNode.getVertexLabel());
+		labels = new TreeSet<LabeledStreamEdge>();
+		Set<StreamEdge> labeledEdges = t.getAllEdges();
+		for (StreamEdge labeledEdge : labeledEdges) {
+			labels.add(new LabeledStreamEdge(labeledEdge.getSrcLabel(), labeledEdge.getDstLabel()));
 		}
 		type = t.getType();
 		numEdges = t.getNumEdges();

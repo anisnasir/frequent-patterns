@@ -36,7 +36,7 @@ public class QuadripletGenerator {
 			} else {
 				Quadriplet quadriplet = new Quadriplet();
 				quadriplet.addEdge(edge);
-				List<StreamEdge> pathEdges = dstTwoHopNeighbor.getAllEdges();
+				Set<StreamEdge> pathEdges = dstTwoHopNeighbor.getAllEdges();
 				for (StreamEdge pathEdge : pathEdges) {
 					quadriplet.addEdge(pathEdge);
 				}
@@ -96,7 +96,7 @@ public class QuadripletGenerator {
 			} else {
 				Quadriplet quadriplet = new Quadriplet();
 				quadriplet.addEdge(edge);
-				List<StreamEdge> pathEdges = srcTwoHopNeighbor.getAllEdges();
+				Set<StreamEdge> pathEdges = srcTwoHopNeighbor.getAllEdges();
 				for (StreamEdge pathEdge : pathEdges) {
 					quadriplet.addEdge(pathEdge);
 				}
