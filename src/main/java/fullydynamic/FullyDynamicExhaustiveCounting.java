@@ -184,6 +184,11 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	public int getNumberofSubgraphs() {
 		return this.numSubgraph;
 	}
+	@Override
+	public int getCurrentReservoirSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 

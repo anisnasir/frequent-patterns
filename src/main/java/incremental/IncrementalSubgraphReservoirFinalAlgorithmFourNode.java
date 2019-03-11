@@ -213,4 +213,9 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	public int getNumberofSubgraphs() {
 		return N;
 	}
+
+	@Override
+	public int getCurrentReservoirSize() {
+		return reservoir.size();
+	}
 }

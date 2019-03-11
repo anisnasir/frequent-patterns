@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import fullydynamic.FullyDynamicTriesteAlgorithm;
-import incremental.IncrementalTriesteAlgorithm;
+import fullydynamic.FullyDynamicEdgeReservoirAlgorithm;
+import incremental.IncrementalEdgeReservoirFinalAlgorithm;
 import input.StreamEdge;
 
 public class FullyDynamicTriesteAlgorithmTest {
@@ -15,7 +15,7 @@ public class FullyDynamicTriesteAlgorithmTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		int size = 10;
-		FullyDynamicTriesteAlgorithm topk = new FullyDynamicTriesteAlgorithm(size, size);
+		FullyDynamicEdgeReservoirAlgorithm topk = new FullyDynamicEdgeReservoirAlgorithm(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
@@ -27,7 +27,7 @@ public class FullyDynamicTriesteAlgorithmTest {
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 
 		int size = 10;
-		FullyDynamicTriesteAlgorithm topk = new FullyDynamicTriesteAlgorithm(size, size);
+		FullyDynamicEdgeReservoirAlgorithm topk = new FullyDynamicEdgeReservoirAlgorithm(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -42,7 +42,7 @@ public class FullyDynamicTriesteAlgorithmTest {
 		StreamEdge d = new StreamEdge("b", 2, "d", 4);
 		StreamEdge e = new StreamEdge("c", 3, "d", 4);
 		int size = 10;
-		FullyDynamicTriesteAlgorithm topk = new FullyDynamicTriesteAlgorithm(size, size);
+		FullyDynamicEdgeReservoirAlgorithm topk = new FullyDynamicEdgeReservoirAlgorithm(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -58,7 +58,7 @@ public class FullyDynamicTriesteAlgorithmTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicTriesteAlgorithm topk = new FullyDynamicTriesteAlgorithm(size, size);
+		FullyDynamicEdgeReservoirAlgorithm topk = new FullyDynamicEdgeReservoirAlgorithm(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -73,7 +73,7 @@ public class FullyDynamicTriesteAlgorithmTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicTriesteAlgorithm topk = new FullyDynamicTriesteAlgorithm(size, size);
+		FullyDynamicEdgeReservoirAlgorithm topk = new FullyDynamicEdgeReservoirAlgorithm(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);

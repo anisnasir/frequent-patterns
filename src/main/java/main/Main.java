@@ -19,7 +19,7 @@ import fullydynamic.FullyDynamicSubgraphReservoirAlgorithm;
 import fullydynamic.FullyDynamicSubgraphReservoirFinalAlgorithm;
 import fullydynamic.FullyDynamicSubgraphReservoirImprovedFirstAlgorithm;
 import fullydynamic.FullyDynamicSubgraphReservoirImprovedSecondAlgorithm;
-import fullydynamic.FullyDynamicTriesteAlgorithm;
+import fullydynamic.FullyDynamicEdgeReservoirAlgorithm;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -31,7 +31,7 @@ import incremental.IncrementalSubgraphReservoirAlgorithm;
 import incremental.IncrementalSubgraphReservoirFinalAlgorithm;
 import incremental.IncrementalSubgraphReservoirFinalAlgorithmFourNode;
 import incremental.IncrementalSubgraphReservoirImprovedAlgorithm;
-import incremental.IncrementalTriesteAlgorithm;
+import incremental.IncrementalEdgeReservoirFinalAlgorithm;
 import input.StreamEdge;
 import input.StreamEdgeReader;
 import slidingwindow.FixedSizeSlidingWindow;
@@ -112,7 +112,7 @@ public class Main {
 			System.out.println("size of the reservoir: " + size);
 			//int size = 1270176; //this one is the max from youtube dataset
 			//int size = 988471; //this one is the max from patent dataset
-			topkGraphPattern = new FullyDynamicTriesteAlgorithm(size, k );
+			topkGraphPattern = new FullyDynamicEdgeReservoirAlgorithm(size, k );
 		}else if(simulatorType == 2) {
 			topkGraphPattern = new FullyDynamicExhaustiveCounting();
 		}else if(simulatorType == 3) {
@@ -127,7 +127,7 @@ public class Main {
 			int size = (int) (Tkk*epsilonk);
 			System.out.println("size of the reservoir: " + size);
 			//int size = 988471; //this one is the max from patent dataset
-			topkGraphPattern = new IncrementalTriesteAlgorithm(size, k );
+			topkGraphPattern = new IncrementalEdgeReservoirFinalAlgorithm(size, k );
 		}else if (simulatorType == 5) {
 			topkGraphPattern = new IncrementalExhaustiveCounting();
 		}else if (simulatorType == 6) {
@@ -185,6 +185,7 @@ public class Main {
 		 * <source-id,source-label,dest-id,dest-label,edge-label>
 		 */
 		
+		System.out.println("edges(k)\t\tsecs(s)\t\tpatterns(#)\t\treservoir-size(curr)");
 		
 		long edgeCount = 1;
 		long PRINT_AFTER = 100000;
@@ -205,7 +206,8 @@ public class Main {
 			edgeCount++;
 			
 			if(edgeCount % PRINT_AFTER == 0) {
-				System.out.println(String.format("%dk edges read in %d secs", (edgeCount/1000), ((System.currentTimeMillis() - startTime)/1000)));
+				//System.out.println(String.format("%d", ((System.currentTimeMillis() - startTime)/1000)));
+				System.out.println(String.format("%d\t\t%d\t\t%d\t\t%d", (edgeCount/1000), ((System.currentTimeMillis() - startTime)/1000), topkGraphPattern.getFrequentPatterns().size(), topkGraphPattern.getCurrentReservoirSize()));
 			}
 		}
 		long endTime = System.currentTimeMillis();

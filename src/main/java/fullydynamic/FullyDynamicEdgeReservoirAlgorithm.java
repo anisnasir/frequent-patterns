@@ -21,7 +21,7 @@ import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
 
-public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
+public class FullyDynamicEdgeReservoirAlgorithm implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
@@ -34,7 +34,7 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 	int c1;
 	int c2;
 	HypergeometricDistribution hyper;
-	public FullyDynamicTriesteAlgorithm(int size, int k) {
+	public FullyDynamicEdgeReservoirAlgorithm(int size, int k) {
 		nodeMap = new NodeMap();
 		reservoir = new EdgeReservoir<StreamEdge>();
 		utility = new EdgeHandler();
@@ -296,6 +296,10 @@ public class FullyDynamicTriesteAlgorithm implements TopkGraphPatterns{
 
 		//System.out.println(reservoir.size());
 		return false;
+	}
+	@Override
+	public int getCurrentReservoirSize() {
+		return reservoir.getSize();
 	}
 
 }

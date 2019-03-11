@@ -398,4 +398,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	public int getNumberofSubgraphs() {
 		return Ncurrent;
 	}
+
+	@Override
+	public int getCurrentReservoirSize() {
+		return reservoir.size();
+	}
 }

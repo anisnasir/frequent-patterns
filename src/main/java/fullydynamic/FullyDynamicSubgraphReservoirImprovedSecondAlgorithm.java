@@ -285,4 +285,9 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 	public int getNumberofSubgraphs() {
 		return Ncurrent;
 	}
+
+	@Override
+	public int getCurrentReservoirSize() {
+		return reservoir.size();
+	}
 }

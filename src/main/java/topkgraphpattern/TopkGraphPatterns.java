@@ -10,4 +10,5 @@ public interface TopkGraphPatterns {
 	boolean removeEdge(StreamEdge edge);
 	HashMap<Pattern, Integer> getFrequentPatterns();
 	int getNumberofSubgraphs();
+	int getCurrentReservoirSize();
 }

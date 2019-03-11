@@ -222,4 +222,9 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 	public int getNumberofSubgraphs() {
 		return N;
 	}
+
+	@Override
+	public int getCurrentReservoirSize() {
+		return reservoir.size();
+	}
 }

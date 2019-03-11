@@ -177,4 +177,9 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	public int getNumberofSubgraphs() {
 		return N;
 	}
+
+	@Override
+	public int getCurrentReservoirSize() {
+		return reservoir.size();
+	}
 }

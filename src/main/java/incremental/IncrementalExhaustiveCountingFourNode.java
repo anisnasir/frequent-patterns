@@ -113,4 +113,10 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 		return false;
 	}
 
+	@Override
+	public int getCurrentReservoirSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

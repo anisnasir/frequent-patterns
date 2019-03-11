@@ -222,4 +222,10 @@ public class FullyDynamicSubgraphReservoirAlgorithm implements TopkGraphPatterns
 	public int getNumberofSubgraphs() {
 		return Ncurrent;
 	}
+
+	@Override
+	public int getCurrentReservoirSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

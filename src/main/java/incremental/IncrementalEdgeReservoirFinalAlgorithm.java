@@ -18,7 +18,7 @@ import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
 
-public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
+public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
@@ -27,7 +27,7 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 	int M;
 	int N;
 
-	public IncrementalTriesteAlgorithm(int size, int k) {
+	public IncrementalEdgeReservoirFinalAlgorithm(int size, int k) {
 		nodeMap = new NodeMap();
 		reservoir = new EdgeReservoir<StreamEdge>();
 		utility = new EdgeHandler();
@@ -222,6 +222,11 @@ public class IncrementalTriesteAlgorithm implements TopkGraphPatterns {
 	public boolean removeEdge(StreamEdge edge) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public int getCurrentReservoirSize() {
+		return reservoir.getSize();
 	}
 
 }
