@@ -71,7 +71,7 @@ public class Main {
 		int Tk = Integer.parseInt(args[6]);
 		int k = Integer.parseInt(args[7]);
 		System.out.println("simulator type: " + simulatorType + " window size: " + windowSize + " epsilon: " + epsilon
-				+ " delta: " + delta + " Tk: " + Tk);
+				+ " delta: " + delta + " Tk: " + Tk + "k: " + k);
 
 		String sep = ",";
 		String inFileName = directory + fileName;

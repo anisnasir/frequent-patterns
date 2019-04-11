@@ -206,10 +206,12 @@ public class FullyDynamicEdgeReservoirAlgorithm implements TopkGraphPatterns{
 		correctEstimates();
 		return this.frequentPatterns;
 	}
+
 	void initializeHypergeometricDistribution() {
-		int n =Math.min(this.M, Ncurrent+c1+ c2);
-		hyper = new HypergeometricDistribution(Ncurrent+c1+c2, Ncurrent,n);
+		int n = Math.min(this.M, Ncurrent + c1 + c2);
+		hyper = new HypergeometricDistribution(Ncurrent + c1 + c2, Ncurrent, n);
 	}
+	
 	private void correctEstimates() {
 		initializeHypergeometricDistribution();
 		double wedgeCorrectFactor = correctFactorWedge();

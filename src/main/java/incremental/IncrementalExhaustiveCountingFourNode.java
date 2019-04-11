@@ -51,7 +51,7 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 		
 		//System.out.println("step 1 " + (System.nanoTime()-startTime));
 		for(Quadriplet subgraph: subgraphs) {
-			if(subgraph.getType() == SubgraphType.LINE || subgraph.getType() == SubgraphType.STAR) {
+			if (subgraph.getType().equals(SubgraphType.LINE) || subgraph.getType().equals(SubgraphType.STAR)) {
 				addSubgraph(subgraph);
 			} else {
 				addSubgraph(subgraph);

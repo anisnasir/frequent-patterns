@@ -30,6 +30,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	int k;
 	int M;
 	int N;
+	int numSubgraphs;
 	QuadripletGenerator subgraphGenerator;
 
 	public IncrementalEdgeReservoirFinalAlgorithmFourNode(int size, int k) {
@@ -39,6 +40,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 		this.k = k;
 		this.M = size;
 		this.N = 0;
+		this.numSubgraphs = 0;
 		frequentPatterns = new HashMap<Pattern, Integer>();
 	}
 
@@ -83,7 +85,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	
 		// System.out.println("step 1 " + (System.nanoTime()-startTime));
 		for (Quadriplet subgraph : subgraphs) {
-			if (subgraph.getType() == SubgraphType.LINE || subgraph.getType() == SubgraphType.STAR) {
+			if (subgraph.getType().equals(SubgraphType.LINE) || subgraph.getType().equals(SubgraphType.STAR)) {
 				addSubgraph(subgraph);
 			} else {
 				addSubgraph(subgraph);
@@ -119,16 +121,21 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	}
 
 	public int getNumberofSubgraphs() {
-		// TODO Auto-generated method stub
-		return N;
+		return numSubgraphs;
 	}
 
 	void addSubgraph(Quadriplet t) {
-		addFrequentPattern(t);
+		if(t.isQuadriplet()) {
+			addFrequentPattern(t);
+			numSubgraphs++;
+		}
 	}
 
 	void removeSubgraph(Quadriplet t) {
-		removeFrequentPattern(t);
+		if(t.isQuadriplet()) {
+			removeFrequentPattern(t);
+			numSubgraphs--;
+		}
 	}
 
 	// remove a and add b

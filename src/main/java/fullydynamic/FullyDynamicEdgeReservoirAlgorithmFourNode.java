@@ -36,7 +36,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 	int numSubgraphs;
 	int c1;
 	int c2;
-	HypergeometricDistribution hyper;
+	//HypergeometricDistribution hyper;
 	QuadripletGenerator subgraphGenerator;
 	
 	public FullyDynamicEdgeReservoirAlgorithmFourNode(int size, int k) {
@@ -185,12 +185,14 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 		return this.frequentPatterns;
 	}
 
-	void initializeHypergeometricDistribution() {
+	/*void initializeHypergeometricDistribution() {
 		int n = Math.min(this.M, Ncurrent + c1 + c2);
 		hyper = new HypergeometricDistribution(Ncurrent + c1 + c2, Ncurrent, n);
-	}
+	}*/
+	
 	private void correctEstimates() {
 		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
+		//initializeHypergeometricDistribution();
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();
 		double quasiCliqueCorrectFactor = correctFactorQuasiClique();
@@ -215,22 +217,30 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 
 	private double correctFactorLineAndStar() {
 		double result = (N / (double) M);
-		return Math.max(1, Math.pow(result, 3));
+		result =  Math.pow(result, 3);
+		//result = result/(1-hyper.cumulativeProbability(0, 2));
+		return Math.max(1, result);
 	}
 
 	private double correctFactorTailedTriangleAndCircle() {
 		double result = (N / (double) M);
-		return Math.max(1, Math.pow(result, 4));
+		result = Math.pow(result, 4);
+		//result = result/(1-hyper.cumulativeProbability(0, 3));
+		return Math.max(1, result);
 	}
 	
 	private double correctFactorQuasiClique() {
 		double result = (N / (double) M);
-		return Math.max(1, Math.pow(result, 5));
+		result = Math.pow(result, 5);
+		//result = result/(1-hyper.cumulativeProbability(0, 4));
+		return Math.max(1, result);
 	}
 	
 	private double correctFactorClique() {
 		double result = (N / (double) M);
-		return Math.max(1, Math.pow(result, 6));
+		result = Math.pow(result, 6);
+		//result = result/(1-hyper.cumulativeProbability(0, 5));
+		return Math.max(1, result);
 	}
 	
 	@Override
