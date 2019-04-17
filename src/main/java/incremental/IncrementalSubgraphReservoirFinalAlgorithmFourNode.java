@@ -85,7 +85,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 			for (Quadriplet t : oldSubgraphs) {
 				Quadriplet newQuadriplet = t.getQuadripletPlusEdge(edge);
 				replaceSubgraphs(t, newQuadriplet);
-				subgraphCount--;
 			}
 		}	
 		int W = subgraphCount;
