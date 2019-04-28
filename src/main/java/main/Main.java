@@ -270,6 +270,7 @@ public class Main {
 		fw = new FileWriter(outFileName);
 		bw = new BufferedWriter(fw);
 
+		topkGraphPattern.correctEstimates();
 		printMap(topkGraphPattern.getFrequentPatterns(), bw);
 		bw.flush();
 		bw.close();

@@ -157,4 +157,10 @@ public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns
 		return 0;
 	}
 
+	@Override
+	public void correctEstimates() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -137,4 +137,10 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 		return 0;
 	}
 
+	@Override
+	public void correctEstimates() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

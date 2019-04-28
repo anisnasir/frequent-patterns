@@ -181,7 +181,6 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 	}
 
 	public HashMap<Pattern, Integer> getFrequentPatterns() {
-		correctEstimates();
 		return this.frequentPatterns;
 	}
 
@@ -190,7 +189,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 		hyper = new HypergeometricDistribution(Ncurrent + c1 + c2, Ncurrent, n);
 	}*/
 	
-	private void correctEstimates() {
+	public void correctEstimates() {
 		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
 		//initializeHypergeometricDistribution();
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();

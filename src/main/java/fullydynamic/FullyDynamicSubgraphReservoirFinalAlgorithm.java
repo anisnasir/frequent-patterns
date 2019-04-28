@@ -379,10 +379,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	}
 
 	public HashMap<Pattern, Integer> getFrequentPatterns() {
-		correctEstimates();
 		return this.frequentPatterns;
 	}
-	private void correctEstimates() {
+	public void correctEstimates() {
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {

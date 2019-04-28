@@ -203,7 +203,6 @@ public class FullyDynamicEdgeReservoirAlgorithm implements TopkGraphPatterns{
 	}
 
 	public HashMap<Pattern, Integer> getFrequentPatterns() {
-		correctEstimates();
 		return this.frequentPatterns;
 	}
 
@@ -212,7 +211,7 @@ public class FullyDynamicEdgeReservoirAlgorithm implements TopkGraphPatterns{
 		hyper = new HypergeometricDistribution(Ncurrent + c1 + c2, Ncurrent, n);
 	}
 	
-	private void correctEstimates() {
+	public void correctEstimates() {
 		initializeHypergeometricDistribution();
 		double wedgeCorrectFactor = correctFactorWedge();
 		double triangleCorrectFactor = correctFactorTriangle();

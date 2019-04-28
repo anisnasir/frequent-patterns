@@ -6,9 +6,10 @@ import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 
 public interface TopkGraphPatterns {
-	boolean addEdge(StreamEdge edge);
-	boolean removeEdge(StreamEdge edge);
-	HashMap<Pattern, Integer> getFrequentPatterns();
-	int getNumberofSubgraphs();
-	int getCurrentReservoirSize();
+	public boolean addEdge(StreamEdge edge);
+	public boolean removeEdge(StreamEdge edge);
+	public HashMap<Pattern, Integer> getFrequentPatterns();
+	public int getNumberofSubgraphs();
+	public int getCurrentReservoirSize();
+	public void correctEstimates();
 }

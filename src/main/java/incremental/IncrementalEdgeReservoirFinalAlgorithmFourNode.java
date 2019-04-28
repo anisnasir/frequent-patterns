@@ -29,7 +29,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	HashMap<Pattern, Integer> frequentPatterns;
 	int k;
 	int M;
-	int N;
+	int totalNumEdges;
 	int numSubgraphs;
 	QuadripletGenerator subgraphGenerator;
 
@@ -39,20 +39,20 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 		utility = new EdgeHandler();
 		this.k = k;
 		this.M = size;
-		this.N = 0;
+		this.totalNumEdges = 0;
 		this.numSubgraphs = 0;
 		frequentPatterns = new HashMap<Pattern, Integer>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
-		N++;
+		totalNumEdges++;
 		// System.out.println("+" + edge);
 
 		if (reservoir.getSize() < M) {
 			reservoir.add(edge);
 			addQuadriplets(edge);
 			utility.handleEdgeAddition(edge, nodeMap);
-		} else if (Math.random() < (M / (double) N)) {
+		} else if (Math.random() < (M / (double) totalNumEdges)) {
 			// remove a random edge from reservoir
 			StreamEdge oldEdge = reservoir.getRandom();
 			reservoir.remove(oldEdge);
@@ -169,11 +169,10 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	}
 
 	public HashMap<Pattern, Integer> getFrequentPatterns() {
-		correctEstimates();
 		return this.frequentPatterns;
 	}
 
-	private void correctEstimates() {
+	public void correctEstimates() {
 		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();
@@ -198,22 +197,22 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	}
 
 	private double correctFactorLineAndStar() {
-		double result = (N / (double) M);
+		double result = (totalNumEdges / (double) M);
 		return Math.max(1, Math.pow(result, 3));
 	}
 
 	private double correctFactorTailedTriangleAndCircle() {
-		double result = (N / (double) M);
+		double result = (totalNumEdges / (double) M);
 		return Math.max(1, Math.pow(result, 4));
 	}
 	
 	private double correctFactorQuasiClique() {
-		double result = (N / (double) M);
+		double result = (totalNumEdges / (double) M);
 		return Math.max(1, Math.pow(result, 5));
 	}
 	
 	private double correctFactorClique() {
-		double result = (N / (double) M);
+		double result = (totalNumEdges / (double) M);
 		return Math.max(1, Math.pow(result, 6));
 	}
 
