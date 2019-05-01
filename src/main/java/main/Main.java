@@ -171,6 +171,7 @@ public class Main {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
+			size = 2*size;
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalEdgeReservoirFinalAlgorithmFourNode(size, k);
 		} else if (simulatorType == 14) {
