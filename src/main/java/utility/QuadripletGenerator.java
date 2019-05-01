@@ -22,6 +22,7 @@ public class QuadripletGenerator {
 		rand = new Random();
 	}
 	List<List<Quadriplet>> cache;
+	boolean isCacheReady = false;
 	Random rand;
 
 	public Set<Quadriplet> getAllSubgraphs(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
@@ -382,9 +383,23 @@ public class QuadripletGenerator {
 		count += classFiveList.size();
 		cache.add(classFiveList);
 
+		this.isCacheReady = true;
 		return count;
 	}
 
+	public List<Quadriplet> getNewConnectedSubgraphs(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
+			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
+			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors) {
+		if(!this.isCacheReady) {
+			getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
+		}
+		List<Quadriplet> result = new ArrayList<Quadriplet>();
+		for(List<Quadriplet> list: cache) {
+			result.addAll(list);
+		}
+		return result;
+		
+	}
 	public Quadriplet getRandomNewConnectedSubgraphs(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
 			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
 			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors) {

@@ -27,7 +27,7 @@ import utility.SetFunctions;
 import utility.AlgorithmZ;
 import utility.BottomKSketch;
 
-public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkGraphPatterns {
+public class IncrementalSubgraphReservoirFinalAlgorithmFourNode2 implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	//NodeBottomK nodeBottomK;
 	EdgeHandler utility;
@@ -36,18 +36,18 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	QuadripletGenerator subgraphGenerator;
 
 	HashMap<Pattern, Integer> frequentPatterns;
-	int numSubgraphs; // total number of subgraphs
+	int numberSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
 	int sum;
 	AlgorithmZ skipRS;
 
-	public IncrementalSubgraphReservoirFinalAlgorithmFourNode(int size, int k) {
+	public IncrementalSubgraphReservoirFinalAlgorithmFourNode2(int size, int k) {
 		this.nodeMap = new NodeMap();
 		//this.nodeBottomK = new NodeBottomK();
 		rand = new Random();
 		utility = new EdgeHandler();
 		reservoir = new AdvancedSubgraphReservoir<Quadriplet>();
-		numSubgraphs = 0;
+		numberSubgraphs = 0;
 		reservoirSize = size;
 		frequentPatterns = new HashMap<Pattern, Integer>();
 		sum = 0;
@@ -91,20 +91,24 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 
 		// System.out.println("W " + W);
 		if (W > 0) {
-			List<Quadriplet> newSubgraphs = subgraphGenerator.getNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor,
-					dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
-			
-			for(Quadriplet quadriplet: newSubgraphs) {
-				if(reservoir.size() < this.reservoirSize) {
-					addToReservoir(quadriplet);
-				} else if (Math.random() < (this.reservoirSize / (double) this.numSubgraphs)){
-					Quadriplet removedQuadriplet = reservoir.getRandom();
-					reservoir.remove(removedQuadriplet);
-					removeFrequentPattern(removedQuadriplet);
-					addToReservoir(quadriplet);
-				}
-				numSubgraphs++;
+			int i = 0;
+			while (sum < W) {
+				i++;
+				int zrs = skipRS.apply(numberSubgraphs);
+				numberSubgraphs = numberSubgraphs + zrs + 1;
+				sum = sum + zrs + 1;
 			}
+			int count = 0;
+			while (count < i) {
+				Quadriplet randomSubgraph = subgraphGenerator.getRandomNewConnectedSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
+				if(randomSubgraph!=null) {
+					addToReservoir(randomSubgraph);
+					count++;
+				}
+				
+			}
+			//System.out.println("time taken 2. " + (System.nanoTime()-startTime));
+			sum = sum - W;
 		}
 
 		utility.handleEdgeAddition(edge, nodeMap);
@@ -113,13 +117,47 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	}
 
 	void addToReservoir(Quadriplet quadriplet) {
+		if (reservoir.size() >= reservoirSize) {
+			Quadriplet removedQuadriplet = reservoir.getRandom();
+			reservoir.remove(removedQuadriplet);
+			removeFrequentPattern(removedQuadriplet);
+		}
 		reservoir.add(quadriplet);
 		addFrequentPattern(quadriplet);
 
 	}
 
+	public HashSet<LabeledNode> getNeighbors(HashSet<LabeledNode> randomVertexNeighborWithEdgeLabels) {
+		HashSet<LabeledNode> results = new HashSet<LabeledNode>();
+		for (LabeledNode a : randomVertexNeighborWithEdgeLabels) {
+			results.add(a);
+		}
+		return results;
+	}
+
 	public boolean removeEdge(StreamEdge edge) {
 		return false;
+	}
+
+	public LabeledNode getRandomNeighbor(HashSet<LabeledNode> srcNeighbor,
+			HashSet<LabeledNode> dstNeighbor) {
+		int d_u = srcNeighbor.size();
+		int d_v = dstNeighbor.size();
+
+		if (d_u + d_v == 0) {
+			return null;
+		}
+
+		double value = d_u / (double) (d_u + d_v);
+		if (Math.random() < value) {
+			// select neighbor of u or src
+			ArrayList<LabeledNode> list = new ArrayList<LabeledNode>(srcNeighbor);
+			return list.get(rand.nextInt(list.size()));
+		} else {
+			// select a neighbor of v or dst
+			ArrayList<LabeledNode> list = new ArrayList<LabeledNode>(dstNeighbor);
+			return list.get(rand.nextInt(list.size()));
+		}
 	}
 
 	// remove a and add b
@@ -167,11 +205,11 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	}
 
 	private double correctFactor() {
-		return Math.max(1, ((double) numSubgraphs / reservoirSize));
+		return Math.max(1, ((double) numberSubgraphs / reservoirSize));
 	}
 
 	public int getNumberofSubgraphs() {
-		return numSubgraphs;
+		return numberSubgraphs;
 	}
 
 	@Override
