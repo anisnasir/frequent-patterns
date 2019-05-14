@@ -36,7 +36,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	QuadripletGenerator subgraphGenerator;
 
 	HashMap<Pattern, Integer> frequentPatterns;
-	int numSubgraphs; // total number of subgraphs
+	long numSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
 	int sum;
 	AlgorithmZ skipRS;
@@ -95,8 +95,11 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 			
 			for(Quadriplet quadriplet: newSubgraphs) {
 				if(numSubgraphs < this.reservoirSize) {
+					System.out.println("first phase of reservoir: " + numSubgraphs + "  <  "  + this.reservoirSize);
 					addToReservoir(quadriplet);
 				} else if (Math.random() < (this.reservoirSize / (double) this.numSubgraphs)){
+					
+					System.out.println("second phase of reservoir: " + Math.random() + "< (" + this.reservoirSize + "/ (double) " + this.numSubgraphs);
 					Quadriplet removedQuadriplet = reservoir.getRandom();
 					reservoir.remove(removedQuadriplet);
 					removeFrequentPattern(removedQuadriplet);
@@ -170,7 +173,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	}
 
 	public int getNumberofSubgraphs() {
-		return numSubgraphs;
+		return (int) numSubgraphs;
 	}
 
 	@Override
