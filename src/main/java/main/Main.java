@@ -162,9 +162,8 @@ public class Main {
 		} else if (simulatorType == 11) {
 			topkGraphPattern = new IncrementalExhaustiveCountingFourNode();
 		} else if (simulatorType == 12) {
-			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
-			double Tkk = Math.log(Tk / delta);
-			int size = (int) (Tkk * epsilonk);
+			int c = 1;
+			int size = (int) ((4*c/Math.pow(epsilon, 2))*(1+Math.log(1/delta)));
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithmFourNode(size, k);
 		} else if (simulatorType == 13) {
