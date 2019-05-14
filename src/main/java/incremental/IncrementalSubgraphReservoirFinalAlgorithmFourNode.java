@@ -68,8 +68,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
 		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
 		
-		int subgraphCount = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
-				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 		
 		//System.out.println("time taken 1. " + (System.nanoTime()-startTime));
 		// replaces the existing wedges in the reservoir with the triangles
@@ -87,7 +85,8 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 				replaceSubgraphs(t, newQuadriplet);
 			}
 		}	
-		int W = subgraphCount;
+		int W = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
+				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 
 		// System.out.println("W " + W);
 		if (W > 0) {
@@ -95,7 +94,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 					dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 			
 			for(Quadriplet quadriplet: newSubgraphs) {
-				if(reservoir.size() < this.reservoirSize) {
+				if(numSubgraphs < this.reservoirSize) {
 					addToReservoir(quadriplet);
 				} else if (Math.random() < (this.reservoirSize / (double) this.numSubgraphs)){
 					Quadriplet removedQuadriplet = reservoir.getRandom();
