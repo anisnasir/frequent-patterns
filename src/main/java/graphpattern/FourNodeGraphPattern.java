@@ -1,29 +1,35 @@
 package graphpattern;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import input.StreamEdge;
-import struct.LabeledNode;
 import struct.Quadriplet;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.SubgraphType;
 
 public class FourNodeGraphPattern implements Comparable<FourNodeGraphPattern>, Pattern {
-	TreeSet<LabeledStreamEdge> labels;
+	List<LabeledStreamEdge> labels;
 	SubgraphType type;
 	int numEdges;
 	int maxDegree;
 
 	public FourNodeGraphPattern(Quadriplet t) {
-		labels = new TreeSet<LabeledStreamEdge>();
+		labels = new ArrayList<LabeledStreamEdge>();
 		Set<StreamEdge> labeledEdges = t.getAllEdges();
 		for (StreamEdge labeledEdge : labeledEdges) {
 			labels.add(new LabeledStreamEdge(labeledEdge.getSrcLabel(), labeledEdge.getDstLabel()));
 		}
+		labels.sort(new Comparator<LabeledStreamEdge>() {
+			@Override
+			public int compare(LabeledStreamEdge m1, LabeledStreamEdge m2) {
+				return m1.compareTo(m2);
+			}
+		});
 		type = t.getType();
 		numEdges = t.getNumEdges();
 		maxDegree = t.getMaxDegree();
@@ -74,9 +80,9 @@ public class FourNodeGraphPattern implements Comparable<FourNodeGraphPattern>, P
 	public int compareTo(FourNodeGraphPattern o) {
 		FourNodeGraphPattern p = (FourNodeGraphPattern) o;
 		if (numEdges != p.numEdges) {
-			return numEdges-p.numEdges;
+			return numEdges - p.numEdges;
 		} else if (!type.equals(p.getType())) {
-			return maxDegree-p.getMaxDegree();
+			return maxDegree - p.getMaxDegree();
 		} else if (!this.labels.equals(p.labels)) {
 			return -1;
 		} else {
