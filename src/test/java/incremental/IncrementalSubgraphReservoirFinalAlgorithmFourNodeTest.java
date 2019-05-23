@@ -78,4 +78,33 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 		assertEquals(1, topk.getFrequentPatterns().size());
 	}
 	
+	@Test
+	public void cliqueAddition() {
+		StreamEdge a = new StreamEdge("a", 1, "b", 2);
+		StreamEdge b = new StreamEdge("a", 1, "c", 3);
+		StreamEdge c = new StreamEdge("a", 1, "d", 4);
+		StreamEdge d = new StreamEdge("b", 2, "c", 3);
+		StreamEdge e = new StreamEdge("b", 2, "d", 4);
+		StreamEdge f = new StreamEdge("c", 3, "d", 4);
+		
+
+		StreamEdge x = new StreamEdge("w", 10, "x", 20);
+		StreamEdge y = new StreamEdge("w", 10, "y", 30);
+		StreamEdge z = new StreamEdge("w", 10, "z", 40);
+		
+		
+		IncrementalSubgraphReservoirFinalAlgorithmFourNode topk = new IncrementalSubgraphReservoirFinalAlgorithmFourNode(10, 10);
+		topk.addEdge(a);
+		topk.addEdge(b);
+		topk.addEdge(c);
+		topk.addEdge(d);
+		topk.addEdge(e);
+		topk.addEdge(f);
+
+		topk.addEdge(x);
+		topk.addEdge(y);
+		topk.addEdge(z);
+		assertEquals(2, topk.getFrequentPatterns().size());
+	}
+	
 }
