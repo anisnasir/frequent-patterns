@@ -28,7 +28,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	HashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Long> frequentPatterns;
 	int k ;
 	int M;
 	int N;
@@ -50,7 +50,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 		this.c1 = 0;
 		this.c2 = 0;
 		this.numSubgraphs  = 0 ;
-		frequentPatterns = new HashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Long>();
 	}
 	public boolean addEdge(StreamEdge edge) {
 		N++;
@@ -162,17 +162,17 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
 			else 
@@ -180,7 +180,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 		}
 	}
 
-	public HashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
@@ -200,7 +200,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern pattern : patterns) {
 			FourNodeGraphPattern p = (FourNodeGraphPattern) pattern;
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			double value;
 			if (p.getType().equals(SubgraphType.LINE) || p.getType().equals(SubgraphType.STAR))
 				value = count * lineAndStarCorrectFactor;
@@ -210,7 +210,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 				value = count * quasiCliqueCorrectFactor;
 			else 
 				value = count * cliqueCorrectFactor;
-			frequentPatterns.put(p, (int) value);
+			frequentPatterns.put(p, (long) value);
 		}
 	}
 

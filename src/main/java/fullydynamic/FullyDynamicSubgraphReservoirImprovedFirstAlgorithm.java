@@ -24,7 +24,7 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
-	HashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Long> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int Ncurrent;
@@ -46,7 +46,7 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 		c2=0;
 		sum = 0;
 		sum2=0;
-		frequentPatterns = new HashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Long>();
 		skipRS = new AlgorithmZ(M);
 		skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<Triplet>();
@@ -242,17 +242,17 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
 			else 
@@ -260,16 +260,16 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 		}
 	}
 
-	public HashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 	public void correctEstimates() {
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			double value = count*correctFactor;
-			frequentPatterns.put(p, (int)value);
+			frequentPatterns.put(p, (long)value);
 		}
 	}
 	private double correctFactor() { 

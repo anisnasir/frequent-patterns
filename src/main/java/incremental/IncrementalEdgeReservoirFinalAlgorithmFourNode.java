@@ -26,7 +26,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	HashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Long> frequentPatterns;
 	int k;
 	int M;
 	int totalNumEdges;
@@ -41,7 +41,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 		this.M = size;
 		this.totalNumEdges = 0;
 		this.numSubgraphs = 0;
-		frequentPatterns = new HashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Long>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -150,17 +150,17 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
 			else
@@ -168,7 +168,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 		}
 	}
 
-	public HashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
@@ -182,7 +182,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern pattern : patterns) {
 			FourNodeGraphPattern p = (FourNodeGraphPattern) pattern;
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			double value;
 			if (p.getType().equals(SubgraphType.LINE) || p.getType().equals(SubgraphType.STAR))
 				value = count * lineAndStarCorrectFactor;
@@ -192,7 +192,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 				value = count * quasiCliqueCorrectFactor;
 			else 
 				value = count * cliqueCorrectFactor;
-			frequentPatterns.put(p, (int) value);
+			frequentPatterns.put(p, (long) value);
 		}
 	}
 

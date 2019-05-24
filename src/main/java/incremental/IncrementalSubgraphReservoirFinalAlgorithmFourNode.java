@@ -35,7 +35,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	Random rand;
 	QuadripletGenerator subgraphGenerator;
 
-	HashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Long> frequentPatterns;
 	long numSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
 	int sum;
@@ -49,7 +49,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		reservoir = new AdvancedSubgraphReservoir<Quadriplet>();
 		numSubgraphs = 0;
 		reservoirSize = size;
-		frequentPatterns = new HashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Long>();
 		sum = 0;
 		skipRS = new AlgorithmZ(reservoirSize);
 	}
@@ -136,17 +136,17 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
 			else
@@ -154,7 +154,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		}
 	}
 
-	public HashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
@@ -162,9 +162,9 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern p : patterns) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			double value = count * correctFactor;
-			frequentPatterns.put(p, (int) value);
+			frequentPatterns.put(p, (long) value);
 		}
 	}
 

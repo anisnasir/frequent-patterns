@@ -22,7 +22,7 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	HashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Long> frequentPatterns;
 	int k;
 	int M;
 	int N;
@@ -34,7 +34,7 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 		this.k = k;
 		this.M = size;
 		this.N = 0;
-		frequentPatterns = new HashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Long>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
@@ -168,17 +168,17 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
 			else
@@ -186,7 +186,7 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 		}
 	}
 
-	public HashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
@@ -196,14 +196,14 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern pattern : patterns) {
 			ThreeNodeGraphPattern p = (ThreeNodeGraphPattern) pattern;
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			double value;
 			if (p.isWedge())
 				value = count * wedgeCorrectFactor;
 			else
 				value = count * triangleCorrectFactor;
 
-			frequentPatterns.put(p, (int) value);
+			frequentPatterns.put(p, (long) value);
 		}
 	}
 

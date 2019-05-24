@@ -21,14 +21,14 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	HashMap<Subgraph, Integer> counter;
-	HashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Long> frequentPatterns;
 	int numSubgraph;
 
 	public IncrementalExhaustiveCounting() {
 		utility = new EdgeHandler();
 		counter = new HashMap<Subgraph, Integer>();
 		numSubgraph = 0;
-		frequentPatterns = new HashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Long>();
 		this.nodeMap = new NodeMap();
 	}
 
@@ -99,17 +99,17 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 	void addFrequentPattern(Triplet t) {
 		Pattern p = new ThreeNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		Pattern p = new ThreeNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
 			else
@@ -117,7 +117,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 		}
 	}
 
-	public HashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 

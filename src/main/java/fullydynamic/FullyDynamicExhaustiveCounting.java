@@ -18,14 +18,14 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	HashMap<Triplet, Integer> counter;
-	HashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Long> frequentPatterns;
 	int numSubgraph;
 	public FullyDynamicExhaustiveCounting() {
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		counter = new HashMap<Triplet, Integer>();
 		numSubgraph = 0 ;
-		frequentPatterns = new HashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Long>();
 	}
 	public boolean addEdge(StreamEdge edge) {
 		//System.out.println("+" + edge);
@@ -160,17 +160,17 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 	
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
 			else 
@@ -178,7 +178,7 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 		}
 	}
 	
-	public HashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 	public int getNumberofSubgraphs() {

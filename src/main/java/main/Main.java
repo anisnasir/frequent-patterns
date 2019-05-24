@@ -277,10 +277,10 @@ public class Main {
 		System.out.println(topkGraphPattern.getNumberofSubgraphs());
 	}
 
-	public static void printMap(HashMap<Pattern, Integer> mp, BufferedWriter bw) throws IOException {
-		Iterator<Entry<Pattern, Integer>> it = mp.entrySet().iterator();
+	public static void printMap(HashMap<Pattern, Long> mp, BufferedWriter bw) throws IOException {
+		Iterator<Entry<Pattern, Long>> it = mp.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry<Pattern, Integer> pair = it.next();
+			Map.Entry<Pattern, Long> pair = it.next();
 			bw.write(pair.getKey() + " " + pair.getValue() + "\n");
 			it.remove(); // avoids a ConcurrentModificationException
 		}

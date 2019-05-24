@@ -19,7 +19,7 @@ import utility.QuadripletGenerator;
 public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
-	HashMap<Pattern, Integer> frequentPatterns;
+	HashMap<Pattern, Long> frequentPatterns;
 	int numSubgraph;
 	QuadripletGenerator subgraphGenerator;
 
@@ -27,7 +27,7 @@ public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		numSubgraph = 0;
-		frequentPatterns = new HashMap<Pattern, Integer>();
+		frequentPatterns = new HashMap<Pattern, Long>();
 	}
 
 	@Override
@@ -124,17 +124,17 @@ public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
 			else
@@ -143,7 +143,7 @@ public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns
 	}
 
 	@Override
-	public HashMap<Pattern, Integer> getFrequentPatterns() {
+	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
