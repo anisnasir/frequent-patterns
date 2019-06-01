@@ -143,7 +143,7 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 		}
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		// TODO Auto-generated method stub
 		return N;
 	}

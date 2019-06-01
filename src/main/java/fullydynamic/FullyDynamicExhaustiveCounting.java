@@ -181,7 +181,7 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return this.numSubgraph;
 	}
 	@Override

@@ -305,7 +305,7 @@ public class QuadripletGenerator {
 			if(!dstOneHopNeighbor.contains(s)) {
 				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 				for(LabeledNode t: nNeighbors) {
-					if(!dstOneHopNeighbor.contains(t) && !visitedSrc.contains(t) && !t.equals(src)) {
+					if(!dstOneHopNeighbor.contains(t) && !srcOneHopNeighbor.contains(t) && !visitedSrc.contains(t) && !t.equals(src)) {
 						visitedSrc.add(t);
 						Quadriplet quadriplet = new Quadriplet();
 						quadriplet.addEdge(edge);
@@ -327,7 +327,7 @@ public class QuadripletGenerator {
 			if(!srcOneHopNeighbor.contains(s)) {
 				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 				for(LabeledNode t: nNeighbors) {
-					if(!srcOneHopNeighbor.contains(t) && !visitedDst.contains(t) && !t.equals(dst)) {
+					if(!srcOneHopNeighbor.contains(t) && !dstOneHopNeighbor.contains(t) && !visitedDst.contains(t) && !t.equals(dst)) {
 						visitedDst.add(t);
 						Quadriplet quadriplet = new Quadriplet();
 						quadriplet.addEdge(edge);

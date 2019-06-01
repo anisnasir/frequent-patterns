@@ -161,7 +161,7 @@ public class FullyDynamicEdgeReservoirAlgorithm implements TopkGraphPatterns{
 		}
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return this.numSubgraphs;
 	}
 

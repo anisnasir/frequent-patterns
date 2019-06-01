@@ -2,6 +2,9 @@ package incremental;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import incremental.IncrementalExhaustiveCounting;
@@ -76,6 +79,31 @@ public class IncrementalExhaustiveCountingFourNodeTest {
 		topk.addEdge(d);
 		topk.addEdge(e);
 		assertEquals(1, topk.getFrequentPatterns().size());
+	}
+	
+	@Test
+	public void randomPatternCount() {
+		List<StreamEdge> list = new ArrayList<StreamEdge>();
+		list.add(new StreamEdge("b", 2, "k", 3));
+		list.add(new StreamEdge("b", 2, "l", 4));
+		list.add(new StreamEdge("b", 2, "m", 5));
+		list.add(new StreamEdge("b", 2, "n", 6));
+		list.add(new StreamEdge("k", 3, "o", 7));
+		list.add(new StreamEdge("k", 3, "p", 8));
+		list.add(new StreamEdge("l", 4, "q", 9));
+		list.add(new StreamEdge("m", 5, "n", 6));
+		list.add(new StreamEdge("m", 5, "r", 10));
+		list.add(new StreamEdge("n", 6, "s", 11));
+		
+		IncrementalExhaustiveCountingFourNode topk = new IncrementalExhaustiveCountingFourNode();
+		for(StreamEdge streamEdge: list) {
+			topk.addEdge(streamEdge);
+		}
+		int count = topk.getFrequentPatterns().size();
+		topk.addEdge(new StreamEdge("a", 1, "b", 2));
+		
+		
+		assertEquals(11, topk.getFrequentPatterns().size()-count);
 	}
 	
 }

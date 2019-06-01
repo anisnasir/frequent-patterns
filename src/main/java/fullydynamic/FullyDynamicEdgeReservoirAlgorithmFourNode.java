@@ -139,7 +139,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 		}
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return this.numSubgraphs;
 	}
 

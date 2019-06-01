@@ -394,7 +394,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 		return Math.max(1, ((double)Ncurrent/M));
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return Ncurrent;
 	}
 

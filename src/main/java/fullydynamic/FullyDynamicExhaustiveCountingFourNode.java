@@ -148,7 +148,7 @@ public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns
 	}
 
 	@Override
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return this.numSubgraph;
 	}
 

@@ -30,7 +30,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 	int k;
 	int M;
 	int totalNumEdges;
-	int numSubgraphs;
+	long numSubgraphs;
 	QuadripletGenerator subgraphGenerator;
 
 	public IncrementalEdgeReservoirFinalAlgorithmFourNode(int size, int k) {
@@ -120,7 +120,7 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 		}
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return numSubgraphs;
 	}
 

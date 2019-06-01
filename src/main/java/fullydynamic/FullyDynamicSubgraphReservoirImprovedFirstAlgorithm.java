@@ -276,7 +276,7 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 		return Math.max(1, ((double)Ncurrent/M));
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return Ncurrent;
 	}
 

@@ -36,7 +36,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode2 implements Topk
 	QuadripletGenerator subgraphGenerator;
 
 	HashMap<Pattern, Long> frequentPatterns;
-	int numberSubgraphs; // total number of subgraphs
+	long numberSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
 	int sum;
 	AlgorithmZ skipRS;
@@ -94,7 +94,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode2 implements Topk
 			int i = 0;
 			while (sum < W) {
 				i++;
-				int zrs = skipRS.apply(numberSubgraphs);
+				int zrs = skipRS.apply((int)numberSubgraphs);
 				numberSubgraphs = numberSubgraphs + zrs + 1;
 				sum = sum + zrs + 1;
 			}
@@ -208,7 +208,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode2 implements Topk
 		return Math.max(1, ((double) numberSubgraphs / reservoirSize));
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return numberSubgraphs;
 	}
 

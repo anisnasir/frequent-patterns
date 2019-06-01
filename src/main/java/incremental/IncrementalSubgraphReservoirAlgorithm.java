@@ -23,7 +23,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	SubgraphReservoir<Triplet> reservoir;
 	HashMap<Pattern, Long> frequentPatterns;
 	
-	int N; // total number of subgraphs
+	long N; // total number of subgraphs
 	int M; // maximum reservoir size
 	public IncrementalSubgraphReservoirAlgorithm(int size, int k ) { 
 		this.nodeMap = new NodeMap();
@@ -173,7 +173,7 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 		return Math.max(1, ((double)N/M));
 	}
 	
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return N;
 	}
 

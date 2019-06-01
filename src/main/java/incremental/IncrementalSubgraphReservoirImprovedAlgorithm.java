@@ -25,7 +25,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
 	HashMap<Pattern, Long> frequentPatterns;
-	int N; // total number of subgraphs
+	long N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int sum;
 	AlgorithmZ skipFunction;
@@ -99,7 +99,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 		if(W> 0) {
 			while(sum < W) {
 				i++;
-				int zrs = skipFunction.apply(N);
+				int zrs = skipFunction.apply((int)N);
 				N = N+zrs+1;
 				sum = sum+zrs+1;
 			}
@@ -175,7 +175,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithm implements TopkGraphP
 		return Math.max(1, ((double)N/M));
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return N;
 	}
 

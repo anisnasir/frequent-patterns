@@ -172,7 +172,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		return Math.max(1, ((double) numSubgraphs / reservoirSize));
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return (int) numSubgraphs;
 	}
 

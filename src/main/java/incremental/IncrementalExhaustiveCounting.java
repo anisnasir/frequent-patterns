@@ -22,7 +22,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 	EdgeHandler utility;
 	HashMap<Subgraph, Integer> counter;
 	HashMap<Pattern, Long> frequentPatterns;
-	int numSubgraph;
+	long numSubgraph;
 
 	public IncrementalExhaustiveCounting() {
 		utility = new EdgeHandler();
@@ -121,7 +121,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 		return this.frequentPatterns;
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return this.numSubgraph;
 	}
 

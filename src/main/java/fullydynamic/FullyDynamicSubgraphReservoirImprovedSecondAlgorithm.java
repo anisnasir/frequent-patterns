@@ -281,7 +281,7 @@ public class FullyDynamicSubgraphReservoirImprovedSecondAlgorithm implements Top
 		return Math.max(1, ((double)Ncurrent/M));
 	}
 
-	public int getNumberofSubgraphs() {
+	public long getNumberofSubgraphs() {
 		return Ncurrent;
 	}
 
