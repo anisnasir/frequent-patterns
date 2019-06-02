@@ -123,16 +123,28 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 		list.add(new StreamEdge("m", 5, "n", 6));
 		list.add(new StreamEdge("m", 5, "r", 10));
 		list.add(new StreamEdge("n", 6, "s", 11));
+		list.add(new StreamEdge("f", 15, "g", 16));
+		list.add(new StreamEdge("f", 15, "c", 12));
+		list.add(new StreamEdge("g", 16, "c", 12));
+		list.add(new StreamEdge("a", 1, "c", 12));
+		list.add(new StreamEdge("h", 17, "d", 13));
+		list.add(new StreamEdge("i", 18, "d", 13));
+		list.add(new StreamEdge("e", 14, "d", 13));
+		list.add(new StreamEdge("a", 1, "d", 13));
+		list.add(new StreamEdge("e", 14, "a", 1));
+		list.add(new StreamEdge("e", 14, "i", 18));
+		list.add(new StreamEdge("e", 14, "j", 19));
 		
-		
-		IncrementalSubgraphReservoirFinalAlgorithmFourNode topk = new IncrementalSubgraphReservoirFinalAlgorithmFourNode(32, 4);
+		IncrementalSubgraphReservoirFinalAlgorithmFourNode topk = new IncrementalSubgraphReservoirFinalAlgorithmFourNode(100, 4);
 		for(StreamEdge streamEdge: list) {
 			topk.addEdge(streamEdge);
 		}
+		
+		
 		int count = topk.getFrequentPatterns().size();
 		topk.addEdge(new StreamEdge("a", 1, "b", 2));
-		
-		assertEquals(11, topk.getFrequentPatterns().size()-count);
+		System.out.println("count: " + count);
+		assertEquals(32, topk.getFrequentPatterns().size()-count);
 	}
 	
 }

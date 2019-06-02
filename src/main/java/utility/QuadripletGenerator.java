@@ -300,13 +300,11 @@ public class QuadripletGenerator {
 		
 		
 		List<Quadriplet> classThreeList = new ArrayList<Quadriplet>();
-		HashSet<LabeledNode> visitedSrc = new HashSet<LabeledNode>();
 		for (LabeledNode s : srcOneHopNeighbor) {
 			if(!dstOneHopNeighbor.contains(s)) {
 				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 				for(LabeledNode t: nNeighbors) {
-					if(!dstOneHopNeighbor.contains(t) && !srcOneHopNeighbor.contains(t) && !visitedSrc.contains(t) && !t.equals(src)) {
-						visitedSrc.add(t);
+					if(!dstOneHopNeighbor.contains(t) && !srcOneHopNeighbor.contains(t) && !t.equals(src)) {
 						Quadriplet quadriplet = new Quadriplet();
 						quadriplet.addEdge(edge);
 						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
@@ -322,13 +320,11 @@ public class QuadripletGenerator {
 		cache.add(classThreeList);
 
 		List<Quadriplet> classFourList = new ArrayList<Quadriplet>();
-		HashSet<LabeledNode> visitedDst = new HashSet<LabeledNode>();
 		for (LabeledNode s : dstOneHopNeighbor) {
 			if(!srcOneHopNeighbor.contains(s)) {
 				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 				for(LabeledNode t: nNeighbors) {
-					if(!srcOneHopNeighbor.contains(t) && !dstOneHopNeighbor.contains(t) && !visitedDst.contains(t) && !t.equals(dst)) {
-						visitedDst.add(t);
+					if(!srcOneHopNeighbor.contains(t) && !dstOneHopNeighbor.contains(t) && !t.equals(dst)) {
 						Quadriplet quadriplet = new Quadriplet();
 						quadriplet.addEdge(edge);
 						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
