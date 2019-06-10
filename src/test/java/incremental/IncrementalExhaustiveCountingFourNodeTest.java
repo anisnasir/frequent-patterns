@@ -94,16 +94,110 @@ public class IncrementalExhaustiveCountingFourNodeTest {
 		list.add(new StreamEdge("m", 5, "n", 6));
 		list.add(new StreamEdge("m", 5, "r", 10));
 		list.add(new StreamEdge("n", 6, "s", 11));
+		list.add(new StreamEdge("f", 15, "g", 16));
+		list.add(new StreamEdge("f", 15, "c", 12));
+		list.add(new StreamEdge("g", 16, "c", 12));
+		list.add(new StreamEdge("a", 1, "c", 12));
+		list.add(new StreamEdge("h", 17, "d", 13));
+		list.add(new StreamEdge("i", 18, "d", 13));
+		list.add(new StreamEdge("e", 14, "d", 13));
+		list.add(new StreamEdge("a", 1, "d", 13));
+		list.add(new StreamEdge("e", 14, "a", 1));
+		list.add(new StreamEdge("e", 14, "i", 18));
+		list.add(new StreamEdge("e", 14, "j", 19));
 		
 		IncrementalExhaustiveCountingFourNode topk = new IncrementalExhaustiveCountingFourNode();
 		for(StreamEdge streamEdge: list) {
 			topk.addEdge(streamEdge);
 		}
+		
+		
 		int count = topk.getFrequentPatterns().size();
 		topk.addEdge(new StreamEdge("a", 1, "b", 2));
+		System.out.println("count: " + count);
+		assertEquals(32, topk.getFrequentPatterns().size()-count);
+	}
+	
+	@Test
+	public void randomPatternCount2() {
+		List<StreamEdge> list = new ArrayList<StreamEdge>();
+		list.add(new StreamEdge("b", 1, "c", 2));
+		list.add(new StreamEdge("b", 1, "d", 3));
+		list.add(new StreamEdge("b", 1, "e", 4));
+		list.add(new StreamEdge("c", 2, "d", 3));
+		list.add(new StreamEdge("c", 2, "e", 4));
+		list.add(new StreamEdge("d", 3, "e", 4));
+		
+		IncrementalExhaustiveCountingFourNode topk = new IncrementalExhaustiveCountingFourNode();
+		for(StreamEdge streamEdge: list) {
+			topk.addEdge(streamEdge);
+		}
 		
 		
-		assertEquals(11, topk.getFrequentPatterns().size()-count);
+		int count = topk.getFrequentPatterns().size();
+		topk.addEdge(new StreamEdge("a", 0, "b", 1));
+		System.out.println("count: " + count);
+		assertEquals(3, topk.getFrequentPatterns().size()-count);
+	}
+	
+	@Test
+	public void randomPatternCount3() {
+		List<StreamEdge> list = new ArrayList<StreamEdge>();
+		list.add(new StreamEdge("b", 1, "c", 2));
+		list.add(new StreamEdge("b", 1, "d", 3));
+		list.add(new StreamEdge("c", 2, "d", 3));
+		list.add(new StreamEdge("c", 2, "e", 4));
+		list.add(new StreamEdge("d", 3, "e", 4));
+		
+		IncrementalExhaustiveCountingFourNode topk = new IncrementalExhaustiveCountingFourNode();
+		for(StreamEdge streamEdge: list) {
+			topk.addEdge(streamEdge);
+		}
+		
+		
+		int count = topk.getFrequentPatterns().size();
+		topk.addEdge(new StreamEdge("a", 0, "b", 1));
+		System.out.println("count: " + count);
+		assertEquals(3, topk.getFrequentPatterns().size()-count);
+	}
+	
+	@Test
+	public void randomPatternCount4() {
+		List<StreamEdge> list = new ArrayList<StreamEdge>();
+		list.add(new StreamEdge("b", 1, "c", 2));
+		list.add(new StreamEdge("b", 1, "d", 3));
+		list.add(new StreamEdge("c", 2, "e", 4));
+		list.add(new StreamEdge("d", 3, "e", 4));
+		
+		IncrementalExhaustiveCountingFourNode topk = new IncrementalExhaustiveCountingFourNode();
+		for(StreamEdge streamEdge: list) {
+			topk.addEdge(streamEdge);
+		}
+		
+		
+		int count = topk.getFrequentPatterns().size();
+		topk.addEdge(new StreamEdge("a", 0, "b", 1));
+		System.out.println("count: " + count);
+		assertEquals(3, topk.getFrequentPatterns().size()-count);
+	}
+	
+	@Test
+	public void randomPatternCount5() {
+		List<StreamEdge> list = new ArrayList<StreamEdge>();
+		list.add(new StreamEdge("b", 1, "d", 3));
+		list.add(new StreamEdge("c", 2, "e", 4));
+		list.add(new StreamEdge("d", 3, "e", 4));
+		
+		IncrementalExhaustiveCountingFourNode topk = new IncrementalExhaustiveCountingFourNode();
+		for(StreamEdge streamEdge: list) {
+			topk.addEdge(streamEdge);
+		}
+		
+		
+		int count = topk.getFrequentPatterns().size();
+		topk.addEdge(new StreamEdge("a", 0, "b", 1));
+		System.out.println("count: " + count);
+		assertEquals(1, topk.getFrequentPatterns().size()-count);
 	}
 	
 }
