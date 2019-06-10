@@ -278,10 +278,10 @@ public class QuadripletGenerator {
 					if(!srcOneHopNeighbor.contains(secondNeighbor)) {
 						Quadriplet quadriplet = new Quadriplet();
 						quadriplet.addEdge(edge);
-						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+						quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
 								firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel()));
 
-						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+						quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
 								secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
 
 						if (nodeMap.contains(firstNeighbor, secondNeighbor)) {
@@ -327,7 +327,7 @@ public class QuadripletGenerator {
 					if(!srcOneHopNeighbor.contains(t) && !dstOneHopNeighbor.contains(t) && !t.equals(dst)) {
 						Quadriplet quadriplet = new Quadriplet();
 						quadriplet.addEdge(edge);
-						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
+						quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
 								s.getVertexId(), s.getVertexLabel()));
 						quadriplet.addEdge(new StreamEdge(s.getVertexId(), s.getVertexLabel(),
 								t.getVertexId(), t.getVertexLabel()));
