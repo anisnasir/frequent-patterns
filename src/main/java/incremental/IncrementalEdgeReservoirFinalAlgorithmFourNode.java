@@ -172,7 +172,8 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 		return this.frequentPatterns;
 	}
 
-	public void correctEstimates() {
+	public HashMap<Pattern, Long> correctEstimates() {
+		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
 		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();
@@ -192,8 +193,9 @@ public class IncrementalEdgeReservoirFinalAlgorithmFourNode implements TopkGraph
 				value = count * quasiCliqueCorrectFactor;
 			else 
 				value = count * cliqueCorrectFactor;
-			frequentPatterns.put(p, (long) value);
+			correctFrequentPatterns.put(p, (long) value);
 		}
+		return correctFrequentPatterns;
 	}
 
 	private double correctFactorLineAndStar() {

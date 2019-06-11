@@ -160,14 +160,16 @@ public class IncrementalSubgraphReservoirAlgorithm implements TopkGraphPatterns 
 	public HashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
-	public void correctEstimates() {
+	public HashMap<Pattern, Long> correctEstimates() {
+		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {
 			long count = frequentPatterns.get(p);
 			double value = count*correctFactor;
-			frequentPatterns.put(p, (long)value);
+			correctFrequentPatterns.put(p, (long)value);
 		}
+		return correctFrequentPatterns;
 	}
 	private double correctFactor() { 
 		return Math.max(1, ((double)N/M));

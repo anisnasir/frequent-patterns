@@ -38,7 +38,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	HashMap<Pattern, Long> frequentPatterns;
 	long numSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
-	int sum;
 	AlgorithmZ skipRS;
 
 	public IncrementalSubgraphReservoirFinalAlgorithmFourNode(int size, int k) {
@@ -50,7 +49,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		numSubgraphs = 0;
 		reservoirSize = size;
 		frequentPatterns = new HashMap<Pattern, Long>();
-		sum = 0;
 		skipRS = new AlgorithmZ(reservoirSize);
 	}
 
@@ -135,22 +133,21 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count + 1);
-		} else {
+		Long count = frequentPatterns.get(p);
+		if (count == null) {
 			frequentPatterns.put(p, 1l);
+		} else {
+			frequentPatterns.put(p, count+1);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			if (count > 1)
-				frequentPatterns.put(p, count - 1);
-			else
-				frequentPatterns.remove(p);
+		Long count = frequentPatterns.get(p);
+		if (count > 1) {
+			frequentPatterns.put(p, count - 1);
+		} else {
+			frequentPatterns.remove(p);
 		}
 	}
 
@@ -158,14 +155,16 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 		return this.frequentPatterns;
 	}
 
-	public void correctEstimates() {
+	public HashMap<Pattern, Long> correctEstimates() {
+		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern p : patterns) {
 			long count = frequentPatterns.get(p);
 			double value = count * correctFactor;
-			frequentPatterns.put(p, (long) value);
+			correctFrequentPatterns.put(p, (long) value);
 		}
+		return correctFrequentPatterns;
 	}
 
 	private double correctFactor() {

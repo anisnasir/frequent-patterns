@@ -23,7 +23,6 @@ public class NodeMap {
 		if (map.containsKey(src)) {
 			HashSet<LabeledNode> neighbors = map.get(src);
 			neighbors.add(dest);
-			map.put(src, neighbors);
 		} else {
 			HashSet<LabeledNode> neighbors = new HashSet<LabeledNode>();
 			neighbors.add(dest);

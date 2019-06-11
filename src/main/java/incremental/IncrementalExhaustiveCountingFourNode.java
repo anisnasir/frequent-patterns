@@ -128,8 +128,8 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 	}
 
 	@Override
-	public void correctEstimates() {
-		// TODO Auto-generated method stub
+	public HashMap<Pattern, Long> correctEstimates() {
+		return frequentPatterns;
 		
 	}
 

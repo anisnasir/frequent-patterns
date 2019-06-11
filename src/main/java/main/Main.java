@@ -269,8 +269,8 @@ public class Main {
 		fw = new FileWriter(outFileName);
 		bw = new BufferedWriter(fw);
 
-		topkGraphPattern.correctEstimates();
-		printMap(topkGraphPattern.getFrequentPatterns(), bw);
+		HashMap<Pattern, Long> correctEstimates = topkGraphPattern.correctEstimates();
+		printMap(correctEstimates, bw);
 		bw.flush();
 		bw.close();
 		System.out.println(topkGraphPattern.getNumberofSubgraphs());
@@ -281,7 +281,6 @@ public class Main {
 		while (it.hasNext()) {
 			Map.Entry<Pattern, Long> pair = it.next();
 			bw.write(pair.getKey() + " " + pair.getValue() + "\n");
-			it.remove(); // avoids a ConcurrentModificationException
 		}
 	}
 

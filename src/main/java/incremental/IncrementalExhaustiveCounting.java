@@ -138,8 +138,8 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 	}
 
 	@Override
-	public void correctEstimates() {
-		// TODO Auto-generated method stub
+	public HashMap<Pattern, Long> correctEstimates() {
+		return new HashMap<Pattern, Long>();
 		
 	}
 

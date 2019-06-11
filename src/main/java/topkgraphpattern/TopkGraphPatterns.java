@@ -11,5 +11,5 @@ public interface TopkGraphPatterns {
 	public HashMap<Pattern, Long> getFrequentPatterns();
 	public long getNumberofSubgraphs();
 	public int getCurrentReservoirSize();
-	public void correctEstimates();
+	public HashMap<Pattern, Long> correctEstimates();
 }

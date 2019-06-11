@@ -189,8 +189,8 @@ public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
 		return 0;
 	}
 	@Override
-	public void correctEstimates() {
-		
+	public HashMap<Pattern, Long> correctEstimates() {
+		return frequentPatterns;
 	}
 	
 	

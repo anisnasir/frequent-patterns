@@ -190,7 +190,8 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 		return this.frequentPatterns;
 	}
 
-	public void correctEstimates() {
+	public HashMap<Pattern, Long> correctEstimates() {
+		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
 		double wedgeCorrectFactor = correctFactorWedge();
 		double triangleCorrectFactor = correctFactorTriangle();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
@@ -203,8 +204,9 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 			else
 				value = count * triangleCorrectFactor;
 
-			frequentPatterns.put(p, (long) value);
+			correctFrequentPatterns.put(p, (long) value);
 		}
+		return correctFrequentPatterns;
 	}
 
 	private double correctFactorWedge() {
