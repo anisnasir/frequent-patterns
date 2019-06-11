@@ -39,6 +39,8 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	long numSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
 	AlgorithmZ skipRS;
+	int seed = 227;
+	Random generator = new Random(seed);
 
 	public IncrementalSubgraphReservoirFinalAlgorithmFourNode(int size, int k) {
 		this.nodeMap = new NodeMap();
@@ -95,7 +97,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 				if(numSubgraphs < this.reservoirSize) {
 					//System.out.println("first phase of reservoir: " + numSubgraphs + "  <  "  + this.reservoirSize);
 					addToReservoir(quadriplet);
-				} else if (Math.random() < (this.reservoirSize / (double) this.numSubgraphs)){
+				} else if (generator.nextDouble() < (this.reservoirSize / (double) this.numSubgraphs)){
 					
 					//System.out.println("second phase of reservoir: " + Math.random() + "< (" + this.reservoirSize + "/ (double) " + this.numSubgraphs);
 					Quadriplet removedQuadriplet = reservoir.getRandom();
