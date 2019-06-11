@@ -343,9 +343,9 @@ public class QuadripletGenerator {
 		List<Quadriplet> classFiveList = new ArrayList<Quadriplet>();
 		// combine srcNeighbors, src, dst, dstNeighbors
 		for (LabeledNode srcNeighbor : srcOneHopNeighbor) {
-			if (!dstOneHopNeighbor.contains(srcNeighbor) && !dstTwoHopNeighbors.contains(srcNeighbor)) {
+			if (!dstOneHopNeighbor.contains(srcNeighbor)) {
 				for (LabeledNode dstNeighbor : dstOneHopNeighbor) {
-					if (!srcOneHopNeighbor.contains(dstNeighbor) && !srcTwoHopNeighbors.contains(dstNeighbor)) {
+					if (!srcOneHopNeighbor.contains(dstNeighbor)) {
 						if (!dstNeighbor.equals(srcNeighbor) && !nodeMap.contains(srcNeighbor, dstNeighbor)) {
 							Quadriplet quadriplet = new Quadriplet();
 							quadriplet.addEdge(edge);
