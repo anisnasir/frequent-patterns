@@ -174,7 +174,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 	}
 
 	public long getNumberofSubgraphs() {
-		return (int) numSubgraphs;
+		return numSubgraphs;
 	}
 
 	@Override
