@@ -14,14 +14,14 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 	public StreamEdge(String src, int srcLabel, String dest, int dstLabel) {
 		if (src.compareTo(dest) < 0) {
 			this.src = src;
-			this.srcLabel = 1;
+			this.srcLabel = srcLabel;
 			this.dest = dest;
-			this.dstLabel = 1;
+			this.dstLabel = dstLabel;
 		} else {
 			this.src = dest;
-			this.srcLabel = 1;
+			this.srcLabel = dstLabel;
 			this.dest = src;
-			this.dstLabel = 1;
+			this.dstLabel = srcLabel;
 		}
 	}
 
