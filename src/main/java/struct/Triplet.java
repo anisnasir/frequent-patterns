@@ -202,11 +202,10 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 
 	}
 
+	@Override
 	public String toString() {
-		if (numEdges == 2) {
-			return nodeA + ":" + nodeB + ":" + nodeC + ":" + edgeA + ":" + edgeB;
-		} else
-			return nodeA + ":" + nodeB + ":" + nodeC + ":" + edgeA + ":" + edgeB + ":" + edgeC;
+		return "Triplet [numEdges=" + numEdges + ", nodeA=" + nodeA + ", nodeB=" + nodeB + ", nodeC=" + nodeC
+				+ ", edgeA=" + edgeA + ", edgeB=" + edgeB + ", edgeC=" + edgeC + "]";
 	}
 
 	@Override

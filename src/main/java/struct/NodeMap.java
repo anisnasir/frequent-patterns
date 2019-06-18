@@ -79,7 +79,7 @@ public class NodeMap {
 				if (map.containsKey(neighbor)) {
 					HashSet<LabeledNode> neighborNeighbors = map.get(neighbor);
 					for (LabeledNode neighborNeighbor : neighborNeighbors) {
-						if (!neighborNeighbor.equals(src)) {
+						if (!neighborNeighbor.equals(src) && !neighbors.contains(neighborNeighbor)) {
 							Triplet t = null;
 							if(neighbors.contains(neighborNeighbor)) {
 								//triangle

@@ -33,7 +33,7 @@ public class QuadripletGenerator {
 
 		// combine src, dst, dstNeighbors, dstTwoHopNeighbors
 		for (Triplet dstTwoHopNeighbor : dstTwoHopNeighbors) {
-			if (!dstTwoHopNeighbor.contains(src) && !dstTwoHopNeighbor.contains(dst)) {
+			if (!dstTwoHopNeighbor.contains(src)) {
 				Quadriplet quadriplet = new Quadriplet();
 				quadriplet.addEdge(edge);
 				Set<StreamEdge> pathEdges = dstTwoHopNeighbor.getAllEdges();
@@ -87,7 +87,7 @@ public class QuadripletGenerator {
 
 		// combine srcTwoHopNeighbors, srcNeighbors, src, and dst
 		for (Triplet srcTwoHopNeighbor : srcTwoHopNeighbors) {
-			if (!srcTwoHopNeighbor.contains(src) && !srcTwoHopNeighbor.contains(dst)) {
+			if (!srcTwoHopNeighbor.contains(dst)) {
 				Quadriplet quadriplet = new Quadriplet();
 				quadriplet.addEdge(edge);
 				Set<StreamEdge> pathEdges = srcTwoHopNeighbor.getAllEdges();
@@ -114,8 +114,8 @@ public class QuadripletGenerator {
 				for (int j = i + 1; j < neighborList.size(); j++) {
 					LabeledNode firstNeighbor = neighborList.get(i);
 					LabeledNode secondNeighbor = neighborList.get(j);
-					if (!nodeMap.contains(firstNeighbor, secondNeighbor)) {
-						Quadriplet quadriplet = new Quadriplet();
+					if(!nodeMap.contains(dst, firstNeighbor) && !nodeMap.contains(dst, secondNeighbor)) {
+					Quadriplet quadriplet = new Quadriplet();
 						quadriplet.addEdge(edge);
 						quadriplet.addEdge(new StreamEdge(src.getVertexId(), src.getVertexLabel(),
 								firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel()));
@@ -141,89 +141,27 @@ public class QuadripletGenerator {
 				for (int j = i + 1; j < neighborList.size(); j++) {
 					LabeledNode firstNeighbor = neighborList.get(i);
 					LabeledNode secondNeighbor = neighborList.get(j);
-					if (!nodeMap.contains(firstNeighbor, secondNeighbor)) {
-						Quadriplet quadriplet = new Quadriplet();
-						quadriplet.addEdge(edge);
-						quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
-								firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel()));
+					
+					if(!nodeMap.contains(src, firstNeighbor) && !nodeMap.contains(src, secondNeighbor)) {
+					Quadriplet quadriplet = new Quadriplet();
+					quadriplet.addEdge(edge);
+					quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
+							firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel()));
 
-						quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
+					quadriplet.addEdge(new StreamEdge(dst.getVertexId(), dst.getVertexLabel(),
+							secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
+					if (nodeMap.contains(firstNeighbor, secondNeighbor)) {
+						quadriplet.addEdge(new StreamEdge(firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel(),
 								secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
-						if (nodeMap.contains(firstNeighbor, secondNeighbor)) {
-							quadriplet
-									.addEdge(new StreamEdge(firstNeighbor.getVertexId(), firstNeighbor.getVertexLabel(),
-											secondNeighbor.getVertexId(), secondNeighbor.getVertexLabel()));
-						}
-						result.add(quadriplet);
 					}
+					result.add(quadriplet);
+					}
+
 				}
 			}
 		}
 
 		return result;
-	}
-
-	public int getAllSubgraphsCounts(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
-			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
-			HashSet<Triplet> srcTwoHopNeighbors, HashSet<Triplet> dstTwoHopNeighbors) {
-		int count = 0;
-		// combine src, dst, dstNeighbors, dstTwoHopNeighbors
-		for (Triplet dstTwoHopNeighbor : dstTwoHopNeighbors) {
-			if (dstTwoHopNeighbor.contains(src) && dstTwoHopNeighbor.contains(dst)) {
-
-			} else {
-				count++;
-			}
-		}
-
-		// combine srcNeighbors, src, dst, dstNeighbors
-		for (LabeledNode srcNeighbor : srcOneHopNeighbor) {
-			for (LabeledNode dstNeighbor : dstOneHopNeighbor) {
-				if (!dstNeighbor.equals(srcNeighbor)) {
-					count++;
-				}
-			}
-		}
-
-		SetFunctions<LabeledNode> setFunctions = new SetFunctions();
-		// combine srcTwoHopNeighbors, srcNeighbors, src, and dst
-		for (Triplet srcTwoHopNeighbor : srcTwoHopNeighbors) {
-			if (srcTwoHopNeighbor.contains(dst)) {
-
-			} else if (setFunctions.intersection(new HashSet<LabeledNode>(srcTwoHopNeighbor.getAllVertices()),
-					nodeMap.getNeighbors(dst)) > 0) {
-
-			} else {
-				count++;
-			}
-		}
-
-		if (srcOneHopNeighbor.size() >= 2) {
-			List<LabeledNode> neighborList = new ArrayList<LabeledNode>(srcOneHopNeighbor);
-			for (int i = 0; i < neighborList.size() - 1; i++) {
-				for (int j = i + 1; j < neighborList.size(); j++) {
-					LabeledNode firstNeighbor = neighborList.get(i);
-					LabeledNode secondNeighbor = neighborList.get(j);
-					if (!nodeMap.contains(firstNeighbor, secondNeighbor)) {
-						count++;
-					}
-				}
-			}
-		}
-
-		if (dstOneHopNeighbor.size() >= 2) {
-			List<LabeledNode> neighborList = new ArrayList<LabeledNode>(dstOneHopNeighbor);
-			for (int i = 0; i < neighborList.size() - 1; i++) {
-				for (int j = i + 1; j < neighborList.size(); j++) {
-					LabeledNode firstNeighbor = neighborList.get(i);
-					LabeledNode secondNeighbor = neighborList.get(j);
-					if (!nodeMap.contains(firstNeighbor, secondNeighbor)) {
-						count++;
-					}
-				}
-			}
-		}
-		return count;
 	}
 	
 	public int getNewConnectedSubgraphCount(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
