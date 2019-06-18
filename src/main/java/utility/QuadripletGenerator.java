@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -18,10 +19,10 @@ import topkgraphpattern.SubgraphType;
 
 public class QuadripletGenerator {
 	public QuadripletGenerator() { 
-		cache = new ArrayList<List<Quadriplet>>();
+		cache = new ArrayList<LinkedList<Quadriplet>>();
 		rand = new Random();
 	}
-	List<List<Quadriplet>> cache;
+	List<LinkedList<Quadriplet>> cache;
 	boolean isCacheReady = false;
 	Random rand;
 
@@ -32,9 +33,7 @@ public class QuadripletGenerator {
 
 		// combine src, dst, dstNeighbors, dstTwoHopNeighbors
 		for (Triplet dstTwoHopNeighbor : dstTwoHopNeighbors) {
-			if (dstTwoHopNeighbor.contains(src) && dstTwoHopNeighbor.contains(dst)) {
-
-			} else {
+			if (!dstTwoHopNeighbor.contains(src) && !dstTwoHopNeighbor.contains(dst)) {
 				Quadriplet quadriplet = new Quadriplet();
 				quadriplet.addEdge(edge);
 				Set<StreamEdge> pathEdges = dstTwoHopNeighbor.getAllEdges();
@@ -86,15 +85,9 @@ public class QuadripletGenerator {
 			}
 		}
 
-		SetFunctions<LabeledNode> setFunctions = new SetFunctions();
 		// combine srcTwoHopNeighbors, srcNeighbors, src, and dst
 		for (Triplet srcTwoHopNeighbor : srcTwoHopNeighbors) {
-			if (srcTwoHopNeighbor.contains(dst)) {
-
-			} else if (setFunctions.intersection(new HashSet<LabeledNode>(srcTwoHopNeighbor.getAllVertices()),
-					nodeMap.getNeighbors(dst)) > 0) {
-
-			} else {
+			if (!srcTwoHopNeighbor.contains(src) && !srcTwoHopNeighbor.contains(dst)) {
 				Quadriplet quadriplet = new Quadriplet();
 				quadriplet.addEdge(edge);
 				Set<StreamEdge> pathEdges = srcTwoHopNeighbor.getAllEdges();
@@ -238,7 +231,7 @@ public class QuadripletGenerator {
 			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors) {
 		
 		int count = 0;
-		List<Quadriplet> classOneList = new ArrayList<Quadriplet>();
+		LinkedList<Quadriplet> classOneList = new LinkedList<Quadriplet>();
 		List<LabeledNode> srcNeighbors = new ArrayList<LabeledNode>(srcOneHopNeighbor);
 		for(int i = 0 ;i< srcNeighbors.size()-1;i++) {
 			LabeledNode firstNeighbor = srcNeighbors.get(i);
@@ -268,7 +261,7 @@ public class QuadripletGenerator {
 		count += classOneList.size();
 		cache.add(classOneList);
 		
-		List<Quadriplet> classTwoList = new ArrayList<Quadriplet>();
+		LinkedList<Quadriplet> classTwoList = new LinkedList<Quadriplet>();
 		List<LabeledNode> dstNeighbors = new ArrayList<LabeledNode>(dstOneHopNeighbor);
 		for(int i = 0 ;i< dstNeighbors.size()-1;i++) {
 			LabeledNode firstNeighbor = dstNeighbors.get(i);
@@ -299,7 +292,7 @@ public class QuadripletGenerator {
 		cache.add(classTwoList);
 		
 		
-		List<Quadriplet> classThreeList = new ArrayList<Quadriplet>();
+		LinkedList<Quadriplet> classThreeList = new LinkedList<Quadriplet>();
 		for (LabeledNode s : srcOneHopNeighbor) {
 			if(!dstOneHopNeighbor.contains(s)) {
 				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
@@ -319,7 +312,7 @@ public class QuadripletGenerator {
 		count += classThreeList.size();
 		cache.add(classThreeList);
 
-		List<Quadriplet> classFourList = new ArrayList<Quadriplet>();
+		LinkedList<Quadriplet> classFourList = new LinkedList<Quadriplet>();
 		for (LabeledNode s : dstOneHopNeighbor) {
 			if(!srcOneHopNeighbor.contains(s)) {
 				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
@@ -340,7 +333,7 @@ public class QuadripletGenerator {
 		count += classFourList.size();
 		cache.add(classFourList);
 
-		List<Quadriplet> classFiveList = new ArrayList<Quadriplet>();
+		LinkedList<Quadriplet> classFiveList = new LinkedList<Quadriplet>();
 		// combine srcNeighbors, src, dst, dstNeighbors
 		for (LabeledNode srcNeighbor : srcOneHopNeighbor) {
 			if (!dstOneHopNeighbor.contains(srcNeighbor)) {
@@ -410,6 +403,14 @@ public class QuadripletGenerator {
 			result = cache.get(4);
 		}
 		
-		return result.size() != 0 ? result.get(rand.nextInt(result.size())) : null;
+		if(result.size() == 0) {
+			return null;
+		} else { 
+			int index = rand.nextInt(result.size());
+			Quadriplet quadriplet = result.get(index);
+			result.remove(quadriplet);
+			return quadriplet;
+			
+		}
 	}
 }

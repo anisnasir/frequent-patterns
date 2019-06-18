@@ -139,7 +139,7 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 
 	@Override
 	public HashMap<Pattern, Long> correctEstimates() {
-		return new HashMap<Pattern, Long>();
+		return frequentPatterns;
 		
 	}
 

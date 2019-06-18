@@ -94,6 +94,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 					dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 			
 			for(Quadriplet quadriplet: newSubgraphs) {
+				numSubgraphs++;
 				if(numSubgraphs < this.reservoirSize) {
 					//System.out.println("first phase of reservoir: " + numSubgraphs + "  <  "  + this.reservoirSize);
 					addToReservoir(quadriplet);
@@ -105,7 +106,6 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 					removeFrequentPattern(removedQuadriplet);
 					addToReservoir(quadriplet);
 				}
-				numSubgraphs++;
 			}
 		}
 
