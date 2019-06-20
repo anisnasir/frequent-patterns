@@ -95,7 +95,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNode implements TopkG
 			
 			for(Quadriplet quadriplet: newSubgraphs) {
 				numSubgraphs++;
-				if(numSubgraphs < this.reservoirSize) {
+				if(numSubgraphs <= this.reservoirSize) {
 					//System.out.println("first phase of reservoir: " + numSubgraphs + "  <  "  + this.reservoirSize);
 					addToReservoir(quadriplet);
 				} else if (generator.nextDouble() < (this.reservoirSize / (double) this.numSubgraphs)){
