@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import incremental.IncrementalSubgraphReservoirAlgorithm;
-import incremental.IncrementalSubgraphReservoirFinalAlgorithm;
-import incremental.IncrementalSubgraphReservoirImprovedAlgorithm;
+import incremental.IncrementalSubgraphReservoirThreeNode;
+import incremental.IncrementalSubgraphReservoirThreeNode2;
+import incremental.IncrementalSubgraphReservoirThreeNode3;
 import input.StreamEdge;
 
 public class IncrementalSubgraphReservoirFinalAlgorithmTest {
@@ -15,7 +15,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		int size = 10;
-		IncrementalSubgraphReservoirFinalAlgorithm topk = new IncrementalSubgraphReservoirFinalAlgorithm(size, size);
+		IncrementalSubgraphReservoirThreeNode2 topk = new IncrementalSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		System.out.println(topk.getFrequentPatterns());
 		topk.addEdge(b);
@@ -30,7 +30,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 
 		int size = 10;
-		IncrementalSubgraphReservoirFinalAlgorithm topk = new IncrementalSubgraphReservoirFinalAlgorithm(size, size);
+		IncrementalSubgraphReservoirThreeNode2 topk = new IncrementalSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
@@ -51,7 +51,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge d = new StreamEdge("b", 2, "d", 4);
 		StreamEdge e = new StreamEdge("c", 3, "d", 4);
 		int size = 10;
-		IncrementalSubgraphReservoirFinalAlgorithm topk = new IncrementalSubgraphReservoirFinalAlgorithm(size, size);
+		IncrementalSubgraphReservoirThreeNode2 topk = new IncrementalSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		//System.out.println(topk.getFrequentPatterns());
 		topk.addEdge(b);

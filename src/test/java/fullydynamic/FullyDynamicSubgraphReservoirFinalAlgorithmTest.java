@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import fullydynamic.FullyDynamicExhaustiveCounting;
-import fullydynamic.FullyDynamicSubgraphReservoirAlgorithm;
-import fullydynamic.FullyDynamicSubgraphReservoirFinalAlgorithm;
-import fullydynamic.FullyDynamicSubgraphReservoirImprovedFirstAlgorithm;
-import fullydynamic.FullyDynamicSubgraphReservoirImprovedSecondAlgorithm;
+import fullydynamic.FullyDynamicExhaustiveCountingThreeNode;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode2;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode3;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode4;
 import input.StreamEdge;
 
 public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
@@ -18,7 +18,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirFinalAlgorithm topk = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode2 topk = new FullyDynamicSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
@@ -30,7 +30,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirFinalAlgorithm topk = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode2 topk = new FullyDynamicSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -44,7 +44,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirFinalAlgorithm topk = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode2 topk = new FullyDynamicSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -59,7 +59,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirFinalAlgorithm topk = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode2 topk = new FullyDynamicSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -78,7 +78,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge d = new StreamEdge("b", 2, "d", 4);
 		StreamEdge e = new StreamEdge("c", 3, "d", 4);
 		int size = 10;
-		FullyDynamicSubgraphReservoirFinalAlgorithm topk = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode2 topk = new FullyDynamicSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 
@@ -98,7 +98,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirFinalAlgorithm topk = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode2 topk = new FullyDynamicSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -114,7 +114,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirFinalAlgorithm topk = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode2 topk = new FullyDynamicSubgraphReservoirThreeNode2(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);

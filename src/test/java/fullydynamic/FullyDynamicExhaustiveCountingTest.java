@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import fullydynamic.FullyDynamicExhaustiveCounting;
+import fullydynamic.FullyDynamicExhaustiveCountingThreeNode;
 import input.StreamEdge;
 
 public class FullyDynamicExhaustiveCountingTest {
@@ -13,7 +13,7 @@ public class FullyDynamicExhaustiveCountingTest {
 	public void singleWedgeAddition() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("b", 2, "c", 3);
-		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
+		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
@@ -25,7 +25,7 @@ public class FullyDynamicExhaustiveCountingTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 
-		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
+		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -40,7 +40,7 @@ public class FullyDynamicExhaustiveCountingTest {
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		StreamEdge d = new StreamEdge("b", 2, "d", 4);
 		StreamEdge e = new StreamEdge("c", 3, "d", 4);
-		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
+		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -55,7 +55,7 @@ public class FullyDynamicExhaustiveCountingTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
-		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
+		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -69,7 +69,7 @@ public class FullyDynamicExhaustiveCountingTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
-		FullyDynamicExhaustiveCounting topk = new FullyDynamicExhaustiveCounting();
+		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);

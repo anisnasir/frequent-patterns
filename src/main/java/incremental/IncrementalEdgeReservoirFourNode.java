@@ -1,4 +1,4 @@
-package fullydynamic;
+package incremental;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,13 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.math3.distribution.HypergeometricDistribution;
-
 import graphpattern.FourNodeGraphPattern;
-import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.EdgeReservoir;
-import struct.LabeledNode;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Quadriplet;
@@ -22,69 +18,51 @@ import topkgraphpattern.SubgraphType;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.QuadripletGenerator;
-import utility.SetFunctions;
 
-public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatterns{
+public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
 	HashMap<Pattern, Long> frequentPatterns;
-	int k ;
+	int k;
 	int M;
-	int N;
-	int Ncurrent;
-	int numSubgraphs;
-	int c1;
-	int c2;
-	//HypergeometricDistribution hyper;
+	int totalNumEdges;
+	long numSubgraphs;
 	QuadripletGenerator subgraphGenerator;
-	
-	public FullyDynamicEdgeReservoirAlgorithmFourNode(int size, int k) {
+
+	public IncrementalEdgeReservoirFourNode(int size, int k) {
 		nodeMap = new NodeMap();
 		reservoir = new EdgeReservoir<StreamEdge>();
 		utility = new EdgeHandler();
 		this.k = k;
 		this.M = size;
-		this.N = 0 ;
-		this.Ncurrent = 0 ;
-		this.c1 = 0;
-		this.c2 = 0;
-		this.numSubgraphs  = 0 ;
+		this.totalNumEdges = 0;
+		this.numSubgraphs = 0;
 		frequentPatterns = new HashMap<Pattern, Long>();
 	}
+
 	public boolean addEdge(StreamEdge edge) {
-		N++;
-		Ncurrent++;
-		//System.out.println("+" + edge);
+		totalNumEdges++;
+		// System.out.println("+" + edge);
 
-		if(c1 + c2 == 0) {
-			if(reservoir.getSize() < M) {
-				reservoir.add(edge);
-				addQuadriplets(edge);
-				utility.handleEdgeAddition(edge, nodeMap);
-			}else if ( Math.random() < (M/(double)N)) {
-				//remove a random edge from reservoir
-				StreamEdge oldEdge = reservoir.getRandom();
-				reservoir.remove(oldEdge);
-				utility.handleEdgeDeletion(oldEdge, nodeMap);
-				removeQuadriplets(oldEdge);
-
-				//add the new edge in the reservoir
-				reservoir.add(edge);
-				addQuadriplets(edge);
-				utility.handleEdgeAddition(edge, nodeMap);	
-			}
-		}else if (Math.random() < (c1/(double)(c1+c2))) {
-			//add to reservoir without removing any edge: compensation
+		if (reservoir.getSize() <= M) {
 			reservoir.add(edge);
 			addQuadriplets(edge);
 			utility.handleEdgeAddition(edge, nodeMap);
-			c1--;
-		}else {
-			c2--;
+		} else if (Math.random() < (M / (double) totalNumEdges)) {
+			// remove a random edge from reservoir
+			StreamEdge oldEdge = reservoir.getRandom();
+			reservoir.remove(oldEdge);
+			utility.handleEdgeDeletion(oldEdge, nodeMap);
+			removeQuadriplets(oldEdge);
+
+			// add the new edge in the reservoir
+			reservoir.add(edge);
+			addQuadriplets(edge);
+			utility.handleEdgeAddition(edge, nodeMap);
 		}
 
-		return true;
+		return false;
 	}
 
 	void addQuadriplets(StreamEdge edge) {
@@ -104,7 +82,7 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 	
 		// System.out.println("step 1 " + (System.nanoTime()-startTime));
 		for (Quadriplet subgraph : subgraphs) {
-			if (subgraph.getType() == SubgraphType.LINE || subgraph.getType() == SubgraphType.STAR) {
+			if (subgraph.getType().equals(SubgraphType.LINE) || subgraph.getType().equals(SubgraphType.STAR)) {
 				addSubgraph(subgraph);
 			} else {
 				addSubgraph(subgraph);
@@ -140,42 +118,49 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 	}
 
 	public long getNumberofSubgraphs() {
-		return this.numSubgraphs;
+		return numSubgraphs;
 	}
 
 	void addSubgraph(Quadriplet t) {
-		addFrequentPattern(t);
-		numSubgraphs++;
+		if(t.isQuadriplet()) {
+			addFrequentPattern(t);
+			numSubgraphs++;
+		}
 	}
 
 	void removeSubgraph(Quadriplet t) {
-		removeFrequentPattern(t);
-		numSubgraphs--;
+		if(t.isQuadriplet()) {
+			removeFrequentPattern(t);
+			numSubgraphs--;
+		}
 	}
 
-	//remove a and add b
+	// remove a and add b
 	void replaceSubgraphs(Quadriplet a, Quadriplet b) {
 		removeSubgraph(a);
+		removeFrequentPattern(a);
 		addSubgraph(b);
+		addFrequentPattern(b);
 
 	}
+
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if(frequentPatterns.containsKey(p)) {
+		if (frequentPatterns.containsKey(p)) {
 			long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count+1);
-		}else {
+			frequentPatterns.put(p, count + 1);
+		} else {
 			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if(frequentPatterns.containsKey(p)) {
+		if (frequentPatterns.containsKey(p)) {
 			long count = frequentPatterns.get(p);
-			if(count >1)
-				frequentPatterns.put(p, count-1);
-			else 
+			if (count > 1)
+				frequentPatterns.put(p, count - 1);
+			else
 				frequentPatterns.remove(p);
 		}
 	}
@@ -184,15 +169,9 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 		return this.frequentPatterns;
 	}
 
-	/*void initializeHypergeometricDistribution() {
-		int n = Math.min(this.M, Ncurrent + c1 + c2);
-		hyper = new HypergeometricDistribution(Ncurrent + c1 + c2, Ncurrent, n);
-	}*/
-	
 	public HashMap<Pattern, Long> correctEstimates() {
-		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
-		//initializeHypergeometricDistribution();
 		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();
 		double quasiCliqueCorrectFactor = correctFactorQuasiClique();
@@ -217,72 +196,30 @@ public class FullyDynamicEdgeReservoirAlgorithmFourNode implements TopkGraphPatt
 	}
 
 	private double correctFactorLineAndStar() {
-		double result = (N / (double) M);
-		result =  Math.pow(result, 3);
-		//result = result/(1-hyper.cumulativeProbability(0, 2));
-		return Math.max(1, result);
+		double result = (totalNumEdges / (double) M);
+		return Math.max(1, Math.pow(result, 3));
 	}
 
 	private double correctFactorTailedTriangleAndCircle() {
-		double result = (N / (double) M);
-		result = Math.pow(result, 4);
-		//result = result/(1-hyper.cumulativeProbability(0, 3));
-		return Math.max(1, result);
+		double result = (totalNumEdges / (double) M);
+		return Math.max(1, Math.pow(result, 4));
 	}
 	
 	private double correctFactorQuasiClique() {
-		double result = (N / (double) M);
-		result = Math.pow(result, 5);
-		//result = result/(1-hyper.cumulativeProbability(0, 4));
-		return Math.max(1, result);
+		double result = (totalNumEdges / (double) M);
+		return Math.max(1, Math.pow(result, 5));
 	}
 	
 	private double correctFactorClique() {
-		double result = (N / (double) M);
-		result = Math.pow(result, 6);
-		//result = result/(1-hyper.cumulativeProbability(0, 5));
-		return Math.max(1, result);
+		double result = (totalNumEdges / (double) M);
+		return Math.max(1, Math.pow(result, 6));
 	}
-	
+
 	@Override
 	public boolean removeEdge(StreamEdge edge) {
-		if(reservoir.contains(edge)) {
-			utility.handleEdgeDeletion(edge, nodeMap);
-			removeEdgeHelper(edge);
-			c1++;
-		}else {
-			c2++;
-		}
-		Ncurrent--;
-		return true;
+		return false;
 	}
-	public boolean removeEdgeHelper(StreamEdge edge) {
-		//System.out.println("-" + edge);
 
-		// System.out.println(nodeMap.map);
-		subgraphGenerator = new QuadripletGenerator();
-		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
-		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
-
-		// long startTime = System.nanoTime();
-		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor,
-				dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
-
-		for (Quadriplet subgraph : subgraphs) {
-			Quadriplet quadripletMinusEdge = subgraph.getQuadripletMinusEdge(edge);
-			removeSubgraph(subgraph);
-			if(quadripletMinusEdge.isQuadriplet()) {
-				addSubgraph(quadripletMinusEdge);
-			}
-		}
-
-		//System.out.println(reservoir.size());
-		return true;
-	}
 	@Override
 	public int getCurrentReservoirSize() {
 		return reservoir.getSize();

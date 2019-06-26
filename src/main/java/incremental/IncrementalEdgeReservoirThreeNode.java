@@ -13,39 +13,38 @@ import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
 import topkgraphpattern.Pattern;
-import topkgraphpattern.Subgraph;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
 
-public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns {
+public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
 	HashMap<Pattern, Long> frequentPatterns;
 	int k;
-	int M;
-	int N;
+	int reservoirSize;
+	int numEdges;
 
-	public IncrementalEdgeReservoirFinalAlgorithm(int size, int k) {
+	public IncrementalEdgeReservoirThreeNode(int size, int k) {
 		nodeMap = new NodeMap();
 		reservoir = new EdgeReservoir<StreamEdge>();
 		utility = new EdgeHandler();
 		this.k = k;
-		this.M = size;
-		this.N = 0;
+		this.reservoirSize = size;
+		this.numEdges = 0;
 		frequentPatterns = new HashMap<Pattern, Long>();
 	}
 
 	public boolean addEdge(StreamEdge edge) {
-		N++;
+		numEdges++;
 		// System.out.println("+" + edge);
 
-		if (reservoir.getSize() < M) {
+		if (reservoir.getSize() <= reservoirSize) {
 			reservoir.add(edge);
 			addTriplets(edge);
 			utility.handleEdgeAddition(edge, nodeMap);
-		} else if (Math.random() < (M / (double) N)) {
+		} else if (Math.random() < (reservoirSize / (double) numEdges)) {
 			// remove a random edge from reservoir
 			StreamEdge oldEdge = reservoir.getRandom();
 			reservoir.remove(oldEdge);
@@ -145,7 +144,7 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 
 	public long getNumberofSubgraphs() {
 		// TODO Auto-generated method stub
-		return N;
+		return numEdges;
 	}
 
 	void addSubgraph(Triplet t) {
@@ -210,12 +209,12 @@ public class IncrementalEdgeReservoirFinalAlgorithm implements TopkGraphPatterns
 	}
 
 	private double correctFactorWedge() {
-		double result = (N / (double) M) * ((N - 1) / (double) (M - 1));
+		double result = (numEdges / (double) reservoirSize) * ((numEdges - 1) / (double) (reservoirSize - 1));
 		return Math.max(1, result);
 	}
 
 	private double correctFactorTriangle() {
-		double result = (N / (double) M) * ((N - 1) / (double) (M - 1)) * ((N - 2) / (double) (M - 2));
+		double result = (numEdges / (double) reservoirSize) * ((numEdges - 1) / (double) (reservoirSize - 1)) * ((numEdges - 2) / (double) (reservoirSize - 2));
 		return Math.max(result, 1);
 	}
 

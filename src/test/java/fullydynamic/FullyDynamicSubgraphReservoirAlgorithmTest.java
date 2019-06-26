@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import fullydynamic.FullyDynamicExhaustiveCounting;
-import fullydynamic.FullyDynamicSubgraphReservoirAlgorithm;
+import fullydynamic.FullyDynamicExhaustiveCountingThreeNode;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode;
 import input.StreamEdge;
 
 public class FullyDynamicSubgraphReservoirAlgorithmTest {
@@ -15,7 +15,7 @@ public class FullyDynamicSubgraphReservoirAlgorithmTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirAlgorithm topk = new FullyDynamicSubgraphReservoirAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode topk = new FullyDynamicSubgraphReservoirThreeNode(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
@@ -27,7 +27,7 @@ public class FullyDynamicSubgraphReservoirAlgorithmTest {
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 
 		int size = 10;
-		FullyDynamicSubgraphReservoirAlgorithm topk = new FullyDynamicSubgraphReservoirAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode topk = new FullyDynamicSubgraphReservoirThreeNode(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
@@ -51,7 +51,7 @@ assertEquals(1, topk.getFrequentPatterns().size());
 		StreamEdge d = new StreamEdge("b", 2, "d", 4);
 		StreamEdge e = new StreamEdge("c", 3, "d", 4);
 		int size = 10;
-		FullyDynamicSubgraphReservoirAlgorithm topk = new FullyDynamicSubgraphReservoirAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode topk = new FullyDynamicSubgraphReservoirThreeNode(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -67,7 +67,7 @@ assertEquals(1, topk.getFrequentPatterns().size());
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirAlgorithm topk = new FullyDynamicSubgraphReservoirAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode topk = new FullyDynamicSubgraphReservoirThreeNode(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -82,7 +82,7 @@ assertEquals(1, topk.getFrequentPatterns().size());
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		int size = 10;
-		FullyDynamicSubgraphReservoirAlgorithm topk = new FullyDynamicSubgraphReservoirAlgorithm(size, size);
+		FullyDynamicSubgraphReservoirThreeNode topk = new FullyDynamicSubgraphReservoirThreeNode(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);

@@ -24,7 +24,7 @@ import utility.AlgorithmD;
 import utility.AlgorithmZ;
 import utility.BottomKSketch;
 
-public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPatterns {
+public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	AdvancedSubgraphReservoir<Triplet> reservoir;
@@ -42,7 +42,7 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithm implements TopkGraphPat
 	Random rand;
 	ReservoirSampling<LabeledNode> sampler;
 
-	public FullyDynamicSubgraphReservoirFinalAlgorithm(int size, int k ) { 
+	public FullyDynamicSubgraphReservoirThreeNode2(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		this.nodeBottomK = new NodeBottomK();
 		this.rand = new Random();

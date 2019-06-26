@@ -21,7 +21,7 @@ import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
 
-public class FullyDynamicEdgeReservoirAlgorithm implements TopkGraphPatterns{
+public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
@@ -34,7 +34,7 @@ public class FullyDynamicEdgeReservoirAlgorithm implements TopkGraphPatterns{
 	int c1;
 	int c2;
 	HypergeometricDistribution hyper;
-	public FullyDynamicEdgeReservoirAlgorithm(int size, int k) {
+	public FullyDynamicEdgeReservoirThreeNode(int size, int k) {
 		nodeMap = new NodeMap();
 		reservoir = new EdgeReservoir<StreamEdge>();
 		utility = new EdgeHandler();

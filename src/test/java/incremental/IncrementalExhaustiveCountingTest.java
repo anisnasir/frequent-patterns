@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import incremental.IncrementalExhaustiveCounting;
+import incremental.IncrementalExhaustiveCountingThreeNode;
 import input.StreamEdge;
 
 public class IncrementalExhaustiveCountingTest {
@@ -13,7 +13,7 @@ public class IncrementalExhaustiveCountingTest {
 	public void singleWedgeAddition() {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("b", 2, "c", 3);
-		IncrementalExhaustiveCounting topk = new IncrementalExhaustiveCounting();
+		IncrementalExhaustiveCountingThreeNode topk = new IncrementalExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());
@@ -25,7 +25,7 @@ public class IncrementalExhaustiveCountingTest {
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 
-		IncrementalExhaustiveCounting topk = new IncrementalExhaustiveCounting();
+		IncrementalExhaustiveCountingThreeNode topk = new IncrementalExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);
@@ -39,7 +39,7 @@ public class IncrementalExhaustiveCountingTest {
 		StreamEdge c = new StreamEdge("b", 2, "c", 3);
 		StreamEdge d = new StreamEdge("b", 2, "d", 4);
 		StreamEdge e = new StreamEdge("c", 3, "d", 4);
-		IncrementalExhaustiveCounting topk = new IncrementalExhaustiveCounting();
+		IncrementalExhaustiveCountingThreeNode topk = new IncrementalExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
 		topk.addEdge(c);

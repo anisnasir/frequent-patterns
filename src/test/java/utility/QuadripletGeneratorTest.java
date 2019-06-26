@@ -18,46 +18,12 @@ import utility.EdgeHandler;
 import utility.QuadripletGenerator;
 
 public class QuadripletGeneratorTest {
-
-	@Test
-	public void test() {
-		QuadripletGenerator gen = new QuadripletGenerator();
-		NodeMap nodeMap = new NodeMap();
-		EdgeHandler utility = new EdgeHandler();
-		
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("b", 2, "c", 3);
-		StreamEdge c = new StreamEdge("c", 3, "d", 4);
-		utility.handleEdgeAddition(a, nodeMap);
-		utility.handleEdgeAddition(b, nodeMap);
-		utility.handleEdgeAddition(c, nodeMap);
-		
-		StreamEdge edge = new StreamEdge("a", 1, "d", 4);
-		
-		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
-		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		assertEquals(1, srcOneHopNeighbor.size());
-		assertEquals("[b 2]", srcOneHopNeighbor.toString());
-		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		assertEquals(1, srcTwoHopNeighbors.size());
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		assertEquals(1, dstOneHopNeighbor.size());
-		assertEquals("[c 3]", dstOneHopNeighbor.toString());
-		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
-		assertEquals(1, dstTwoHopNeighbors.size());
-		
-		Set<Quadriplet> subgraphs = gen.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
-		//sSystem.out.println(subgraphs);
-		assertEquals(1, subgraphs.size());
-	}
 	
 	@Test
-	public void test1() {
+	public void starAndTwoLines() {
 		QuadripletGenerator gen = new QuadripletGenerator();
 		NodeMap nodeMap = new NodeMap();
 		EdgeHandler utility = new EdgeHandler();
-		
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("b", 2, "c", 3);
 		StreamEdge c = new StreamEdge("c", 3, "d", 4);
@@ -91,7 +57,7 @@ public class QuadripletGeneratorTest {
 	}
 	
 	@Test
-	public void test2() {
+	public void line() {
 		QuadripletGenerator gen = new QuadripletGenerator();
 		NodeMap nodeMap = new NodeMap();
 		EdgeHandler utility = new EdgeHandler();
@@ -121,7 +87,7 @@ public class QuadripletGeneratorTest {
 	}
 	
 	@Test
-	public void test3() {
+	public void line2() {
 		QuadripletGenerator gen = new QuadripletGenerator();
 		NodeMap nodeMap = new NodeMap();
 		EdgeHandler utility = new EdgeHandler();
@@ -386,6 +352,66 @@ public class QuadripletGeneratorTest {
 		Set<Quadriplet> subgraphs = gen.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
 		//sSystem.out.println(subgraphs);
 		assertEquals(1, subgraphs.size());
+	}
+	
+	@Test
+	public void failedTestWithTriangle() {
+		QuadripletGenerator gen = new QuadripletGenerator();
+		NodeMap nodeMap = new NodeMap();
+		EdgeHandler utility = new EdgeHandler();
+		
+		StreamEdge a = new StreamEdge("a", 1, "b", 2);
+		StreamEdge b = new StreamEdge("b", 2, "c", 3);
+		utility.handleEdgeAddition(a, nodeMap);
+		utility.handleEdgeAddition(b, nodeMap);
+		
+		StreamEdge edge = new StreamEdge("a", 1, "c", 3);
+		
+		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
+		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
+		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		assertEquals(1, srcOneHopNeighbor.size());
+		assertEquals("[b 2]", srcOneHopNeighbor.toString());
+		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		assertEquals(1, srcTwoHopNeighbors.size());
+		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		assertEquals(1, dstOneHopNeighbor.size());
+		assertEquals("[b 2]", dstOneHopNeighbor.toString());
+		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		assertEquals(1, dstTwoHopNeighbors.size());
+		
+		Set<Quadriplet> subgraphs = gen.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
+		//sSystem.out.println(subgraphs);
+		assertEquals(0, subgraphs.size());
+	}
+	
+	@Test
+	public void failedTestWithWedge() {
+		QuadripletGenerator gen = new QuadripletGenerator();
+		NodeMap nodeMap = new NodeMap();
+		EdgeHandler utility = new EdgeHandler();
+		
+		StreamEdge a = new StreamEdge("a", 1, "b", 2);
+		utility.handleEdgeAddition(a, nodeMap);
+		
+		StreamEdge edge = new StreamEdge("a", 1, "c", 3);
+		
+		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
+		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
+		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		assertEquals(1, srcOneHopNeighbor.size());
+		assertEquals("[b 2]", srcOneHopNeighbor.toString());
+		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		assertEquals(0, srcTwoHopNeighbors.size());
+		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		assertEquals(0, dstOneHopNeighbor.size());
+		assertEquals("[]", dstOneHopNeighbor.toString());
+		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		assertEquals(0, dstTwoHopNeighbors.size());
+		
+		Set<Quadriplet> subgraphs = gen.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
+		//sSystem.out.println(subgraphs);
+		assertEquals(0, subgraphs.size());
 	}
 
 }

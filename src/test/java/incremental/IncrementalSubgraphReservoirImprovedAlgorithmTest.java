@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import incremental.IncrementalSubgraphReservoirAlgorithm;
-import incremental.IncrementalSubgraphReservoirImprovedAlgorithm;
+import incremental.IncrementalSubgraphReservoirThreeNode;
+import incremental.IncrementalSubgraphReservoirThreeNode3;
 import input.StreamEdge;
 
 public class IncrementalSubgraphReservoirImprovedAlgorithmTest {
@@ -15,7 +15,7 @@ public class IncrementalSubgraphReservoirImprovedAlgorithmTest {
 		StreamEdge a = new StreamEdge("a", 1, "b", 2);
 		StreamEdge b = new StreamEdge("a", 1, "c", 3);
 		int size = 10;
-		IncrementalSubgraphReservoirImprovedAlgorithm topk = new IncrementalSubgraphReservoirImprovedAlgorithm(size, size);
+		IncrementalSubgraphReservoirThreeNode3 topk = new IncrementalSubgraphReservoirThreeNode3(size, size);
 		topk.addEdge(a);
 		topk.addEdge(b);
 		assertEquals(1, topk.getFrequentPatterns().size());

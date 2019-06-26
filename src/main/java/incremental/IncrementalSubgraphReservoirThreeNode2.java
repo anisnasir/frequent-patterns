@@ -5,26 +5,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
-import reservoir.SubgraphReservoir;
 import struct.LabeledNode;
 import struct.NodeBottomK;
 import struct.NodeMap;
 import struct.Triplet;
 import topkgraphpattern.Pattern;
-import topkgraphpattern.Subgraph;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
-import utility.ReservoirSampling;
 import utility.SetFunctions;
 import utility.AlgorithmZ;
-import utility.BottomKSketch;
 
-public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatterns {
+public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	NodeBottomK nodeBottomK;
 	EdgeHandler utility;
@@ -36,7 +31,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithm implements TopkGraphPatt
 	int M; // maximum reservoir size
 	int sum;
 	AlgorithmZ skipRS;
-	public IncrementalSubgraphReservoirFinalAlgorithm(int size, int k ) { 
+	public IncrementalSubgraphReservoirThreeNode2(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		this.nodeBottomK = new NodeBottomK();
 		rand = new Random();

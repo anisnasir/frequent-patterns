@@ -1,9 +1,7 @@
 package incremental;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import graphpattern.ThreeNodeGraphPattern;
@@ -17,14 +15,14 @@ import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
 
-public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
+public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	HashMap<Subgraph, Integer> counter;
 	HashMap<Pattern, Long> frequentPatterns;
 	long numSubgraph;
 
-	public IncrementalExhaustiveCounting() {
+	public IncrementalExhaustiveCountingThreeNode() {
 		utility = new EdgeHandler();
 		counter = new HashMap<Subgraph, Integer>();
 		numSubgraph = 0;
@@ -133,7 +131,6 @@ public class IncrementalExhaustiveCounting implements TopkGraphPatterns {
 
 	@Override
 	public int getCurrentReservoirSize() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

@@ -14,26 +14,28 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
-import fullydynamic.FullyDynamicExhaustiveCounting;
+import fullydynamic.FullyDynamicExhaustiveCountingThreeNode;
+import fullydynamic.FullyDynamicSubgraphReservoirFourNode;
 import fullydynamic.FullyDynamicExhaustiveCountingFourNode;
-import fullydynamic.FullyDynamicSubgraphReservoirAlgorithm;
-import fullydynamic.FullyDynamicSubgraphReservoirFinalAlgorithm;
-import fullydynamic.FullyDynamicSubgraphReservoirImprovedFirstAlgorithm;
-import fullydynamic.FullyDynamicSubgraphReservoirImprovedSecondAlgorithm;
-import fullydynamic.FullyDynamicEdgeReservoirAlgorithm;
-import fullydynamic.FullyDynamicEdgeReservoirAlgorithmFourNode;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode2;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode3;
+import fullydynamic.FullyDynamicSubgraphReservoirThreeNode4;
+import fullydynamic.FullyDynamicEdgeReservoirThreeNode;
+import fullydynamic.FullyDynamicEdgeReservoirFourNode;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-import incremental.IncrementalExhaustiveCounting;
+import incremental.IncrementalExhaustiveCountingThreeNode;
 import incremental.IncrementalExhaustiveCountingFourNode;
-import incremental.IncrementalSubgraphReservoirAlgorithm;
-import incremental.IncrementalSubgraphReservoirFinalAlgorithm;
-import incremental.IncrementalSubgraphReservoirFinalAlgorithmFourNode;
-import incremental.IncrementalSubgraphReservoirImprovedAlgorithm;
-import incremental.IncrementalEdgeReservoirFinalAlgorithm;
-import incremental.IncrementalEdgeReservoirFinalAlgorithmFourNode;
+import incremental.IncrementalSubgraphReservoirThreeNode;
+import incremental.IncrementalSubgraphReservoirThreeNode2;
+import incremental.IncrementalSubgraphReservoirFourNode;
+import incremental.IncrementalSubgraphReservoirFourNode2;
+import incremental.IncrementalSubgraphReservoirThreeNode3;
+import incremental.IncrementalEdgeReservoirThreeNode;
+import incremental.IncrementalEdgeReservoirFourNode;
 import input.StreamEdge;
 import input.StreamEdgeReader;
 import slidingwindow.FixedSizeSlidingWindow;
@@ -103,7 +105,7 @@ public class Main {
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new FullyDynamicSubgraphReservoirAlgorithm(size, k);
+			topkGraphPattern = new FullyDynamicSubgraphReservoirThreeNode(size, k);
 		} else if (simulatorType == 1) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
@@ -111,54 +113,54 @@ public class Main {
 			System.out.println("size of the reservoir: " + size);
 			// int size = 1270176; //this one is the max from youtube dataset
 			// int size = 988471; //this one is the max from patent dataset
-			topkGraphPattern = new FullyDynamicEdgeReservoirAlgorithm(size, k);
+			topkGraphPattern = new FullyDynamicEdgeReservoirThreeNode(size, k);
 		} else if (simulatorType == 2) {
-			topkGraphPattern = new FullyDynamicExhaustiveCounting();
+			topkGraphPattern = new FullyDynamicExhaustiveCountingThreeNode();
 		} else if (simulatorType == 3) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new IncrementalSubgraphReservoirAlgorithm(size, k);
+			topkGraphPattern = new IncrementalSubgraphReservoirThreeNode(size, k);
 		} else if (simulatorType == 4) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
 			// int size = 988471; //this one is the max from patent dataset
-			topkGraphPattern = new IncrementalEdgeReservoirFinalAlgorithm(size, k);
+			topkGraphPattern = new IncrementalEdgeReservoirThreeNode(size, k);
 		} else if (simulatorType == 5) {
-			topkGraphPattern = new IncrementalExhaustiveCounting();
+			topkGraphPattern = new IncrementalExhaustiveCountingThreeNode();
 		} else if (simulatorType == 6) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new IncrementalSubgraphReservoirImprovedAlgorithm(size, k);
+			topkGraphPattern = new IncrementalSubgraphReservoirThreeNode3(size, k);
 		} else if (simulatorType == 7) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedFirstAlgorithm(size, k);
+			topkGraphPattern = new FullyDynamicSubgraphReservoirThreeNode3(size, k);
 		} else if (simulatorType == 8) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new FullyDynamicSubgraphReservoirImprovedSecondAlgorithm(size, k);
+			topkGraphPattern = new FullyDynamicSubgraphReservoirThreeNode4(size, k);
 		} else if (simulatorType == 9) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithm(size, k);
+			topkGraphPattern = new IncrementalSubgraphReservoirThreeNode2(size, k);
 		} else if (simulatorType == 10) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new FullyDynamicSubgraphReservoirFinalAlgorithm(size, k);
+			topkGraphPattern = new FullyDynamicSubgraphReservoirThreeNode2(size, k);
 		} else if (simulatorType == 11) {
 			topkGraphPattern = new IncrementalExhaustiveCountingFourNode();
 		} else if (simulatorType == 12) {
@@ -166,13 +168,13 @@ public class Main {
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithmFourNode(size, k);
+			topkGraphPattern = new IncrementalSubgraphReservoirFourNode(size, k);
 		} else if (simulatorType == 13) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new IncrementalEdgeReservoirFinalAlgorithmFourNode(size, k);
+			topkGraphPattern = new IncrementalEdgeReservoirFourNode(size, k);
 		} else if (simulatorType == 14) {
 			topkGraphPattern = new FullyDynamicExhaustiveCountingFourNode();
 		} else if (simulatorType == 15) {
@@ -180,13 +182,19 @@ public class Main {
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new IncrementalSubgraphReservoirFinalAlgorithmFourNode(size, k);
+			topkGraphPattern = new FullyDynamicSubgraphReservoirFourNode(size, k);
 		} else if (simulatorType == 16) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
-			topkGraphPattern = new FullyDynamicEdgeReservoirAlgorithmFourNode(size, k);
+			topkGraphPattern = new FullyDynamicEdgeReservoirFourNode(size, k);
+		} else if (simulatorType == 17) {
+			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
+			double Tkk = Math.log(Tk / delta);
+			int size = (int) (Tkk * epsilonk);
+			System.out.println("size of the reservoir: " + size);
+			topkGraphPattern = new IncrementalSubgraphReservoirFourNode2(size, k);
 		}
 
 		/*

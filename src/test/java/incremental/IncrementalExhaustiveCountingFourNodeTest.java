@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import incremental.IncrementalExhaustiveCounting;
+import incremental.IncrementalExhaustiveCountingThreeNode;
 import incremental.IncrementalExhaustiveCountingFourNode;
 import input.StreamEdge;
 

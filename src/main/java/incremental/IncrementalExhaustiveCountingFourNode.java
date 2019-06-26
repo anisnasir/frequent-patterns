@@ -2,7 +2,6 @@ package incremental;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import graphpattern.FourNodeGraphPattern;
@@ -121,7 +120,6 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 
 	@Override
 	public int getCurrentReservoirSize() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

@@ -14,13 +14,13 @@ import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.SetFunctions;
 
-public class FullyDynamicExhaustiveCounting implements TopkGraphPatterns{
+public class FullyDynamicExhaustiveCountingThreeNode implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	HashMap<Triplet, Integer> counter;
 	HashMap<Pattern, Long> frequentPatterns;
 	int numSubgraph;
-	public FullyDynamicExhaustiveCounting() {
+	public FullyDynamicExhaustiveCountingThreeNode() {
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		counter = new HashMap<Triplet, Integer>();

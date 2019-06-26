@@ -20,7 +20,7 @@ import utility.SetFunctions;
 import utility.AlgorithmD;
 import utility.AlgorithmZ;
 
-public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements TopkGraphPatterns {
+public class FullyDynamicSubgraphReservoirThreeNode3 implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
@@ -35,7 +35,7 @@ public class FullyDynamicSubgraphReservoirImprovedFirstAlgorithm implements Topk
 	AlgorithmD skipRP;
 	int sum2;
 	ReservoirSampling<Triplet> sampler; // = new ReservoirSampling<LabeledNeighbor>();
-	public FullyDynamicSubgraphReservoirImprovedFirstAlgorithm(int size, int k ) { 
+	public FullyDynamicSubgraphReservoirThreeNode3(int size, int k ) { 
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		reservoir = new SubgraphReservoir<Triplet>();
