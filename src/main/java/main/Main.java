@@ -235,7 +235,7 @@ public class Main {
 		System.out.println("execution time: " + (endTime - startTime) / (double) 1000 + " secs.");
 		if(simulatorType == 12) { 
 			IncrementalSubgraphReservoirFourNode instance = (IncrementalSubgraphReservoirFourNode)topkGraphPattern;
-			System.out.println("count of unique edges in the reservoir equals: " + instance.getCurrentReservoirSize());
+			System.out.println("count of unique edges in the reservoir equals: " + instance.getUniqueEdges());
 		}
 		// create the output file name
 		String outFileName = "output_logs/output_" + fileName + "_" + windowSize + "_" + epsilon + "_" + delta + "_"
