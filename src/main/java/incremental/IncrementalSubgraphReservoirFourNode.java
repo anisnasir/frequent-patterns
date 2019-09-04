@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -33,7 +34,8 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 	AlgorithmZ skipRS;
 	int seed = 227;
 	Random generator = new Random(seed);
-	HashSet<StreamEdge> reservoirEdges = new HashSet<StreamEdge>();
+	Map<StreamEdge, Integer> reservoirEdges = new HashMap<StreamEdge, Integer>();
+	int uniqueEdges;
 
 	public IncrementalSubgraphReservoirFourNode(int size, int k) {
 		this.nodeMap = new NodeMap();
@@ -42,6 +44,7 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 		utility = new EdgeHandler();
 		reservoir = new AdvancedSubgraphReservoir<Quadriplet>();
 		numSubgraphs = 0;
+		uniqueEdges = 0;
 		reservoirSize = size;
 		frequentPatterns = new HashMap<Pattern, Long>();
 		skipRS = new AlgorithmZ(reservoirSize);
@@ -112,7 +115,12 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 		addFrequentPattern(quadriplet);
 		Set<StreamEdge> allEdges = quadriplet.getAllEdges();
 		for(StreamEdge edge: allEdges) {
-			reservoirEdges.add(edge);
+			if(reservoirEdges.containsKey(edge)) {
+				int count = reservoirEdges.get(edge);
+				reservoirEdges.put(edge, count+1);
+			} else {
+				reservoirEdges.put(edge, 1);
+			}
 		}
 
 	}
@@ -127,13 +135,23 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 		removeFrequentPattern(a);
 		Set<StreamEdge> allEdges = a.getAllEdges();
 		for(StreamEdge edge: allEdges) {
-			reservoirEdges.remove(edge);
+			int count = reservoirEdges.get(edge);
+			if(count > 1) { 
+				reservoirEdges.put(edge, count-1);
+			} else { 
+				reservoirEdges.remove(edge);
+			}
 		}
 		reservoir.add(b);
 		addFrequentPattern(b);
 		allEdges = b.getAllEdges();
 		for(StreamEdge edge: allEdges) {
-			reservoirEdges.add(edge);
+			if(reservoirEdges.containsKey(edge)) {
+				int count = reservoirEdges.get(edge);
+				reservoirEdges.put(edge, count+1);
+			} else {
+				reservoirEdges.put(edge, 1);
+			}
 		}
 
 	}
@@ -188,6 +206,6 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 	}
 	
 	public int getUniqueEdges() {
-		return reservoirEdges.size();
+		return reservoirEdges.keySet().size();
 	}
 }
