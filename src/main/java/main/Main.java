@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 import fullydynamic.FullyDynamicExhaustiveCountingThreeNode;
@@ -38,7 +40,10 @@ import incremental.IncrementalEdgeReservoirThreeNode;
 import incremental.IncrementalEdgeReservoirFourNode;
 import input.StreamEdge;
 import input.StreamEdgeReader;
+import reservoir.AdvancedSubgraphReservoir;
 import slidingwindow.FixedSizeSlidingWindow;
+import struct.LabeledNode;
+import struct.Quadriplet;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
 
@@ -234,8 +239,20 @@ public class Main {
 		long endTime = System.currentTimeMillis();
 		System.out.println("execution time: " + (endTime - startTime) / (double) 1000 + " secs.");
 		if(simulatorType == 12) { 
+			HashSet<StreamEdge> uniqueEdges = new HashSet<StreamEdge>();
 			IncrementalSubgraphReservoirFourNode instance = (IncrementalSubgraphReservoirFourNode)topkGraphPattern;
-			System.out.println("count of unique edges in the reservoir equals: " + instance.getUniqueEdges());
+			AdvancedSubgraphReservoir<Quadriplet> reservoir = instance.getReservoir();
+			HashMap<LabeledNode, HashSet<Quadriplet>> vertexSubgraphMap = reservoir.getVertexSubgraphMap();
+			for(LabeledNode node: vertexSubgraphMap.keySet() ) {
+				HashSet<Quadriplet> hashSet = vertexSubgraphMap.get(node);
+				for(Quadriplet q: hashSet) {
+					Set<StreamEdge> allEdges = q.getAllEdges();
+					for(StreamEdge e: allEdges) {
+						uniqueEdges.add(e);
+					}
+				}
+			}
+			System.out.println("count of unique edges in the reservoir equals: " + uniqueEdges.size());
 		}
 		// create the output file name
 		String outFileName = "output_logs/output_" + fileName + "_" + windowSize + "_" + epsilon + "_" + delta + "_"

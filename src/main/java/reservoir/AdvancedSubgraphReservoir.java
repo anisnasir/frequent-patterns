@@ -101,4 +101,8 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 		else
 			return new HashSet<T>();
 	}
+	
+	public HashMap<LabeledNode, HashSet<T>> getVertexSubgraphMap () {
+		return vertexSubgraphMap;
+	}
 }

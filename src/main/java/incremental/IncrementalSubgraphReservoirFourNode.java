@@ -34,8 +34,6 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 	AlgorithmZ skipRS;
 	int seed = 227;
 	Random generator = new Random(seed);
-	Map<StreamEdge, Integer> reservoirEdges = new HashMap<StreamEdge, Integer>();
-	int uniqueEdges;
 
 	public IncrementalSubgraphReservoirFourNode(int size, int k) {
 		this.nodeMap = new NodeMap();
@@ -44,7 +42,6 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 		utility = new EdgeHandler();
 		reservoir = new AdvancedSubgraphReservoir<Quadriplet>();
 		numSubgraphs = 0;
-		uniqueEdges = 0;
 		reservoirSize = size;
 		frequentPatterns = new HashMap<Pattern, Long>();
 		skipRS = new AlgorithmZ(reservoirSize);
@@ -113,15 +110,6 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 	void addToReservoir(Quadriplet quadriplet) {
 		reservoir.add(quadriplet);
 		addFrequentPattern(quadriplet);
-		Set<StreamEdge> allEdges = quadriplet.getAllEdges();
-		for(StreamEdge edge: allEdges) {
-			if(reservoirEdges.containsKey(edge)) {
-				int count = reservoirEdges.get(edge);
-				reservoirEdges.put(edge, count+1);
-			} else {
-				reservoirEdges.put(edge, 1);
-			}
-		}
 
 	}
 
@@ -133,26 +121,8 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 	void replaceSubgraphs(Quadriplet a, Quadriplet b) {
 		reservoir.remove(a);
 		removeFrequentPattern(a);
-		Set<StreamEdge> allEdges = a.getAllEdges();
-		for(StreamEdge edge: allEdges) {
-			int count = reservoirEdges.get(edge);
-			if(count > 1) { 
-				reservoirEdges.put(edge, count-1);
-			} else { 
-				reservoirEdges.remove(edge);
-			}
-		}
 		reservoir.add(b);
 		addFrequentPattern(b);
-		allEdges = b.getAllEdges();
-		for(StreamEdge edge: allEdges) {
-			if(reservoirEdges.containsKey(edge)) {
-				int count = reservoirEdges.get(edge);
-				reservoirEdges.put(edge, count+1);
-			} else {
-				reservoirEdges.put(edge, 1);
-			}
-		}
 
 	}
 
@@ -205,7 +175,7 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 		return reservoir.size();
 	}
 	
-	public int getUniqueEdges() {
-		return reservoirEdges.keySet().size();
+	public AdvancedSubgraphReservoir<Quadriplet> getReservoir() {
+		return reservoir;
 	}
 }

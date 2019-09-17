@@ -68,31 +68,48 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 					} else if(dstLabel == o.dstLabel) {
 						return 0;
 					}
-					else
-						return 1;
-				} else {
-					return 1;
 				}
 
-			} else
-				return 1;
-		} else
-			return 1;
+			}
+		}
+		return 1;
 	}
 
 	@Override
 	public int hashCode() {
-		int hashCode = new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
-		// if deriving: appendSuper(super.hashCode()).
-				append(this.src).append(this.srcLabel).append(this.dest).append(this.dstLabel)
-				.toHashCode();
-		return hashCode;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((dest == null) ? 0 : dest.hashCode());
+		result = prime * result + dstLabel;
+		result = prime * result + ((src == null) ? 0 : src.hashCode());
+		result = prime * result + srcLabel;
+		return result;
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		StreamEdge n = (StreamEdge) o;
-		return (this.compareTo(n) == 0);
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		StreamEdge other = (StreamEdge) obj;
+		if (dest == null) {
+			if (other.dest != null)
+				return false;
+		} else if (!dest.equals(other.dest))
+			return false;
+		if (dstLabel != other.dstLabel)
+			return false;
+		if (src == null) {
+			if (other.src != null)
+				return false;
+		} else if (!src.equals(other.src))
+			return false;
+		if (srcLabel != other.srcLabel)
+			return false;
+		return true;
 	}
 
 }
