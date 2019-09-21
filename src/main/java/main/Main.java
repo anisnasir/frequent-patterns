@@ -172,6 +172,7 @@ public class Main {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
+			size = 132103;
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirFourNode(size, k);
 		} else if (simulatorType == 13) {
