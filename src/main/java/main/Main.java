@@ -172,14 +172,14 @@ public class Main {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
-			size = 132103;
+			//size = 132103;
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirFourNode(size, k);
 		} else if (simulatorType == 13) {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
-			size = 350695;
+			//size = 350695;
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalEdgeReservoirFourNode(size, k);
 		} else if (simulatorType == 14) {
@@ -311,7 +311,7 @@ public class Main {
 		Iterator<Entry<Pattern, Long>> it = mp.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Pattern, Long> pair = it.next();
-			bw.write(pair.getKey() + " " + pair.getValue() + "\n");
+			bw.write(pair.getKey() + "\t" + pair.getValue() + "\n");
 		}
 	}
 
