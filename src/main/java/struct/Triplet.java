@@ -130,6 +130,7 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 
 	}
 
+	@Override
 	public int compareTo(Triplet o) {
 		if (this.numEdges < o.numEdges) {
 			return -1;
@@ -213,6 +214,7 @@ public class Triplet implements Comparable<Triplet>, Subgraph {
 		return Arrays.asList(nodeA, nodeB, nodeC);
 	}
 	
+	@Override
 	public Set<StreamEdge> getAllEdges() {
 		if(this.numEdges == 0) {
 			return new HashSet<StreamEdge>();

@@ -1,16 +1,15 @@
 package fullydynamic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
-import reservoir.SubgraphReservoir;
 import struct.LabeledNode;
 import struct.NodeBottomK;
 import struct.NodeMap;
@@ -28,7 +27,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	AdvancedSubgraphReservoir<Triplet> reservoir;
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	NodeBottomK nodeBottomK;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
@@ -56,12 +55,13 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		c2=0;
 		sum = 0;
 		Zprime=-1;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		skipRS = new AlgorithmZ(M);
 		//skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<LabeledNode>();
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		if(nodeMap.contains(edge)) {
 			return false;
@@ -70,11 +70,11 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
-		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		//replaces the existing wedges in the reservoir with the triangles
-		HashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
+		THashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
@@ -93,7 +93,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		//BottomKSketch<LabeledNode> dstSketch = nodeBottomK.getSketch(dst);
 		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
 		SetFunctions<LabeledNode> fun = new SetFunctions<LabeledNode>();
-		HashSet<LabeledNode> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		THashSet<LabeledNode> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
@@ -112,7 +112,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 				//we would randomly pick a vertex from the neighborhood of src and dst
 				//and add it to the reservoir
 				//System.out.println("i " + i + " W " + W);
-				HashSet<LabeledNode> set = new HashSet<LabeledNode>();
+				THashSet<LabeledNode> set = new THashSet<LabeledNode>();
 				int count = 0 ;
 				while(count < i) {
 					LabeledNode randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
@@ -123,7 +123,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 						//count++;
 					}else {
 						set.add(randomVertex);
-						HashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
+						THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
 						if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 							//triangle -> hence, rejected!!!!!
 							count++;
@@ -153,7 +153,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 				} else {
 					set.add(randomVertex);
 					//System.out.println(srcNeighbor + " " + dstNeighbor);
-					HashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
+					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
 						count++;
@@ -254,7 +254,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		}
 	}
 
-	public LabeledNode getRandomNeighbor(HashSet<LabeledNode> srcNeighbor, HashSet<LabeledNode> dstNeighbor) {
+	public LabeledNode getRandomNeighbor(THashSet<LabeledNode> srcNeighbor, THashSet<LabeledNode> dstNeighbor) {
 		int d_u = srcNeighbor.size();
 		int d_v = dstNeighbor.size();
 
@@ -273,6 +273,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		}
 	}
 
+	@Override
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);
 		if(!nodeMap.contains(edge)) {
@@ -286,8 +287,8 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		nodeBottomK.removeEdge(src, dst);
 
 
-		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		BottomKSketch<LabeledNode> srcSketch = nodeBottomK.getSketch(src);
 		BottomKSketch<LabeledNode> dstSketch = nodeBottomK.getSketch(dst);
@@ -299,7 +300,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		Ncurrent-=W;
 
 		//remove all the wedges from the graphs
-		HashSet<Triplet> candidateWedges = reservoir.getAllSubgraphs(src);
+		THashSet<Triplet> candidateWedges = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> wedges = new ArrayList<Triplet>();
 		for(Triplet t: candidateWedges) {
 			if((t.edgeA.equals(edge) || t.edgeB.equals(edge)) && !t.isTriangle()) {
@@ -321,7 +322,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		//System.out.println(reservoir.size());
 
 		//update all triangles in the reservoir and replace them with the wedges
-		HashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
+		THashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> triangles = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
@@ -378,11 +379,13 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
-	public HashMap<Pattern, Long> correctEstimates() {
-		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+	@Override
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {
@@ -396,6 +399,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		return Math.max(1, ((double)Ncurrent/M));
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return Ncurrent;
 	}

@@ -11,8 +11,8 @@ public class FullyDynamicExhaustiveCountingTest {
 
 	@Test
 	public void singleWedgeAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("b", 2, "c", 3);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(130, 2, 140, 3);
 		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -21,9 +21,9 @@ public class FullyDynamicExhaustiveCountingTest {
 	}
 	@Test
 	public void triangleAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("b", 2, "c", 3);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(130, 2, 140, 3);
 
 		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
@@ -35,11 +35,11 @@ public class FullyDynamicExhaustiveCountingTest {
 	}
 	@Test
 	public void multipleTripletAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("b", 2, "c", 3);
-		StreamEdge d = new StreamEdge("b", 2, "d", 4);
-		StreamEdge e = new StreamEdge("c", 3, "d", 4);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(130, 2, 140, 3);
+		StreamEdge d = new StreamEdge(130, 2, 150, 4);
+		StreamEdge e = new StreamEdge(140, 3, 150, 4);
 		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -52,9 +52,9 @@ public class FullyDynamicExhaustiveCountingTest {
 	}
 	@Test
 	public void removeTriangle() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("b", 2, "c", 3);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(130, 2, 140, 3);
 		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -66,9 +66,9 @@ public class FullyDynamicExhaustiveCountingTest {
 	
 	@Test
 	public void wedgeTypeTest() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("b", 2, "c", 3);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(130, 2, 140, 3);
 		FullyDynamicExhaustiveCountingThreeNode topk = new FullyDynamicExhaustiveCountingThreeNode();
 		topk.addEdge(a);
 		topk.addEdge(b);

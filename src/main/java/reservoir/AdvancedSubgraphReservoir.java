@@ -1,12 +1,11 @@
 package reservoir;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import struct.LabeledNode;
 import struct.MapArray;
-import struct.Triplet;
 import topkgraphpattern.Subgraph;
 
 /**
@@ -15,15 +14,16 @@ import topkgraphpattern.Subgraph;
  * @param <T>
  */
 public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
-	private HashMap<LabeledNode, HashSet<T>> vertexSubgraphMap;
+	private THashMap<LabeledNode, THashSet<T>> vertexSubgraphMap;
 	MapArray<T> list;
 
 	public AdvancedSubgraphReservoir() {
-		vertexSubgraphMap = new HashMap<LabeledNode, HashSet<T>>();
+		vertexSubgraphMap = new THashMap<LabeledNode, THashSet<T>>();
 		list = new MapArray<T>();
 
 	}
 
+	@Override
 	public boolean add(T value) {
 		if (!contains(value)) {
 			Subgraph t = (Subgraph) value;
@@ -40,16 +40,17 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 
 	public void add(LabeledNode a, T value) {
 		if (vertexSubgraphMap.containsKey(a)) {
-			HashSet<T> set = vertexSubgraphMap.get(a);
+			THashSet<T> set = vertexSubgraphMap.get(a);
 			set.add(value);
 			vertexSubgraphMap.put(a, set);
 		} else {
-			HashSet<T> set = new HashSet<T>();
+			THashSet<T> set = new THashSet<>();
 			set.add(value);
 			vertexSubgraphMap.put(a, set);
 		}
 	}
 
+	@Override
 	public boolean contains(T value) {
 		if (value == null) {
 			throw new NullPointerException();
@@ -58,6 +59,7 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 
 	}
 
+	@Override
 	public T getRandom() {
 		return list.getRandom();
 	}
@@ -66,6 +68,7 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 		return list.deleteRandom();
 	}
 
+	@Override
 	public boolean remove(T value) {
 		if (!contains(value)) {
 			return false;
@@ -85,7 +88,7 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 
 	public void remove(LabeledNode a, T value) {
 		if (vertexSubgraphMap.containsKey(a)) {
-			HashSet<T> set = vertexSubgraphMap.get(a);
+			THashSet<T> set = vertexSubgraphMap.get(a);
 			set.remove(value);
 			vertexSubgraphMap.put(a, set);
 		}
@@ -95,14 +98,14 @@ public class AdvancedSubgraphReservoir<T> implements Reservoir<T> {
 		return list.size();
 	}
 
-	public HashSet<T> getAllSubgraphs(LabeledNode a) {
+	public THashSet<T> getAllSubgraphs(LabeledNode a) {
 		if (vertexSubgraphMap.containsKey(a))
 			return vertexSubgraphMap.get(a);
 		else
-			return new HashSet<T>();
+			return new THashSet<>();
 	}
 	
-	public HashMap<LabeledNode, HashSet<T>> getVertexSubgraphMap () {
+	public THashMap<LabeledNode, THashSet<T>> getVertexSubgraphMap () {
 		return vertexSubgraphMap;
 	}
 }

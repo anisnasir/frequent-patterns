@@ -7,17 +7,15 @@ import java.util.List;
 
 import org.junit.Test;
 
-import incremental.IncrementalExhaustiveCountingThreeNode;
-import incremental.IncrementalExhaustiveCountingFourNode;
 import input.StreamEdge;
 
 public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 
 	@Test
 	public void singleLineAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("b", 2, "c", 3);
-		StreamEdge c = new StreamEdge("c", 3, "d", 4);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(130, 2, 140, 3);
+		StreamEdge c = new StreamEdge(140, 3, 150, 4);
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -27,10 +25,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	}
 	@Test
 	public void circleAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("b", 2, "c", 3);
-		StreamEdge c = new StreamEdge("c", 3, "d", 4);
-		StreamEdge d = new StreamEdge("d", 4, "a", 1);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(130, 2, 140, 3);
+		StreamEdge c = new StreamEdge(140, 3, 150, 4);
+		StreamEdge d = new StreamEdge(150, 4, 120, 1);
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -41,10 +39,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	
 	@Test
 	public void tailedTriangleAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("a", 1, "d", 4);
-		StreamEdge d = new StreamEdge("b", 2, "c", 3);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(120, 1, 150, 4);
+		StreamEdge d = new StreamEdge(130, 2, 140, 3);
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -55,9 +53,9 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	
 	@Test
 	public void starAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("a", 1, "d", 4);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(120, 1, 150, 4);
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -67,11 +65,11 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	
 	@Test
 	public void quasiCliqueAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("a", 1, "d", 4);
-		StreamEdge d = new StreamEdge("b", 2, "c", 3);
-		StreamEdge e = new StreamEdge("b", 2, "d", 4);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(120, 1, 150, 4);
+		StreamEdge d = new StreamEdge(130, 2, 140, 3);
+		StreamEdge e = new StreamEdge(130, 2, 150, 4);
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -83,17 +81,17 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	
 	@Test
 	public void cliqueAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("a", 1, "d", 4);
-		StreamEdge d = new StreamEdge("b", 2, "c", 3);
-		StreamEdge e = new StreamEdge("b", 2, "d", 4);
-		StreamEdge f = new StreamEdge("c", 3, "d", 4);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(120, 1, 150, 4);
+		StreamEdge d = new StreamEdge(130, 2, 140, 3);
+		StreamEdge e = new StreamEdge(130, 2, 150, 4);
+		StreamEdge f = new StreamEdge(140, 3, 150, 4);
 		
 
-		StreamEdge x = new StreamEdge("w", 10, "x", 20);
-		StreamEdge y = new StreamEdge("w", 10, "y", 30);
-		StreamEdge z = new StreamEdge("w", 10, "z", 40);
+		StreamEdge x = new StreamEdge(360, 10, 370, 20);
+		StreamEdge y = new StreamEdge(360, 10, 380, 30);
+		StreamEdge z = new StreamEdge(360, 10, 390, 40);
 		
 		
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(10, 10);
@@ -113,27 +111,27 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	@Test
 	public void randomPatternCount() {
 		List<StreamEdge> list = new ArrayList<StreamEdge>();
-		list.add(new StreamEdge("b", 2, "k", 3));
-		list.add(new StreamEdge("b", 2, "l", 4));
-		list.add(new StreamEdge("b", 2, "m", 5));
-		list.add(new StreamEdge("b", 2, "n", 6));
-		list.add(new StreamEdge("k", 3, "o", 7));
-		list.add(new StreamEdge("k", 3, "p", 8));
-		list.add(new StreamEdge("l", 4, "q", 9));
-		list.add(new StreamEdge("m", 5, "n", 6));
-		list.add(new StreamEdge("m", 5, "r", 10));
-		list.add(new StreamEdge("n", 6, "s", 11));
-		list.add(new StreamEdge("f", 15, "g", 16));
-		list.add(new StreamEdge("f", 15, "c", 12));
-		list.add(new StreamEdge("g", 16, "c", 12));
-		list.add(new StreamEdge("a", 1, "c", 12));
-		list.add(new StreamEdge("h", 17, "d", 13));
-		list.add(new StreamEdge("i", 18, "d", 13));
-		list.add(new StreamEdge("e", 14, "d", 13));
-		list.add(new StreamEdge("a", 1, "d", 13));
-		list.add(new StreamEdge("e", 14, "a", 1));
-		list.add(new StreamEdge("e", 14, "i", 18));
-		list.add(new StreamEdge("e", 14, "j", 19));
+		list.add(new StreamEdge(130, 2, 220, 3));
+		list.add(new StreamEdge(130, 2, 230, 4));
+		list.add(new StreamEdge(130, 2, 240, 5));
+		list.add(new StreamEdge(130, 2, 250, 6));
+		list.add(new StreamEdge(220, 3, 260, 7));
+		list.add(new StreamEdge(220, 3, 270, 8));
+		list.add(new StreamEdge(230, 4, 280, 9));
+		list.add(new StreamEdge(240, 5, 250, 6));
+		list.add(new StreamEdge(240, 5, 290, 10));
+		list.add(new StreamEdge(250, 6, 300, 11));
+		list.add(new StreamEdge(170, 15, 180, 16));
+		list.add(new StreamEdge(170, 15, 140, 12));
+		list.add(new StreamEdge(180, 16, 140, 12));
+		list.add(new StreamEdge(120, 1, 140, 12));
+		list.add(new StreamEdge(190, 17, 150, 13));
+		list.add(new StreamEdge(200, 18, 150, 13));
+		list.add(new StreamEdge(160, 14, 150, 13));
+		list.add(new StreamEdge(120, 1, 150, 13));
+		list.add(new StreamEdge(160, 14, 120, 1));
+		list.add(new StreamEdge(160, 14, 200, 18));
+		list.add(new StreamEdge(160, 14, 210, 19));
 		
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(100, 4);
 		for(StreamEdge streamEdge: list) {
@@ -142,7 +140,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 		
 		
 		int count = topk.getFrequentPatterns().size();
-		topk.addEdge(new StreamEdge("a", 1, "b", 2));
+		topk.addEdge(new StreamEdge(120, 1, 130, 2));
 		System.out.println("count: " + count);
 		assertEquals(32, topk.getFrequentPatterns().size()-count);
 	}
@@ -150,12 +148,12 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	@Test
 	public void randomPatternCount2() {
 		List<StreamEdge> list = new ArrayList<StreamEdge>();
-		list.add(new StreamEdge("b", 1, "c", 2));
-		list.add(new StreamEdge("b", 1, "d", 3));
-		list.add(new StreamEdge("b", 1, "e", 4));
-		list.add(new StreamEdge("c", 2, "d", 3));
-		list.add(new StreamEdge("c", 2, "e", 4));
-		list.add(new StreamEdge("d", 3, "e", 4));
+		list.add(new StreamEdge(130, 1, 140, 2));
+		list.add(new StreamEdge(130, 1, 150, 3));
+		list.add(new StreamEdge(130, 1, 160, 4));
+		list.add(new StreamEdge(140, 2, 150, 3));
+		list.add(new StreamEdge(140, 2, 160, 4));
+		list.add(new StreamEdge(150, 3, 160, 4));
 		
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(100, 4);
 		for(StreamEdge streamEdge: list) {
@@ -164,7 +162,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 		
 		
 		int count = topk.getFrequentPatterns().size();
-		topk.addEdge(new StreamEdge("a", 0, "b", 1));
+		topk.addEdge(new StreamEdge(120, 0, 130, 1));
 		System.out.println("count: " + count);
 		assertEquals(3, topk.getFrequentPatterns().size()-count);
 	}
@@ -172,11 +170,11 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	@Test
 	public void randomPatternCount3() {
 		List<StreamEdge> list = new ArrayList<StreamEdge>();
-		list.add(new StreamEdge("b", 1, "c", 2));
-		list.add(new StreamEdge("b", 1, "d", 3));
-		list.add(new StreamEdge("c", 2, "d", 3));
-		list.add(new StreamEdge("c", 2, "e", 4));
-		list.add(new StreamEdge("d", 3, "e", 4));
+		list.add(new StreamEdge(130, 1, 140, 2));
+		list.add(new StreamEdge(130, 1, 150, 3));
+		list.add(new StreamEdge(140, 2, 150, 3));
+		list.add(new StreamEdge(140, 2, 160, 4));
+		list.add(new StreamEdge(150, 3, 160, 4));
 		
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(100, 4);
 		for(StreamEdge streamEdge: list) {
@@ -185,7 +183,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 		
 		
 		int count = topk.getFrequentPatterns().size();
-		topk.addEdge(new StreamEdge("a", 0, "b", 1));
+		topk.addEdge(new StreamEdge(120, 0, 130, 1));
 		System.out.println("count: " + count);
 		assertEquals(3, topk.getFrequentPatterns().size()-count);
 	}
@@ -193,10 +191,10 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	@Test
 	public void randomPatternCount4() {
 		List<StreamEdge> list = new ArrayList<StreamEdge>();
-		list.add(new StreamEdge("b", 1, "c", 2));
-		list.add(new StreamEdge("b", 1, "d", 3));
-		list.add(new StreamEdge("c", 2, "e", 4));
-		list.add(new StreamEdge("d", 3, "e", 4));
+		list.add(new StreamEdge(130, 1, 140, 2));
+		list.add(new StreamEdge(130, 1, 150, 3));
+		list.add(new StreamEdge(140, 2, 160, 4));
+		list.add(new StreamEdge(150, 3, 160, 4));
 		
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(100, 4);
 		for(StreamEdge streamEdge: list) {
@@ -205,7 +203,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 		
 		
 		int count = topk.getFrequentPatterns().size();
-		topk.addEdge(new StreamEdge("a", 0, "b", 1));
+		topk.addEdge(new StreamEdge(120, 0, 130, 1));
 		System.out.println("count: " + count);
 		assertEquals(3, topk.getFrequentPatterns().size()-count);
 	}
@@ -213,9 +211,9 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 	@Test
 	public void randomPatternCount5() {
 		List<StreamEdge> list = new ArrayList<StreamEdge>();
-		list.add(new StreamEdge("b", 1, "d", 3));
-		list.add(new StreamEdge("c", 2, "e", 4));
-		list.add(new StreamEdge("d", 3, "e", 4));
+		list.add(new StreamEdge(130, 1, 150, 3));
+		list.add(new StreamEdge(140, 2, 160, 4));
+		list.add(new StreamEdge(150, 3, 160, 4));
 		
 		IncrementalSubgraphReservoirFourNode topk = new IncrementalSubgraphReservoirFourNode(100, 4);
 		for(StreamEdge streamEdge: list) {
@@ -224,7 +222,7 @@ public class IncrementalSubgraphReservoirFinalAlgorithmFourNodeTest {
 		
 		
 		int count = topk.getFrequentPatterns().size();
-		topk.addEdge(new StreamEdge("a", 0, "b", 1));
+		topk.addEdge(new StreamEdge(120, 0, 130, 1));
 		System.out.println("count: " + count);
 		assertEquals(1, topk.getFrequentPatterns().size()-count);
 	}

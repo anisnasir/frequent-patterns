@@ -99,6 +99,7 @@ public class ThreeNodeGraphPattern implements Comparable<ThreeNodeGraphPattern>,
 
 	}
 
+	@Override
 	public String toString() {
 		if (this.isWedge)
 			return this.label1 + " " + this.label2 + " " + this.label3 + " " + "wedge";
@@ -106,6 +107,7 @@ public class ThreeNodeGraphPattern implements Comparable<ThreeNodeGraphPattern>,
 			return this.label1 + " " + this.label2 + " " + this.label3 + " " + "triangle";
 	}
 
+	@Override
 	public int compareTo(ThreeNodeGraphPattern o) {
 		if (this.isWedge != o.isWedge) {
 			if (this.isWedge)

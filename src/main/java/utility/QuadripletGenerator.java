@@ -1,21 +1,17 @@
 package utility;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import gnu.trove.set.hash.THashSet;
 import input.StreamEdge;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Quadriplet;
 import struct.Triplet;
-import topkgraphpattern.SubgraphType;
 
 public class QuadripletGenerator {
 	public QuadripletGenerator() { 
@@ -27,9 +23,9 @@ public class QuadripletGenerator {
 	Random rand;
 
 	public Set<Quadriplet> getAllSubgraphs(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
-			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
-			HashSet<Triplet> srcTwoHopNeighbors, HashSet<Triplet> dstTwoHopNeighbors) {
-		Set<Quadriplet> result = new HashSet<Quadriplet>();
+			THashSet<LabeledNode> srcOneHopNeighbor, THashSet<LabeledNode> dstOneHopNeighbor,
+			THashSet<Triplet> srcTwoHopNeighbors, THashSet<Triplet> dstTwoHopNeighbors) {
+		Set<Quadriplet> result = new THashSet<Quadriplet>();
 
 		// combine src, dst, dstNeighbors, dstTwoHopNeighbors
 		for (Triplet dstTwoHopNeighbor : dstTwoHopNeighbors) {
@@ -165,8 +161,8 @@ public class QuadripletGenerator {
 	}
 	
 	public int getNewConnectedSubgraphCount(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
-			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
-			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors) {
+			THashSet<LabeledNode> srcOneHopNeighbor, THashSet<LabeledNode> dstOneHopNeighbor,
+			THashSet<LabeledNode> srcTwoHopNeighbors, THashSet<LabeledNode> dstTwoHopNeighbors) {
 		
 		int count = 0;
 		LinkedList<Quadriplet> classOneList = new LinkedList<Quadriplet>();
@@ -233,7 +229,7 @@ public class QuadripletGenerator {
 		LinkedList<Quadriplet> classThreeList = new LinkedList<Quadriplet>();
 		for (LabeledNode s : srcOneHopNeighbor) {
 			if(!dstOneHopNeighbor.contains(s)) {
-				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
+				THashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 				for(LabeledNode t: nNeighbors) {
 					if(!dstOneHopNeighbor.contains(t) && !srcOneHopNeighbor.contains(t) && !t.equals(src)) {
 						Quadriplet quadriplet = new Quadriplet();
@@ -253,7 +249,7 @@ public class QuadripletGenerator {
 		LinkedList<Quadriplet> classFourList = new LinkedList<Quadriplet>();
 		for (LabeledNode s : dstOneHopNeighbor) {
 			if(!srcOneHopNeighbor.contains(s)) {
-				HashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
+				THashSet<LabeledNode> nNeighbors = nodeMap.getNeighbors(s);
 				for(LabeledNode t: nNeighbors) {
 					if(!srcOneHopNeighbor.contains(t) && !dstOneHopNeighbor.contains(t) && !t.equals(dst)) {
 						Quadriplet quadriplet = new Quadriplet();
@@ -299,8 +295,8 @@ public class QuadripletGenerator {
 	}
 
 	public List<Quadriplet> getNewConnectedSubgraphs(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
-			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
-			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors) {
+			THashSet<LabeledNode> srcOneHopNeighbor, THashSet<LabeledNode> dstOneHopNeighbor,
+			THashSet<LabeledNode> srcTwoHopNeighbors, THashSet<LabeledNode> dstTwoHopNeighbors) {
 		if(!this.isCacheReady) {
 			getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
 		}
@@ -312,8 +308,8 @@ public class QuadripletGenerator {
 		
 	}
 	public Quadriplet getRandomNewConnectedSubgraphs(NodeMap nodeMap, StreamEdge edge, LabeledNode src, LabeledNode dst,
-			HashSet<LabeledNode> srcOneHopNeighbor, HashSet<LabeledNode> dstOneHopNeighbor,
-			HashSet<LabeledNode> srcTwoHopNeighbors, HashSet<LabeledNode> dstTwoHopNeighbors) {
+			THashSet<LabeledNode> srcOneHopNeighbor, THashSet<LabeledNode> dstOneHopNeighbor,
+			THashSet<LabeledNode> srcTwoHopNeighbors, THashSet<LabeledNode> dstTwoHopNeighbors) {
 
 		int classOneCount = cache.get(0).size();
 		int classTwoCount = cache.get(1).size();

@@ -1,9 +1,9 @@
 package incremental;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.FourNodeGraphPattern;
 import input.StreamEdge;
 import struct.LabeledNode;
@@ -19,18 +19,19 @@ import utility.QuadripletGenerator;
 public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	long numSubgraph;
 	QuadripletGenerator subgraphGenerator;
 
 	public IncrementalExhaustiveCountingFourNode() {
 		utility = new EdgeHandler();
 		numSubgraph = 0;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		this.nodeMap = new NodeMap();
 		subgraphGenerator = new QuadripletGenerator();
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		// System.out.println("+" + edge);
 		if (nodeMap.contains(edge)) {
@@ -40,10 +41,10 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 		// System.out.println(nodeMap.map);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 		
 		//long startTime = System.nanoTime();
 		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor, dstOneHopNeighbor, srcTwoHopNeighbors, dstTwoHopNeighbors);
@@ -104,10 +105,12 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return this.numSubgraph;
 	}
@@ -124,7 +127,7 @@ public class IncrementalExhaustiveCountingFourNode implements TopkGraphPatterns 
 	}
 
 	@Override
-	public HashMap<Pattern, Long> correctEstimates() {
+	public THashMap<Pattern, Long> correctEstimates() {
 		return frequentPatterns;
 		
 	}

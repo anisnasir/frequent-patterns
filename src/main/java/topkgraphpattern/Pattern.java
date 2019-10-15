@@ -1,8 +1,7 @@
 package topkgraphpattern;
 
-import graphpattern.FourNodeGraphPattern;
-
 public interface Pattern {
 	SubgraphType getType();
+	@Override
 	public int hashCode();
 }

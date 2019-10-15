@@ -13,10 +13,10 @@ public class NodeMapTest {
 	@Test
 	public void test() {
 		NodeMap nodeMap = new NodeMap();
-		LabeledNode n1 = new LabeledNode("s1", 1);
-		LabeledNode n2 = new LabeledNode("s2", 2);
-		LabeledNode n3 = new LabeledNode("s3", 3);
-		StreamEdge edgeA = new StreamEdge("s1",1,  "s2", 2); //ab
+		LabeledNode n1 = new LabeledNode(120, 1);
+		LabeledNode n2 = new LabeledNode(130, 2);
+		LabeledNode n3 = new LabeledNode(140, 3);
+		StreamEdge edgeA = new StreamEdge(120,1,  130, 2); //ab
 		
 		nodeMap.addEdge(n1, n2);
 		assertEquals(1, nodeMap.getNeighbors(n1).size());

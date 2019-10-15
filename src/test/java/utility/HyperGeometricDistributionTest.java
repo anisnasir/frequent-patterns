@@ -1,9 +1,5 @@
 package utility;
 
-import static org.junit.Assert.*;
-
-import java.math.BigInteger;
-
 import org.apache.commons.math3.distribution.HypergeometricDistribution;
 import org.junit.Test;
 

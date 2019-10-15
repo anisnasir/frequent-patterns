@@ -1,10 +1,7 @@
 package utility;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
-import reservoir.Reservoir;
 import reservoir.SubgraphReservoir;
 
 public class SubgraphReservoirTest {

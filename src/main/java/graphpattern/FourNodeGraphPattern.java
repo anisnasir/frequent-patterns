@@ -43,6 +43,7 @@ public class FourNodeGraphPattern implements Comparable<FourNodeGraphPattern>, P
 		return hashCode;
 	}
 
+	@Override
 	public SubgraphType getType() {
 		return this.type;
 	}
@@ -77,8 +78,9 @@ public class FourNodeGraphPattern implements Comparable<FourNodeGraphPattern>, P
 				+ maxDegree + "]";
 	}
 
+	@Override
 	public int compareTo(FourNodeGraphPattern o) {
-		FourNodeGraphPattern p = (FourNodeGraphPattern) o;
+		FourNodeGraphPattern p = o;
 		if (numEdges != p.numEdges) {
 			return numEdges - p.numEdges;
 		} else if (!type.equals(p.getType())) {

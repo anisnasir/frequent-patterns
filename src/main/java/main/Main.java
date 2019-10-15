@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,6 +22,8 @@ import fullydynamic.FullyDynamicSubgraphReservoirThreeNode;
 import fullydynamic.FullyDynamicSubgraphReservoirThreeNode2;
 import fullydynamic.FullyDynamicSubgraphReservoirThreeNode3;
 import fullydynamic.FullyDynamicSubgraphReservoirThreeNode4;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import fullydynamic.FullyDynamicEdgeReservoirThreeNode;
 import fullydynamic.FullyDynamicEdgeReservoirFourNode;
 
@@ -43,9 +44,11 @@ import input.StreamEdgeReader;
 import reservoir.AdvancedSubgraphReservoir;
 import slidingwindow.FixedSizeSlidingWindow;
 import struct.LabeledNode;
+import struct.NodeMap;
 import struct.Quadriplet;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
+import utility.EdgeHandler;
 
 /*
  * The main class to run different algorithms
@@ -205,6 +208,23 @@ public class Main {
 			int size = (int) (Tkk * epsilonk);
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirFourNode2(size, k);
+		} else if (simulatorType == 18) { 
+			int edgeCount = 0 ;
+			final int PRINT_AFTER = 1000000;
+			EdgeHandler utility = new EdgeHandler();
+			NodeMap nodeMap = new NodeMap();
+			while (edge != null) {
+				edge = reader.nextItem();
+				edgeCount++;
+
+				if (edgeCount % PRINT_AFTER == 0) {
+					System.out.println(String.format("%dM\t\t%d", (edgeCount / PRINT_AFTER),
+							((System.currentTimeMillis() - startTime) / 1000)));
+				}
+				
+				utility.handleEdgeAddition(edge, nodeMap);
+			}
+			System.exit(1);
 		}
 
 		/*
@@ -246,9 +266,9 @@ public class Main {
 			HashSet<StreamEdge> uniqueEdges = new HashSet<StreamEdge>();
 			IncrementalSubgraphReservoirFourNode instance = (IncrementalSubgraphReservoirFourNode)topkGraphPattern;
 			AdvancedSubgraphReservoir<Quadriplet> reservoir = instance.getReservoir();
-			HashMap<LabeledNode, HashSet<Quadriplet>> vertexSubgraphMap = reservoir.getVertexSubgraphMap();
+			THashMap<LabeledNode, THashSet<Quadriplet>> vertexSubgraphMap = reservoir.getVertexSubgraphMap();
 			for(LabeledNode node: vertexSubgraphMap.keySet() ) {
-				HashSet<Quadriplet> hashSet = vertexSubgraphMap.get(node);
+				THashSet<Quadriplet> hashSet = vertexSubgraphMap.get(node);
 				for(Quadriplet q: hashSet) {
 					Set<StreamEdge> allEdges = q.getAllEdges();
 					for(StreamEdge e: allEdges) {
@@ -303,14 +323,14 @@ public class Main {
 		fw = new FileWriter(outFileName);
 		bw = new BufferedWriter(fw);
 
-		HashMap<Pattern, Long> correctEstimates = topkGraphPattern.correctEstimates();
+		THashMap<Pattern, Long> correctEstimates = topkGraphPattern.correctEstimates();
 		printMap(correctEstimates, bw);
 		bw.flush();
 		bw.close();
 		System.out.println(topkGraphPattern.getNumberofSubgraphs());
 	}
 
-	public static void printMap(HashMap<Pattern, Long> mp, BufferedWriter bw) throws IOException {
+	public static void printMap(THashMap<Pattern, Long> mp, BufferedWriter bw) throws IOException {
 		Iterator<Entry<Pattern, Long>> it = mp.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Pattern, Long> pair = it.next();

@@ -1,9 +1,9 @@
 package incremental;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import struct.LabeledNode;
@@ -18,18 +18,19 @@ import utility.SetFunctions;
 public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
-	HashMap<Subgraph, Integer> counter;
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Subgraph, Integer> counter;
+	THashMap<Pattern, Long> frequentPatterns;
 	long numSubgraph;
 
 	public IncrementalExhaustiveCountingThreeNode() {
 		utility = new EdgeHandler();
-		counter = new HashMap<Subgraph, Integer>();
+		counter = new THashMap<Subgraph, Integer>();
 		numSubgraph = 0;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		this.nodeMap = new NodeMap();
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		// System.out.println("+" + edge);
 		if (nodeMap.contains(edge))
@@ -39,8 +40,8 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
 
-		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
 		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
@@ -115,10 +116,12 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return this.numSubgraph;
 	}
@@ -135,7 +138,7 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 	}
 
 	@Override
-	public HashMap<Pattern, Long> correctEstimates() {
+	public THashMap<Pattern, Long> correctEstimates() {
 		return frequentPatterns;
 		
 	}

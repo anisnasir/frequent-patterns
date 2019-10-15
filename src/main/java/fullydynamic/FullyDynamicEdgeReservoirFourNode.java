@@ -1,18 +1,14 @@
 package fullydynamic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.math3.distribution.HypergeometricDistribution;
-
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.FourNodeGraphPattern;
-import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.EdgeReservoir;
-import struct.LabeledNode;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Quadriplet;
@@ -22,13 +18,12 @@ import topkgraphpattern.SubgraphType;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.QuadripletGenerator;
-import utility.SetFunctions;
 
 public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	int k ;
 	int M;
 	int N;
@@ -50,8 +45,9 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		this.c1 = 0;
 		this.c2 = 0;
 		this.numSubgraphs  = 0 ;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 	}
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		N++;
 		Ncurrent++;
@@ -93,10 +89,10 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		// System.out.println(nodeMap.map);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 
 		// long startTime = System.nanoTime();
 		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor,
@@ -120,10 +116,10 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		// System.out.println(nodeMap.map);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 
 		// long startTime = System.nanoTime();
 		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor,
@@ -139,6 +135,7 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		}
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return this.numSubgraphs;
 	}
@@ -180,7 +177,8 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
@@ -189,10 +187,11 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		hyper = new HypergeometricDistribution(Ncurrent + c1 + c2, Ncurrent, n);
 	}*/
 	
-	public HashMap<Pattern, Long> correctEstimates() {
+	@Override
+	public THashMap<Pattern, Long> correctEstimates() {
 		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
 		//initializeHypergeometricDistribution();
-		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();
 		double quasiCliqueCorrectFactor = correctFactorQuasiClique();
@@ -263,10 +262,10 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		subgraphGenerator = new QuadripletGenerator();
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 
 		// long startTime = System.nanoTime();
 		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor,

@@ -1,11 +1,11 @@
 package incremental;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.EdgeReservoir;
@@ -21,7 +21,7 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	int k;
 	int reservoirSize;
 	int numEdges;
@@ -33,9 +33,10 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 		this.k = k;
 		this.reservoirSize = size;
 		this.numEdges = 0;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		numEdges++;
 		// System.out.println("+" + edge);
@@ -64,8 +65,8 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
 
-		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
 		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
@@ -105,8 +106,8 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
 
-		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
 		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
@@ -142,6 +143,7 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 		}
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		// TODO Auto-generated method stub
 		return numEdges;
@@ -185,12 +187,14 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
-	public HashMap<Pattern, Long> correctEstimates() {
-		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+	@Override
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double wedgeCorrectFactor = correctFactorWedge();
 		double triangleCorrectFactor = correctFactorTriangle();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());

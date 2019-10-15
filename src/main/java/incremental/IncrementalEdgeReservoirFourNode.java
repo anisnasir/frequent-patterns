@@ -1,11 +1,11 @@
 package incremental;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.FourNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.EdgeReservoir;
@@ -23,7 +23,7 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	int k;
 	int M;
 	int totalNumEdges;
@@ -38,9 +38,10 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 		this.M = size;
 		this.totalNumEdges = 0;
 		this.numSubgraphs = 0;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<>();
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		totalNumEdges++;
 		// System.out.println("+" + edge);
@@ -71,10 +72,10 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 		// System.out.println(nodeMap.map);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 
 		// long startTime = System.nanoTime();
 		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor,
@@ -98,10 +99,10 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 		// System.out.println(nodeMap.map);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<Triplet> srcTwoHopNeighbors = nodeMap.getTwoHopNeighbors(src);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<Triplet> dstTwoHopNeighbors = nodeMap.getTwoHopNeighbors(dst);
 
 		// long startTime = System.nanoTime();
 		Set<Quadriplet> subgraphs = subgraphGenerator.getAllSubgraphs(nodeMap, edge, src, dst, srcOneHopNeighbor,
@@ -117,6 +118,7 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 		}
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return numSubgraphs;
 	}
@@ -165,12 +167,14 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
-	public HashMap<Pattern, Long> correctEstimates() {
-		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+	@Override
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();

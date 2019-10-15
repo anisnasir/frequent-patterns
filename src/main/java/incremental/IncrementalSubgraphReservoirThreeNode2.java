@@ -1,11 +1,12 @@
 package incremental;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
@@ -26,7 +27,7 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 	AdvancedSubgraphReservoir<Triplet> reservoir;
 	Random rand;
 
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	long N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int sum;
@@ -39,11 +40,12 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 		reservoir = new AdvancedSubgraphReservoir<Triplet>();
 		N = 0;
 		M = size;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		sum = 0;
 		skipRS = new AlgorithmZ(M);
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		if(nodeMap.contains(edge)) {
 			return false;
@@ -52,11 +54,11 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
-		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		//replaces the existing wedges in the reservoir with the triangles
-		HashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
+		THashSet<Triplet> candidateTriangles = reservoir.getAllSubgraphs(src);
 		ArrayList<Triplet> oldWedges = new ArrayList<Triplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Triplet t: candidateTriangles) {
@@ -75,7 +77,7 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 		//BottomKSketch<LabeledNeighbor> dstSketch = nodeBottomK.getSketch(dst);
 		//int W = srcSketch.unionImprovedCardinality(dstSketch)-srcSketch.intersectionImprovedCardinality(dstSketch);
 		SetFunctions<LabeledNode> fun = new SetFunctions<LabeledNode>();
-		HashSet<LabeledNode> union = fun.unionSet(srcNeighbor, dstNeighbor);
+		THashSet<LabeledNode> union = fun.unionSet(srcNeighbor, dstNeighbor);
 		int W = union.size()-fun.intersection(srcNeighbor, dstNeighbor);
 		//System.out.println("W "+ W + " " + srcNeighbor + " "  + dstNeighbor);
 
@@ -93,7 +95,7 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 			//we would randomly pick a vertex from the neighborhood of src and dst
 			//and add it to the reservoir
 			//System.out.println("i " + i + " W " + W);
-			HashSet<LabeledNode> set = new HashSet<LabeledNode>();
+			THashSet<LabeledNode> set = new THashSet<LabeledNode>();
 			int count = 0 ;
 			while(count < i) {
 				LabeledNode randomVertex = getRandomNeighbor(srcNeighbor, dstNeighbor);
@@ -104,7 +106,7 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 					
 				}else {
 					set.add(randomVertex);
-					HashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
+					THashSet<LabeledNode> randomVertexNeighbor = nodeMap.getNodeNeighbors(randomVertex);
 					if(randomVertexNeighbor.contains(src) && randomVertexNeighbor.contains(dst)) {
 						//triangle -> hence, rejected!!!!!
 					}else if (randomVertexNeighbor.contains(src)) {
@@ -143,11 +145,12 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 		}
 		return results;
 	}
+	@Override
 	public boolean removeEdge(StreamEdge edge) {
 		return false;
 	}
 
-	public LabeledNode getRandomNeighbor(HashSet<LabeledNode> srcNeighbor, HashSet<LabeledNode> dstNeighbor) {
+	public LabeledNode getRandomNeighbor(THashSet<LabeledNode> srcNeighbor, THashSet<LabeledNode> dstNeighbor) {
 		int d_u = srcNeighbor.size();
 		int d_v = dstNeighbor.size();
 
@@ -197,11 +200,13 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
-	public HashMap<Pattern, Long> correctEstimates() {
-		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+	@Override
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {
@@ -215,6 +220,7 @@ public class IncrementalSubgraphReservoirThreeNode2 implements TopkGraphPatterns
 		return Math.max(1, ((double)N/M));
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return N;
 	}

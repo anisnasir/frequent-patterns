@@ -1,12 +1,12 @@
 package struct;
 
 public class DFSEdge {
-	String vertex1;
+	int vertex1;
 	int vertex1Label;
-	String vertex2;
+	int vertex2;
 	int vertex2Label;
 
-	public String getVertex1Id() {
+	public int getVertex1Id() {
 		return vertex1;
 	}
 
@@ -16,7 +16,7 @@ public class DFSEdge {
 				+ ", vertex2Label=" + vertex2Label + "]";
 	}
 
-	public void setVertex1Id(String vertex1Id) {
+	public void setVertex1Id(int vertex1Id) {
 		this.vertex1 = vertex1Id;
 	}
 
@@ -28,11 +28,11 @@ public class DFSEdge {
 		this.vertex1Label = vertex1Label;
 	}
 
-	public String getVertex2Id() {
+	public int getVertex2Id() {
 		return vertex2;
 	}
 
-	public void setVertex2Id(String vertex2Id) {
+	public void setVertex2Id(int vertex2Id) {
 		this.vertex2 = vertex2Id;
 	}
 
@@ -43,48 +43,65 @@ public class DFSEdge {
 	public void setVertex2Label(int vertex2Label) {
 		this.vertex2Label = vertex2Label;
 	}
+	
+	
 
-	public boolean equals(DFSEdge dfsEdge) {
-		if (!this.vertex1.equals(dfsEdge.vertex1)) {
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + vertex1;
+		result = prime * result + vertex1Label;
+		result = prime * result + vertex2;
+		result = prime * result + vertex2Label;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		if (!this.vertex2.equals(dfsEdge.vertex2)) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if (this.vertex1Label != dfsEdge.vertex1Label) {
+		DFSEdge other = (DFSEdge) obj;
+		if (vertex1 != other.vertex1)
 			return false;
-		}
-		if (this.vertex2Label != dfsEdge.vertex2Label) {
+		if (vertex1Label != other.vertex1Label)
 			return false;
-		}
+		if (vertex2 != other.vertex2)
+			return false;
+		if (vertex2Label != other.vertex2Label)
+			return false;
 		return true;
 	}
 
 	boolean isLessThan(DFSEdge edge) {
-		if (vertex2.compareTo(vertex1) < 0 && edge.vertex2.compareTo(edge.vertex1) > 0) {
+		if (vertex2 < vertex1 && edge.vertex2 > edge.vertex1) {
 			return true;
 		}
-		if (vertex2.compareTo(vertex1) < 0 && edge.vertex2.compareTo(edge.vertex1) < 0
-				&& vertex2.compareTo(edge.vertex2) < 0) {
+		if (vertex2 < vertex1 && edge.vertex2 < edge.vertex1
+				&& vertex2 < edge.vertex2) {
 			return true;
 		}
-		if (vertex2.compareTo(vertex1) < 0 && edge.vertex2.compareTo(edge.vertex1) < 0 && vertex2.equals(edge.vertex2)) {
+		if (vertex2 < vertex1 && edge.vertex2 < edge.vertex1 && vertex2 == edge.vertex2) {
 			return true;
 		}
-		if (vertex2.compareTo(vertex1) > 0 && edge.vertex2.compareTo(edge.vertex1) > 0
-				&& edge.vertex1.compareTo(vertex1) < 0) {
+		if (vertex2 > vertex1 && edge.vertex2 > edge.vertex1
+				&& edge.vertex1 < vertex1) {
 			return true;
 		}
-		if (vertex2.compareTo(vertex1) > 0 && edge.vertex2.compareTo(edge.vertex1) > 0 && edge.vertex1.equals(vertex1)
+		if (vertex2 > vertex1 && edge.vertex2 > edge.vertex1 && edge.vertex1 == vertex1
 				&& vertex1Label < edge.vertex1Label) {
 			return true;
 		}
-		if (this.vertex2.compareTo(vertex1) > 0 && edge.vertex2.compareTo(edge.vertex1) > 0
-				&& edge.vertex1.equals(vertex1) && vertex1Label == edge.vertex1Label
+		if (this.vertex2 > vertex1 && edge.vertex2 > edge.vertex1
+				&& edge.vertex1 == vertex1 && vertex1Label == edge.vertex1Label
 				&& vertex2Label < edge.vertex2Label) {
 			return true;
 		}
-		if (vertex2.compareTo(vertex1) > 0 && edge.vertex2.compareTo(edge.vertex1) > 0 && edge.vertex1.equals(vertex1)
+		if (vertex2 > vertex1 && edge.vertex2 > edge.vertex1 && edge.vertex1 == vertex1
 				&& vertex1Label == edge.vertex1Label 
 				&& vertex2Label < edge.vertex2Label) {
 			return true;
@@ -92,7 +109,7 @@ public class DFSEdge {
 		return false;
 	}
 
-	public DFSEdge(String vertex1, int vertex1Label, String vertex2, int vertex2Label) {
+	public DFSEdge(int vertex1, int vertex1Label, int vertex2, int vertex2Label) {
 		this.vertex1 = vertex1;
 		this.vertex1Label = vertex1Label;
 		this.vertex2 = vertex2;

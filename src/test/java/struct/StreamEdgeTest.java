@@ -10,8 +10,8 @@ public class StreamEdgeTest {
 
 	@Test
 	public void test() {
-		StreamEdge a = new StreamEdge("a",1, "b", 2);
-		StreamEdge b = new StreamEdge("a",1 , "b" , 2);
+		StreamEdge a = new StreamEdge(120,1, 130, 2);
+		StreamEdge b = new StreamEdge(120,1 , 130 , 2);
 		assertEquals(true, (a.compareTo(b) == 0) );
 	}
 

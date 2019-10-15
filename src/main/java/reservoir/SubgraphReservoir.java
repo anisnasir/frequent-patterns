@@ -19,14 +19,17 @@ public class SubgraphReservoir<T> implements Reservoir<T>{
 		list = new MapArray<T>();
 	}
 
+	@Override
 	public boolean add(T value) {
 		return list.add(value);
 	}
 
+	@Override
 	public boolean contains(T value) {
 		return list.contains(value);
 	}
 
+	@Override
 	public T getRandom() {
 		return list.getRandom();
 	}
@@ -35,6 +38,7 @@ public class SubgraphReservoir<T> implements Reservoir<T>{
 		return list.deleteRandom();
 	}
 
+	@Override
 	public boolean remove(T value) {
 		return list.remove(value);
 	}

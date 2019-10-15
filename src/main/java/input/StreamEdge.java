@@ -2,17 +2,15 @@ package input;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 	private static final long serialVersionUID = -3733214465018614013L;
-	private String src;
+	private int src;
 	private int srcLabel;
-	private String dest;
+	private int dest;
 	private int dstLabel;
 
-	public StreamEdge(String src, int srcLabel, String dest, int dstLabel) {
-		if (src.compareTo(dest) < 0) {
+	public StreamEdge(int src, int srcLabel, int dest, int dstLabel) {
+		if (src < dest) {
 			this.src = src;
 			this.srcLabel = srcLabel;
 			this.dest = dest;
@@ -41,25 +39,27 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 		this.dstLabel = dstLabel;
 	}
 
-	public String getSource() {
+	public int getSource() {
 		return this.src;
 	}
 
-	public String getDestination() {
+	public int getDestination() {
 		return this.dest;
 	}
 
+	@Override
 	public String toString() {
 		return this.src + " " + this.srcLabel + " " + this.dest + " " + this.dstLabel;
 	}
 
+	@Override
 	public int compareTo(StreamEdge o) {
-		if (src.compareTo(o.src) < 0) {
+		if (src < o.src) {
 			return -1;
-		} else if (src.compareTo(o.src) == 0) {
-			if (dest.compareTo(o.dest) < 0) {
+		} else if (src == o.src) {
+			if (dest < o.dest) {
 				return -1;
-			} else if (dest.compareTo(o.dest) == 0) {
+			} else if (dest == o.dest) {
 				if (srcLabel < o.srcLabel) {
 					return -1;
 				} else if (srcLabel == o.srcLabel) {
@@ -79,9 +79,9 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((dest == null) ? 0 : dest.hashCode());
+		result = prime * result + dest;
 		result = prime * result + dstLabel;
-		result = prime * result + ((src == null) ? 0 : src.hashCode());
+		result = prime * result + src;
 		result = prime * result + srcLabel;
 		return result;
 	}
@@ -95,17 +95,11 @@ public class StreamEdge implements Serializable, Comparable<StreamEdge> {
 		if (getClass() != obj.getClass())
 			return false;
 		StreamEdge other = (StreamEdge) obj;
-		if (dest == null) {
-			if (other.dest != null)
-				return false;
-		} else if (!dest.equals(other.dest))
+		if (dest != other.dest)
 			return false;
 		if (dstLabel != other.dstLabel)
 			return false;
-		if (src == null) {
-			if (other.src != null)
-				return false;
-		} else if (!src.equals(other.src))
+		if (src != other.src)
 			return false;
 		if (srcLabel != other.srcLabel)
 			return false;

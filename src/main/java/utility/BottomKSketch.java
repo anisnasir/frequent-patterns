@@ -4,21 +4,23 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
+import gnu.trove.set.hash.THashSet;
+
 public class BottomKSketch<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	UniformHasher MMhash;
 	int k;
 	PriorityQueue<Double> list;
 	PriorityQueue<Double> remaining;
-	HashSet<Double> set ;
-	HashSet<Double> remainingSet ;
+	THashSet<Double> set ;
+	THashSet<Double> remainingSet ;
 	public BottomKSketch(int k) {
 		this.k = k ;
 		MMhash = new UniformHasher();
 		list = new PriorityQueue<Double>(k, Collections.reverseOrder());
 		remaining = new PriorityQueue<Double>();
-		set = new HashSet<Double>();
-		remainingSet = new HashSet<Double>();
+		set = new THashSet<Double>();
+		remainingSet = new THashSet<Double>();
 	}
 
 	public boolean offerAll(HashSet<T> set) {
@@ -114,7 +116,7 @@ public class BottomKSketch<T> implements Serializable {
 	public PriorityQueue<Double> getSortedList() {
 		return this.list;
 	}
-	public HashSet<Double> getSet() {
+	public THashSet<Double> getSet() {
 		return this.set;
 
 	}
@@ -176,7 +178,7 @@ public class BottomKSketch<T> implements Serializable {
 			return 0;
 		}
 		SetFunctions<Double> helper = new SetFunctions<Double>();
-		HashSet<Double> intersection = helper.intersectionSet(set, Y.getSet());
+		THashSet<Double> intersection = helper.intersectionSet(set, Y.getSet());
 
 		double peekValue = Math.min(list.peek(), Y.list.peek());
 

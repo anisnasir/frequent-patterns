@@ -1,37 +1,31 @@
 package fullydynamic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.FourNodeGraphPattern;
-import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
-import reservoir.SubgraphReservoir;
 import struct.LabeledNode;
-import struct.NodeBottomK;
 import struct.NodeMap;
 import struct.Quadriplet;
-import struct.Triplet;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
 import utility.QuadripletGenerator;
 import utility.ReservoirSampling;
-import utility.SetFunctions;
 import utility.AlgorithmD;
 import utility.AlgorithmZ;
-import utility.BottomKSketch;
 
 public class FullyDynamicSubgraphReservoirFourNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	AdvancedSubgraphReservoir<Quadriplet> reservoir;
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int Ncurrent;
@@ -57,12 +51,13 @@ public class FullyDynamicSubgraphReservoirFourNode implements TopkGraphPatterns 
 		c2=0;
 		sum = 0;
 		Zprime=-1;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		skipRS = new AlgorithmZ(M);
 		//skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<LabeledNode>();
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		if(nodeMap.contains(edge)) {
 			return false;
@@ -72,19 +67,19 @@ public class FullyDynamicSubgraphReservoirFourNode implements TopkGraphPatterns 
 		//System.out.println("+" + edge);
 		// System.out.println("+" + edge);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> srcTwoHopNeighbor = nodeMap.getTwoHopNeighbors(src, srcOneHopNeighbor);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> srcTwoHopNeighbor = nodeMap.getTwoHopNeighbors(src, srcOneHopNeighbor);
 		
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
 		
 		
 		int subgraphCount = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
 				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 
 		//replaces the existing wedges in the reservoir with the triangles
-		HashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
+		THashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
 		ArrayList<Quadriplet> oldSubgraphs = new ArrayList<Quadriplet>();
 		//System.out.println("size "  + candidateTriangles.size());
 		for(Quadriplet t: candidateSubgraphs) {
@@ -202,6 +197,7 @@ public class FullyDynamicSubgraphReservoirFourNode implements TopkGraphPatterns 
 		}
 	}
 
+	@Override
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);
 		if(!nodeMap.contains(edge)) {
@@ -211,12 +207,12 @@ public class FullyDynamicSubgraphReservoirFourNode implements TopkGraphPatterns 
 
 		QuadripletGenerator subgraphGenerator = new QuadripletGenerator();
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> srcTwoHopNeighbor = nodeMap.getTwoHopNeighbors(src, srcOneHopNeighbor);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> srcTwoHopNeighbor = nodeMap.getTwoHopNeighbors(src, srcOneHopNeighbor);
 		
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
 		
 		int subgraphCount = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
 				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
@@ -226,7 +222,7 @@ public class FullyDynamicSubgraphReservoirFourNode implements TopkGraphPatterns 
 		Ncurrent -= W;
 
 		//remove all the wedges from the graphs
-		HashSet<Quadriplet> candidateWedges = reservoir.getAllSubgraphs(src);
+		THashSet<Quadriplet> candidateWedges = reservoir.getAllSubgraphs(src);
 		ArrayList<Quadriplet> existingSubgraphs = new ArrayList<Quadriplet>();
 		for(Quadriplet t: candidateWedges) {
 			if(t.getAllVertices().contains(dst)) {
@@ -293,11 +289,13 @@ public class FullyDynamicSubgraphReservoirFourNode implements TopkGraphPatterns 
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
-	public HashMap<Pattern, Long> correctEstimates() {
-		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+	@Override
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {
@@ -311,6 +309,7 @@ public class FullyDynamicSubgraphReservoirFourNode implements TopkGraphPatterns 
 		return Math.max(1, ((double)Ncurrent/M));
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return Ncurrent;
 	}

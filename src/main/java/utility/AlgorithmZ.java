@@ -25,7 +25,7 @@ final public class AlgorithmZ {
 			while (quot > V) {
 				S += 1;
 				t += 1;
-				quot *= (t - (double) n) / (double) t;
+				quot *= (t - (double) n) / t;
 			}
 		} else {
 			/* Now apply Algorithm Z */

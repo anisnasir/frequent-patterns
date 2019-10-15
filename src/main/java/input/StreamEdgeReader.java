@@ -2,7 +2,6 @@ package input;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Reads a stream of StreamItems from a file.
@@ -31,9 +30,9 @@ public class StreamEdgeReader {
 			if (tokens.length < 5)
 				return null;
 
-			String src = tokens[0];
+			int src = Integer.parseInt(tokens[0]);
 			int srcLabel = Integer.parseInt(tokens[1]);
-			String dest = tokens[2];
+			int dest = Integer.parseInt(tokens[2]);
 			int dstLabel = Integer.parseInt(tokens[3]);
 
 			return new StreamEdge(src, srcLabel, dest, dstLabel);

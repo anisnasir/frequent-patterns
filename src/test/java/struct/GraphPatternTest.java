@@ -13,12 +13,12 @@ public class GraphPatternTest {
 
 	@Test
 	public void test() {
-		LabeledNode a = new LabeledNode("a",1);
-		LabeledNode b = new LabeledNode("b",2);
-		LabeledNode c = new LabeledNode("c",3);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2); //ab
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3); //ac
-		StreamEdge edgeC = new StreamEdge("b",2 , "c" , 3); //bc
+		LabeledNode a = new LabeledNode(120,1);
+		LabeledNode b = new LabeledNode(130,2);
+		LabeledNode c = new LabeledNode(140,3);
+		StreamEdge edgeA = new StreamEdge(120,1,  130, 2); //ab
+		StreamEdge edgeB = new StreamEdge(120,1, 140, 3); //ac
+		StreamEdge edgeC = new StreamEdge(130,2 , 140 , 3); //bc
 		
 		Triplet t1 = new Triplet(a,b,c,edgeA, edgeB); // b-a-c  
 		Triplet t2 = new Triplet(a,b,c,edgeA,edgeC); // a-b-c   
@@ -52,12 +52,12 @@ public class GraphPatternTest {
 	
 	@Test
 	public void sameLabelTest() {
-		LabeledNode a = new LabeledNode("a",1);
-		LabeledNode b = new LabeledNode("b",1);
-		LabeledNode c = new LabeledNode("c",3);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 1); //ab
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3); //ac
-		StreamEdge edgeC = new StreamEdge("b",1 , "c" , 3); //bc
+		LabeledNode a = new LabeledNode(120,1);
+		LabeledNode b = new LabeledNode(130,1);
+		LabeledNode c = new LabeledNode(140,3);
+		StreamEdge edgeA = new StreamEdge(120,1,  130, 1); //ab
+		StreamEdge edgeB = new StreamEdge(120,1, 140, 3); //ac
+		StreamEdge edgeC = new StreamEdge(130,1 , 140 , 3); //bc
 		
 		Triplet t1 = new Triplet(a,b,c,edgeA, edgeB); // b-a-c  a - b b - c 
 		Triplet t2 = new Triplet(a,b,c,edgeA,edgeC); // a-b-c   

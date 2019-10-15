@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
+import gnu.trove.map.hash.THashMap;
+
 
 /**
  * Data structure that implements add, contains, deleteRandom, remove in
@@ -16,12 +18,12 @@ import java.util.Random;
  * @param <T>
  */
 public class MapArray<T> {
-	private HashMap<T, Integer> valueIndexes;
+	private THashMap<T, Integer> valueIndexes;
 	private ArrayList<T> values;
 	private Random rand;
 
 	public MapArray() {
-		valueIndexes = new HashMap<>();
+		valueIndexes = new THashMap<>();
 		values = new ArrayList<>();
 		rand = new Random(System.currentTimeMillis());
 	}

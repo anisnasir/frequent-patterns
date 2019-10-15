@@ -2,7 +2,6 @@ package struct;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +25,8 @@ public class Quadriplet implements Comparable<Quadriplet>, Subgraph {
 	int numEdges;
 
 	public Quadriplet() {
-		subgraph = new TreeMap<LabeledNode, TreeSet<LabeledNode>>();
-		edges = new HashSet<StreamEdge>();
+		subgraph = new TreeMap<>();
+		edges = new HashSet<>();
 		numEdges = 0;
 	}
 
@@ -100,8 +99,8 @@ public class Quadriplet implements Comparable<Quadriplet>, Subgraph {
 	}
 
 	public boolean isConnected(Set<LabeledNode> nodeSet) {
-		Stack<LabeledNode> stack = new Stack<LabeledNode>();
-		Set<LabeledNode> visited = new HashSet<LabeledNode>();
+		Stack<LabeledNode> stack = new Stack<>();
+		Set<LabeledNode> visited = new HashSet<>();
 		LabeledNode node = nodeSet.iterator().next();
 		stack.push(node);
 		while (!stack.isEmpty()) {
@@ -125,7 +124,7 @@ public class Quadriplet implements Comparable<Quadriplet>, Subgraph {
 
 		for (LabeledNode key : keyList) {
 			if (!visited.contains(key)) {
-				DFSEdge temp = new DFSEdge("", -1, key.getVertexId(), key.getVertexLabel());
+				DFSEdge temp = new DFSEdge(-1, -1, key.getVertexId(), key.getVertexLabel());
 				stack.push(temp);
 
 				while (!stack.isEmpty()) {
@@ -149,7 +148,6 @@ public class Quadriplet implements Comparable<Quadriplet>, Subgraph {
 				}
 			}
 		}
-		// System.out.println(sb.toString());
 		return sb.toString().hashCode();
 	}
 
@@ -172,6 +170,7 @@ public class Quadriplet implements Comparable<Quadriplet>, Subgraph {
 		return true;
 	}
 
+	@Override
 	public int hashCode() {
 		int value =  DFSCode();
 		return value;

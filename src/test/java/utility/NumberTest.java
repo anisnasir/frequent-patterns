@@ -1,7 +1,5 @@
 package utility;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class NumberTest {
@@ -10,7 +8,7 @@ public class NumberTest {
 	public void test() {
 		double N = 565612313;
 		double M = 715579;
-		double correctFactor = Math.max(1, ((double) N / M));
+		double correctFactor = Math.max(1, (N / M));
 		int count = 100478;
 		double value = count * correctFactor;
 		int answer = (int)value;

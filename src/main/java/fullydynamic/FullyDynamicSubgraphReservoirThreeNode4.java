@@ -1,11 +1,11 @@
 package fullydynamic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.ThreeNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.SubgraphReservoir;
@@ -24,7 +24,7 @@ public class FullyDynamicSubgraphReservoirThreeNode4 implements TopkGraphPattern
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	SubgraphReservoir<Triplet> reservoir;
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
 	int Ncurrent;
@@ -46,12 +46,13 @@ public class FullyDynamicSubgraphReservoirThreeNode4 implements TopkGraphPattern
 		c2=0;
 		sum = 0;
 		Zprime=-1;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		skipRS = new AlgorithmZ(M);
 		skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<Triplet>();
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		if(nodeMap.contains(edge)) {
 			return false;
@@ -61,8 +62,8 @@ public class FullyDynamicSubgraphReservoirThreeNode4 implements TopkGraphPattern
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
 
-		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		//System.out.println("src neighbor" + srcNeighbor);
 		//System.out.println("dst neighbor " + dstNeighbor);
@@ -173,6 +174,7 @@ public class FullyDynamicSubgraphReservoirThreeNode4 implements TopkGraphPattern
 		}
 	}
 	
+	@Override
 	public boolean removeEdge(StreamEdge edge) {
 		//System.out.println("-" + edge);
 		if(!nodeMap.contains(edge)) {
@@ -184,8 +186,8 @@ public class FullyDynamicSubgraphReservoirThreeNode4 implements TopkGraphPattern
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
 
-		HashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> srcNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> dstNeighbor = nodeMap.getNeighbors(dst);
 
 		SetFunctions<LabeledNode> functions = new SetFunctions<LabeledNode>();
 		Set<LabeledNode> common = functions.intersectionSet(srcNeighbor, dstNeighbor);
@@ -265,11 +267,13 @@ public class FullyDynamicSubgraphReservoirThreeNode4 implements TopkGraphPattern
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
-	public HashMap<Pattern, Long> correctEstimates() {
-		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+	@Override
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {
@@ -283,6 +287,7 @@ public class FullyDynamicSubgraphReservoirThreeNode4 implements TopkGraphPattern
 		return Math.max(1, ((double)Ncurrent/M));
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return Ncurrent;
 	}

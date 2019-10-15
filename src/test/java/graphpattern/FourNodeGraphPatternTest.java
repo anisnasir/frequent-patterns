@@ -12,13 +12,13 @@ public class FourNodeGraphPatternTest {
 
 	@Test
 	public void testSamePatterns() {
-		LabeledNode a = new LabeledNode("a",1);
-		LabeledNode b = new LabeledNode("b",2);
-		LabeledNode c = new LabeledNode("c",3);
-		LabeledNode d = new LabeledNode("d",4);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2);
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3);
-		StreamEdge edgeC = new StreamEdge("a",1, "d", 4);
+		LabeledNode a = new LabeledNode(120,1);
+		LabeledNode b = new LabeledNode(130,2);
+		LabeledNode c = new LabeledNode(140,3);
+		LabeledNode d = new LabeledNode(150,4);
+		StreamEdge edgeA = new StreamEdge(120,1,  130, 2);
+		StreamEdge edgeB = new StreamEdge(120,1, 140, 3);
+		StreamEdge edgeC = new StreamEdge(120,1, 150, 4);
 		Quadriplet quadriplet = new Quadriplet();
 		quadriplet.addEdge(edgeA);
 		quadriplet.addEdge(edgeB);
@@ -31,16 +31,16 @@ public class FourNodeGraphPatternTest {
 	
 	@Test
 	public void testDifferentPatterns() {
-		LabeledNode a = new LabeledNode("a",1);
-		LabeledNode b = new LabeledNode("b",2);
-		LabeledNode c = new LabeledNode("c",3);
-		LabeledNode d = new LabeledNode("d",4);
-		StreamEdge edgeA = new StreamEdge("a",1,  "b", 2);
-		StreamEdge edgeB = new StreamEdge("a",1, "c", 3);
-		StreamEdge edgeC = new StreamEdge("a",1, "d", 4);
-		StreamEdge edgeD = new StreamEdge("b",2, "c", 3);
-		StreamEdge edgeE = new StreamEdge("c",3, "d", 4);
-		StreamEdge edgeF = new StreamEdge("b",2, "d", 4);
+		LabeledNode a = new LabeledNode(120,1);
+		LabeledNode b = new LabeledNode(130,2);
+		LabeledNode c = new LabeledNode(140,3);
+		LabeledNode d = new LabeledNode(150,4);
+		StreamEdge edgeA = new StreamEdge(120,1,  130, 2);
+		StreamEdge edgeB = new StreamEdge(120,1, 140, 3);
+		StreamEdge edgeC = new StreamEdge(120,1, 150, 4);
+		StreamEdge edgeD = new StreamEdge(130,2, 140, 3);
+		StreamEdge edgeE = new StreamEdge(140,3, 150, 4);
+		StreamEdge edgeF = new StreamEdge(130,2, 150, 4);
 		Quadriplet quadriplet = new Quadriplet();
 		quadriplet.addEdge(edgeA);
 		quadriplet.addEdge(edgeB);

@@ -1,11 +1,12 @@
 package incremental;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import graphpattern.FourNodeGraphPattern;
 import input.StreamEdge;
 import reservoir.AdvancedSubgraphReservoir;
@@ -26,7 +27,7 @@ public class IncrementalSubgraphReservoirFourNode2 implements TopkGraphPatterns 
 	Random rand;
 	QuadripletGenerator subgraphGenerator;
 
-	HashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	long numberSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
 	int sum;
@@ -40,11 +41,12 @@ public class IncrementalSubgraphReservoirFourNode2 implements TopkGraphPatterns 
 		reservoir = new AdvancedSubgraphReservoir<Quadriplet>();
 		numberSubgraphs = 0;
 		reservoirSize = size;
-		frequentPatterns = new HashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		sum = 0;
 		skipRS = new AlgorithmZ(reservoirSize);
 	}
 
+	@Override
 	public boolean addEdge(StreamEdge edge) {
 		if (nodeMap.contains(edge)) {
 			return false;
@@ -52,19 +54,19 @@ public class IncrementalSubgraphReservoirFourNode2 implements TopkGraphPatterns 
 		QuadripletGenerator subgraphGenerator = new QuadripletGenerator();
 		// System.out.println("+" + edge);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
-		HashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
-		HashSet<LabeledNode> srcTwoHopNeighbor = nodeMap.getTwoHopNeighbors(src, srcOneHopNeighbor);
+		THashSet<LabeledNode> srcOneHopNeighbor = nodeMap.getNeighbors(src);
+		THashSet<LabeledNode> srcTwoHopNeighbor = nodeMap.getTwoHopNeighbors(src, srcOneHopNeighbor);
 		
 		LabeledNode dst = new LabeledNode(edge.getDestination(), edge.getDstLabel());
-		HashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
-		HashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
+		THashSet<LabeledNode> dstOneHopNeighbor = nodeMap.getNeighbors(dst);
+		THashSet<LabeledNode> dstTwoHopNeighbor = nodeMap.getTwoHopNeighbors(dst, dstOneHopNeighbor);
 		
 		int subgraphCount = subgraphGenerator.getNewConnectedSubgraphCount(nodeMap, edge, src, dst, srcOneHopNeighbor,
 				dstOneHopNeighbor, srcTwoHopNeighbor, dstTwoHopNeighbor);
 		
 		//System.out.println("time taken 1. " + (System.nanoTime()-startTime));
 		// replaces the existing wedges in the reservoir with the triangles
-		HashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
+		THashSet<Quadriplet> candidateSubgraphs = reservoir.getAllSubgraphs(src);
 		ArrayList<Quadriplet> oldSubgraphs = new ArrayList<Quadriplet>();
 		// System.out.println("size " + candidateTriangles.size());
 		for (Quadriplet t : candidateSubgraphs) {
@@ -126,6 +128,7 @@ public class IncrementalSubgraphReservoirFourNode2 implements TopkGraphPatterns 
 		return results;
 	}
 
+	@Override
 	public boolean removeEdge(StreamEdge edge) {
 		return false;
 	}
@@ -181,12 +184,14 @@ public class IncrementalSubgraphReservoirFourNode2 implements TopkGraphPatterns 
 		}
 	}
 
-	public HashMap<Pattern, Long> getFrequentPatterns() {
+	@Override
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
-	public HashMap<Pattern, Long> correctEstimates() {
-		HashMap<Pattern, Long> correctFrequentPatterns = new HashMap<Pattern, Long>();
+	@Override
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern p : patterns) {
@@ -201,6 +206,7 @@ public class IncrementalSubgraphReservoirFourNode2 implements TopkGraphPatterns 
 		return Math.max(1, ((double) numberSubgraphs / reservoirSize));
 	}
 
+	@Override
 	public long getNumberofSubgraphs() {
 		return numberSubgraphs;
 	}

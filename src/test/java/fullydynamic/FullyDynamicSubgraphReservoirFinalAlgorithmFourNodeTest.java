@@ -4,17 +4,15 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import incremental.IncrementalExhaustiveCountingThreeNode;
-import incremental.IncrementalExhaustiveCountingFourNode;
 import input.StreamEdge;
 
 public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNodeTest {
 
 	@Test
 	public void singleLineAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("b", 2, "c", 3);
-		StreamEdge c = new StreamEdge("c", 3, "d", 4);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(130, 2, 140, 3);
+		StreamEdge c = new StreamEdge(140, 3, 150, 4);
 		FullyDynamicSubgraphReservoirFourNode topk = new FullyDynamicSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -24,10 +22,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNodeTest {
 	}
 	@Test
 	public void circleAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("b", 2, "c", 3);
-		StreamEdge c = new StreamEdge("c", 3, "d", 4);
-		StreamEdge d = new StreamEdge("d", 4, "a", 1);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(130, 2, 140, 3);
+		StreamEdge c = new StreamEdge(140, 3, 150, 4);
+		StreamEdge d = new StreamEdge(150, 4, 120, 1);
 		FullyDynamicSubgraphReservoirFourNode topk = new FullyDynamicSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -38,10 +36,10 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNodeTest {
 	
 	@Test
 	public void tailedTriangleAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("a", 1, "d", 4);
-		StreamEdge d = new StreamEdge("b", 2, "c", 3);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(120, 1, 150, 4);
+		StreamEdge d = new StreamEdge(130, 2, 140, 3);
 		FullyDynamicSubgraphReservoirFourNode topk = new FullyDynamicSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -52,9 +50,9 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNodeTest {
 	
 	@Test
 	public void starAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("a", 1, "d", 4);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(120, 1, 150, 4);
 		FullyDynamicSubgraphReservoirFourNode topk = new FullyDynamicSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
@@ -64,11 +62,11 @@ public class FullyDynamicSubgraphReservoirFinalAlgorithmFourNodeTest {
 	
 	@Test
 	public void quasiCliqueAddition() {
-		StreamEdge a = new StreamEdge("a", 1, "b", 2);
-		StreamEdge b = new StreamEdge("a", 1, "c", 3);
-		StreamEdge c = new StreamEdge("a", 1, "d", 4);
-		StreamEdge d = new StreamEdge("b", 2, "c", 3);
-		StreamEdge e = new StreamEdge("b", 2, "d", 4);
+		StreamEdge a = new StreamEdge(120, 1, 130, 2);
+		StreamEdge b = new StreamEdge(120, 1, 140, 3);
+		StreamEdge c = new StreamEdge(120, 1, 150, 4);
+		StreamEdge d = new StreamEdge(130, 2, 140, 3);
+		StreamEdge e = new StreamEdge(130, 2, 150, 4);
 		FullyDynamicSubgraphReservoirFourNode topk = new FullyDynamicSubgraphReservoirFourNode(10, 10);
 		topk.addEdge(a);
 		topk.addEdge(b);
