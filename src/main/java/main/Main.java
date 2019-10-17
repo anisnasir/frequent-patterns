@@ -185,7 +185,7 @@ public class Main {
 			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
 			double Tkk = Math.log(Tk / delta);
 			int size = (int) (Tkk * epsilonk);
-			//size = 350695;
+			size = 350459;
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalEdgeReservoirFourNode(size, k);
 		} else if (simulatorType == 14) {
@@ -210,7 +210,7 @@ public class Main {
 			topkGraphPattern = new IncrementalSubgraphReservoirFourNode2(size, k);
 		} else if (simulatorType == 18) { 
 			int edgeCount = 0 ;
-			final int PRINT_AFTER = 1000000;
+			final int PRINT_AFTER = 100000;
 			EdgeHandler utility = new EdgeHandler();
 			NodeMap nodeMap = new NodeMap();
 			int min = Integer.MAX_VALUE;
