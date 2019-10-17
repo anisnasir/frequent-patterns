@@ -11,11 +11,7 @@ public class NodeMap {
 	public THashMap<LabeledNode, THashSet<LabeledNode>> map;
 
 	public NodeMap() {
-		map = new THashMap<LabeledNode, THashSet<LabeledNode>>();
-	}
-
-	void addNode(LabeledNode str) {
-		map.put(str, new THashSet<LabeledNode>());
+		map = new THashMap<>();
 	}
 
 	public void addEdge(LabeledNode src, LabeledNode dest) {
@@ -23,7 +19,7 @@ public class NodeMap {
 			THashSet<LabeledNode> neighbors = map.get(src);
 			neighbors.add(dest);
 		} else {
-			THashSet<LabeledNode> neighbors = new THashSet<LabeledNode>();
+			THashSet<LabeledNode> neighbors = new THashSet<>();
 			neighbors.add(dest);
 			map.put(src, neighbors);
 		}

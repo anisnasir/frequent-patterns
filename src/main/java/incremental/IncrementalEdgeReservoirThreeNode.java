@@ -21,7 +21,7 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Integer> frequentPatterns;
 	int k;
 	int reservoirSize;
 	int numEdges;
@@ -33,7 +33,7 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 		this.k = k;
 		this.reservoirSize = size;
 		this.numEdges = 0;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Integer>();
 	}
 
 	@Override
@@ -169,17 +169,17 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
+			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
-			frequentPatterns.put(p, 1l);
+			frequentPatterns.put(p, 1);
 		}
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
+			int count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
 			else
@@ -188,13 +188,13 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 	}
 
 	@Override
-	public THashMap<Pattern, Long> getFrequentPatterns() {
+	public THashMap<Pattern, Integer> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
 	@Override
-	public THashMap<Pattern, Long> correctEstimates() {
-		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
+	public THashMap<Pattern, Integer> correctEstimates() {
+		THashMap<Pattern, Integer> correctFrequentPatterns = new THashMap<Pattern, Integer>();
 		double wedgeCorrectFactor = correctFactorWedge();
 		double triangleCorrectFactor = correctFactorTriangle();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
@@ -207,7 +207,7 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 			else
 				value = count * triangleCorrectFactor;
 
-			correctFrequentPatterns.put(p, (long) value);
+			correctFrequentPatterns.put(p, (int) value);
 		}
 		return correctFrequentPatterns;
 	}

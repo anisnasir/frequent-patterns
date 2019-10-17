@@ -12,9 +12,9 @@ public class EdgeHandler {
 	public void handleEdgeAddition(StreamEdge item, NodeMap nodeMap ) {
 		//System.out.println("+ " + item.toString());
 		int src = item.getSource();
-		Integer srcLabel = item.getSrcLabel();
+		int srcLabel = item.getSrcLabel();
 		int dest = item.getDestination();
-		Integer dstLabel = item.getDstLabel();
+		int dstLabel = item.getDstLabel();
 		
 		LabeledNode srcNode = new LabeledNode(src,srcLabel);
 		LabeledNode dstNode = new LabeledNode(dest,dstLabel);
@@ -26,9 +26,9 @@ public class EdgeHandler {
 	public void handleEdgeDeletion(StreamEdge oldestEdge, NodeMap nodeMap ) {
 		//System.out.println("- " + oldestEdge.toString());
 		int src = oldestEdge.getSource();
-		Integer srcLabel = oldestEdge.getSrcLabel();
+		int srcLabel = oldestEdge.getSrcLabel();
 		int dest = oldestEdge.getDestination();
-		Integer dstLabel = oldestEdge.getDstLabel();
+		int dstLabel = oldestEdge.getDstLabel();
 		
 		LabeledNode srcNode = new LabeledNode(src,srcLabel);
 		LabeledNode dstNode = new LabeledNode(dest,dstLabel);
@@ -37,4 +37,5 @@ public class EdgeHandler {
 		nodeMap.removeEdge(srcNode, dstNode);
 		nodeMap.removeEdge(dstNode, srcNode);
 	}
+	
 }

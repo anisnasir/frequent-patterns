@@ -213,7 +213,26 @@ public class Main {
 			final int PRINT_AFTER = 1000000;
 			EdgeHandler utility = new EdgeHandler();
 			NodeMap nodeMap = new NodeMap();
+			int min = Integer.MAX_VALUE;
+			int max = Integer.MIN_VALUE;
 			while (edge != null) {
+				int src = edge.getSource();
+				int dst = edge.getDestination();
+				
+				if( src < min) {
+					min = src;
+				}
+				if(dst < min) {
+					min =dst;
+				}
+				if(src > max) {
+					max = src;
+				}
+				if(dst > max) {
+					max = dst;
+				}
+				utility.handleEdgeAddition(edge, nodeMap);
+				
 				edge = reader.nextItem();
 				edgeCount++;
 
@@ -222,8 +241,8 @@ public class Main {
 							((System.currentTimeMillis() - startTime) / 1000)));
 				}
 				
-				utility.handleEdgeAddition(edge, nodeMap);
 			}
+			System.out.println(min + " " + max);
 			System.exit(1);
 		}
 
@@ -323,17 +342,17 @@ public class Main {
 		fw = new FileWriter(outFileName);
 		bw = new BufferedWriter(fw);
 
-		THashMap<Pattern, Long> correctEstimates = topkGraphPattern.correctEstimates();
+		THashMap<Pattern, Integer> correctEstimates = topkGraphPattern.correctEstimates();
 		printMap(correctEstimates, bw);
 		bw.flush();
 		bw.close();
 		System.out.println(topkGraphPattern.getNumberofSubgraphs());
 	}
 
-	public static void printMap(THashMap<Pattern, Long> mp, BufferedWriter bw) throws IOException {
-		Iterator<Entry<Pattern, Long>> it = mp.entrySet().iterator();
+	public static void printMap(THashMap<Pattern, Integer> mp, BufferedWriter bw) throws IOException {
+		Iterator<Entry<Pattern, Integer>> it = mp.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry<Pattern, Long> pair = it.next();
+			Map.Entry<Pattern, Integer> pair = it.next();
 			bw.write(pair.getKey() + "\t" + pair.getValue() + "\n");
 		}
 	}

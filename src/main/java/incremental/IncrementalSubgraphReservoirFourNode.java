@@ -26,7 +26,7 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 	Random rand;
 	QuadripletGenerator subgraphGenerator;
 
-	THashMap<Pattern, Long> frequentPatterns;
+	THashMap<Pattern, Integer> frequentPatterns;
 	long numSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
 	AlgorithmZ skipRS;
@@ -41,7 +41,7 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 		reservoir = new AdvancedSubgraphReservoir<Quadriplet>();
 		numSubgraphs = 0;
 		reservoirSize = size;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		frequentPatterns = new THashMap<Pattern, Integer>();
 		skipRS = new AlgorithmZ(reservoirSize);
 	}
 
@@ -125,17 +125,17 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		Long count = frequentPatterns.get(p);
-		if (count == null) {
-			frequentPatterns.put(p, 1l);
-		} else {
+		if (frequentPatterns.containsKey(p)) {
+			int count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
+		} else {
+			frequentPatterns.put(p, 1);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		Long count = frequentPatterns.get(p);
+		int count = frequentPatterns.get(p);
 		if (count > 1) {
 			frequentPatterns.put(p, count - 1);
 		} else {
@@ -144,19 +144,19 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 	}
 
 	@Override
-	public THashMap<Pattern, Long> getFrequentPatterns() {
+	public THashMap<Pattern, Integer> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
 	@Override
-	public THashMap<Pattern, Long> correctEstimates() {
-		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
+	public THashMap<Pattern, Integer> correctEstimates() {
+		THashMap<Pattern, Integer> correctFrequentPatterns = new THashMap<Pattern, Integer>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern p : patterns) {
 			long count = frequentPatterns.get(p);
 			double value = count * correctFactor;
-			correctFrequentPatterns.put(p, (long) value);
+			correctFrequentPatterns.put(p, (int) value);
 		}
 		return correctFrequentPatterns;
 	}
