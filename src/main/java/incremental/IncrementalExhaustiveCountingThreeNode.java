@@ -18,15 +18,15 @@ import utility.SetFunctions;
 public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
-	THashMap<Subgraph, Integer> counter;
-	THashMap<Pattern, Integer> frequentPatterns;
+	THashMap<Subgraph, Long> counter;
+	THashMap<Pattern, Long> frequentPatterns;
 	long numSubgraph;
 
 	public IncrementalExhaustiveCountingThreeNode() {
 		utility = new EdgeHandler();
-		counter = new THashMap<Subgraph, Integer>();
+		counter = new THashMap<Subgraph, Long>();
 		numSubgraph = 0;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		this.nodeMap = new NodeMap();
 	}
 
@@ -98,17 +98,17 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 	void addFrequentPattern(Triplet t) {
 		Pattern p = new ThreeNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			Long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		Pattern p = new ThreeNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			Long count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
 			else
@@ -117,7 +117,7 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 	}
 
 	@Override
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
@@ -138,7 +138,7 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 	}
 
 	@Override
-	public THashMap<Pattern, Integer> correctEstimates() {
+	public THashMap<Pattern, Long> correctEstimates() {
 		return frequentPatterns;
 		
 	}

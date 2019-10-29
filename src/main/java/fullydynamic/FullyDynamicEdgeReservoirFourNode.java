@@ -23,7 +23,7 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<Pattern, Integer> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	int k ;
 	int M;
 	int N;
@@ -45,7 +45,7 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		this.c1 = 0;
 		this.c2 = 0;
 		this.numSubgraphs  = 0 ;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 	}
 	@Override
 	public boolean addEdge(StreamEdge edge) {
@@ -159,17 +159,17 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
 			else 
@@ -178,7 +178,7 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 	}
 
 	@Override
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
@@ -188,10 +188,10 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 	}*/
 	
 	@Override
-	public THashMap<Pattern, Integer> correctEstimates() {
+	public THashMap<Pattern, Long> correctEstimates() {
 		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
 		//initializeHypergeometricDistribution();
-		THashMap<Pattern, Integer> correctFrequentPatterns = new THashMap<Pattern, Integer>();
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();
 		double quasiCliqueCorrectFactor = correctFactorQuasiClique();
@@ -210,7 +210,7 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 				value = count * quasiCliqueCorrectFactor;
 			else 
 				value = count * cliqueCorrectFactor;
-			correctFrequentPatterns.put(p, (int) value);
+			correctFrequentPatterns.put(p, (long) value);
 		}
 		return correctFrequentPatterns;
 	}

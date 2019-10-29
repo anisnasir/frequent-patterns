@@ -25,7 +25,7 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<Pattern, Integer> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	int k ;
 	int M;
 	int N;
@@ -45,7 +45,7 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 		this.c1 = 0;
 		this.c2 = 0;
 		this.numSubgraphs  = 0 ;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 	}
 	@Override
 	public boolean addEdge(StreamEdge edge) {
@@ -186,17 +186,17 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			Long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
 			else 
@@ -205,7 +205,7 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 	}
 
 	@Override
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
@@ -215,8 +215,8 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 	}
 	
 	@Override
-	public THashMap<Pattern, Integer> correctEstimates() {
-		THashMap<Pattern, Integer> correctFrequentPatterns = new THashMap<>();
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<>();
 		initializeHypergeometricDistribution();
 		double wedgeCorrectFactor = correctFactorWedge();
 		double triangleCorrectFactor = correctFactorTriangle();
@@ -229,7 +229,7 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 			else 
 				value = count*triangleCorrectFactor;
 			
-			correctFrequentPatterns.put(p, (int)value);
+			correctFrequentPatterns.put(p, (long)value);
 		}
 		return correctFrequentPatterns;
 	}

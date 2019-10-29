@@ -17,15 +17,15 @@ import utility.SetFunctions;
 public class FullyDynamicExhaustiveCountingThreeNode implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
-	THashMap<Triplet, Integer> counter;
-	THashMap<Pattern, Integer> frequentPatterns;
+	THashMap<Triplet, Long> counter;
+	THashMap<Pattern, Long> frequentPatterns;
 	int numSubgraph;
 	public FullyDynamicExhaustiveCountingThreeNode() {
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		counter = new THashMap<>();
 		numSubgraph = 0 ;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 	}
 	@Override
 	public boolean addEdge(StreamEdge edge) {
@@ -162,17 +162,17 @@ public class FullyDynamicExhaustiveCountingThreeNode implements TopkGraphPattern
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 	
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			long count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
 			else 
@@ -181,7 +181,7 @@ public class FullyDynamicExhaustiveCountingThreeNode implements TopkGraphPattern
 	}
 	
 	@Override
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 	@Override
@@ -193,7 +193,7 @@ public class FullyDynamicExhaustiveCountingThreeNode implements TopkGraphPattern
 		return 0;
 	}
 	@Override
-	public THashMap<Pattern, Integer> correctEstimates() {
+	public THashMap<Pattern, Long> correctEstimates() {
 		return frequentPatterns;
 	}
 	

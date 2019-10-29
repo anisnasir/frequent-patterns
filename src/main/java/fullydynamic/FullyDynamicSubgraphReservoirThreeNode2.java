@@ -27,7 +27,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	AdvancedSubgraphReservoir<Triplet> reservoir;
-	THashMap<Pattern, Integer> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	NodeBottomK nodeBottomK;
 	int N; // total number of subgraphs
 	int M; // maximum reservoir size
@@ -55,7 +55,7 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 		c2=0;
 		sum = 0;
 		Zprime=-1;
-		frequentPatterns = new THashMap<Pattern, Integer>();
+		frequentPatterns = new THashMap<Pattern, Long>();
 		skipRS = new AlgorithmZ(M);
 		//skipRP = new AlgorithmD();
 		sampler = new ReservoirSampling<LabeledNode>();
@@ -361,17 +361,17 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			Long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count+1);
 		}else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
 		if(frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			Long count = frequentPatterns.get(p);
 			if(count >1)
 				frequentPatterns.put(p, count-1);
 			else 
@@ -380,18 +380,18 @@ public class FullyDynamicSubgraphReservoirThreeNode2 implements TopkGraphPattern
 	}
 
 	@Override
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 	@Override
-	public THashMap<Pattern, Integer> correctEstimates() {
-		THashMap<Pattern, Integer> correctFrequentPatterns = new THashMap<Pattern, Integer>();
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double correctFactor = correctFactor();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {
 			long count = frequentPatterns.get(p);
 			double value = count*correctFactor;
-			correctFrequentPatterns.put(p, (int)value);
+			correctFrequentPatterns.put(p, (long)value);
 		}
 		return correctFrequentPatterns;
 	}

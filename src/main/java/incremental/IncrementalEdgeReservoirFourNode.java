@@ -23,7 +23,7 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<Pattern, Integer> frequentPatterns;
+	THashMap<Pattern, Long> frequentPatterns;
 	int k;
 	int M;
 	int totalNumEdges;
@@ -149,17 +149,17 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			Long count = frequentPatterns.get(p);
 			frequentPatterns.put(p, count + 1);
 		} else {
-			frequentPatterns.put(p, 1);
+			frequentPatterns.put(p, 1l);
 		}
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
 		if (frequentPatterns.containsKey(p)) {
-			int count = frequentPatterns.get(p);
+			Long count = frequentPatterns.get(p);
 			if (count > 1)
 				frequentPatterns.put(p, count - 1);
 			else
@@ -168,13 +168,13 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 	}
 
 	@Override
-	public THashMap<Pattern, Integer> getFrequentPatterns() {
+	public THashMap<Pattern, Long> getFrequentPatterns() {
 		return this.frequentPatterns;
 	}
 
 	@Override
-	public THashMap<Pattern, Integer> correctEstimates() {
-		THashMap<Pattern, Integer> correctFrequentPatterns = new THashMap<Pattern, Integer>();
+	public THashMap<Pattern, Long> correctEstimates() {
+		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		//LINE, STAR, TAILED_TRIANGLE, CIRCLE, QUASI_CLIQUE, CLIQUE
 		double lineAndStarCorrectFactor = correctFactorLineAndStar();
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();
@@ -184,7 +184,7 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern pattern : patterns) {
 			FourNodeGraphPattern p = (FourNodeGraphPattern) pattern;
-			int count = frequentPatterns.get(p);
+			Long count = frequentPatterns.get(p);
 			double value;
 			if (p.getType().equals(SubgraphType.LINE) || p.getType().equals(SubgraphType.STAR))
 				value = count * lineAndStarCorrectFactor;
@@ -194,7 +194,7 @@ public class IncrementalEdgeReservoirFourNode implements TopkGraphPatterns {
 				value = count * quasiCliqueCorrectFactor;
 			else 
 				value = count * cliqueCorrectFactor;
-			correctFrequentPatterns.put(p, (int) Math.round(value));
+			correctFrequentPatterns.put(p, (long) Math.round(value));
 		}
 		return correctFrequentPatterns;
 	}
