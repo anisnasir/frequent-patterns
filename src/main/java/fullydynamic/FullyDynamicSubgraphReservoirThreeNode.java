@@ -44,7 +44,7 @@ public class FullyDynamicSubgraphReservoirThreeNode implements TopkGraphPatterns
 		if(nodeMap.contains(edge)) {
 			return false;
 		}
-		System.out.println("+" + edge);
+		//System.out.println("+" + edge);
 		LabeledNode src = new LabeledNode(edge.getSource(), edge.getSrcLabel());
 		LabeledNode dst = new LabeledNode(edge.getDestination(),edge.getDstLabel());
 
@@ -85,7 +85,7 @@ public class FullyDynamicSubgraphReservoirThreeNode implements TopkGraphPatterns
 	}
 	@Override
 	public boolean removeEdge(StreamEdge edge) {
-		System.out.println("-" + edge);
+		//System.out.println("-" + edge);
 		if(!nodeMap.contains(edge)) {
 			return false;
 		}
