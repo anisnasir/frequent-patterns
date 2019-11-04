@@ -109,15 +109,19 @@ public class Main {
 		long startTime = System.currentTimeMillis();
 
 		if (simulatorType == 0) {
-			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
-			double Tkk = Math.log(Tk / delta);
-			int size = (int) (Tkk * epsilonk);
+			//double epsilonk = (4 + epsilon) / (epsilon * epsilon);
+			//double Tkk = Math.log(Tk / delta);
+			//int size = (int) (Tkk * epsilonk);
+			double M = (4*(1+Math.log(1/delta)))/(epsilon*epsilon);
+			int size = (int) Math.round(M);
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new FullyDynamicSubgraphReservoirThreeNode(size, k);
 		} else if (simulatorType == 1) {
-			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
-			double Tkk = Math.log(Tk / delta);
-			int size = (int) (Tkk * epsilonk);
+			//double epsilonk = (4 + epsilon) / (epsilon * epsilon);
+			//double Tkk = Math.log(Tk / delta);
+			//int size = (int) (Tkk * epsilonk);
+			double M = (4*(1+Math.log(1/delta)))/(epsilon*epsilon);
+			int size = (int) Math.round(M);
 			System.out.println("size of the reservoir: " + size);
 			// int size = 1270176; //this one is the max from youtube dataset
 			// int size = 988471; //this one is the max from patent dataset
@@ -125,15 +129,19 @@ public class Main {
 		} else if (simulatorType == 2) {
 			topkGraphPattern = new FullyDynamicExhaustiveCountingThreeNode();
 		} else if (simulatorType == 3) {
-			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
-			double Tkk = Math.log(Tk / delta);
-			int size = (int) (Tkk * epsilonk);
+			//double epsilonk = (4 + epsilon) / (epsilon * epsilon);
+			//double Tkk = Math.log(Tk / delta);
+			//int size = (int) (Tkk * epsilonk);
+			double M = (4*(1+Math.log(1/delta)))/(epsilon*epsilon);
+			int size = (int) Math.round(M);
 			System.out.println("size of the reservoir: " + size);
 			topkGraphPattern = new IncrementalSubgraphReservoirThreeNode(size, k);
 		} else if (simulatorType == 4) {
-			double epsilonk = (4 + epsilon) / (epsilon * epsilon);
-			double Tkk = Math.log(Tk / delta);
-			int size = (int) (Tkk * epsilonk);
+			//double epsilonk = (4 + epsilon) / (epsilon * epsilon);
+			//double Tkk = Math.log(Tk / delta);
+			//int size = (int) (Tkk * epsilonk);
+			double M = (4*(1+Math.log(1/delta)))/(epsilon*epsilon);
+			int size = (int) Math.round(M);
 			System.out.println("size of the reservoir: " + size);
 			// int size = 988471; //this one is the max from patent dataset
 			topkGraphPattern = new IncrementalEdgeReservoirThreeNode(size, k);
