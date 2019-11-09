@@ -263,6 +263,8 @@ public class Main {
 
 		long edgeCount = 1;
 		long PRINT_AFTER = 100000;
+		long PRODUCE_SNAPSHOT_AFTER = 1_000_000;
+		int index = 0;
 		while (edge != null) {
 			topkGraphPattern.addEdge(edge);
 			// System.out.println("+ " + edge);
@@ -285,6 +287,25 @@ public class Main {
 				System.out.println(String.format("%d\t\t%d\t\t%d\t\t%d", (edgeCount / 1000),
 						((System.currentTimeMillis() - startTime) / 1000),
 						topkGraphPattern.getFrequentPatterns().size(), topkGraphPattern.getCurrentReservoirSize()));
+			}
+			
+			if(edgeCount%PRODUCE_SNAPSHOT_AFTER == 0 && simulatorType == 12) {
+				String outFileName = "output_logs/output_" + fileName + "_" + windowSize + "_" + epsilon + "_" + delta + "_"
+						+ Tk + "_" + k;
+				
+				outFileName = outFileName + "_incremental-subgraph-reservoir-final-four-node.log";
+				outFileName = outFileName + "_" + index++;
+				
+				BufferedWriter bw = null;
+				FileWriter fw = null;
+
+				fw = new FileWriter(outFileName);
+				bw = new BufferedWriter(fw);
+
+				THashMap<Pattern, Long> correctEstimates = topkGraphPattern.correctEstimates();
+				printMap(correctEstimates, bw);
+				bw.flush();
+				bw.close();
 			}
 		}
 		long endTime = System.currentTimeMillis();
